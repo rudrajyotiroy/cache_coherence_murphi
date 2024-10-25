@@ -52,9 +52,12 @@ CFLAGS = -Wno-write-strings -m32
 #OFLAGS = -O3
 
 # rules for compiling
-%: %.C
+%:
 	${MURPHI_INSTALL_PATH}/src/mu $@.m;
-	${CXX} ${CFLAGS} ${OFLAGS} -o $@ $@.C -I${MURPHI_INSTALL_PATH}/include -lm;
-	./$@;
+	${CXX} ${CFLAGS} ${OFLAGS} -o bin_$@ $@.C -I${MURPHI_INSTALL_PATH}/include -lm;
+	./bin_$@ $(ARG);
 
-# Command : make -B (filename without .m)
+clean:
+	rm -rf *.C
+	rm -rf bin_*
+# Command : make -B (filename without .m) ARG=(arguments for Murphi)
