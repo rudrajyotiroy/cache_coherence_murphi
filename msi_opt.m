@@ -30,7 +30,7 @@ const
     numDir:     1;      -- number of directories
     queueLen:   10;     -- maximum length of each queue at controller
 	ValueCount: 2;      -- number of data values
-    verbose:    1;      -- set verbosity level
+    verbosity:  1;      -- set verbosity level
 ----------------------------------------------------------------------
 -- Types
 ----------------------------------------------------------------------
@@ -40,14 +40,6 @@ type
     -- Node ID numDIr to (numDir + numProc - 1) for processors
     node_n:    	0..(numProc + numDir-1);
 	value_t: 	scalarset(ValueCount); -- arbitrary values for tracking coherence
-
-    -- Types of verbosity
-    verbose_t: enum{
-        none,
-        low,
-        med,
-        high
-    };
     
     -- Types of channel
     channel_t: enum {
@@ -134,6 +126,7 @@ type
     proc_t:
     Record
         state:      proc_state_t;
+        value:      value_t;
         req_queue:  multiset[queueLen] of message_t; 
         resp_queue: multiset[queueLen] of message_t; 
         fwd_queue:  multiset[queueLen] of message_t; 
@@ -143,6 +136,7 @@ type
     dir_t:
     Record
         state:      dir_state_t;
+        value:      value_t;
 		owner:		node_n;
         sharers:    array [0..(numProc + numDir-1)] of boolean; -- Coarse vector
         req_queue:  multiset[queueLen] of message_t; 
@@ -159,35 +153,71 @@ var
     dir:    	dir_t; -- TODO/ Can be extended to multiple directories if implemented later
 	currData:	value_t;
 
-----------------------------------------------------------------------
--- Start state to initialize all queues, invalidate all sharers
-----------------------------------------------------------------------
-startstate
-    For i: 0..(numProc-1) Do
-        proc[i].state := Proc_I;
-    End;
 
-    For i: node_n Do
-        dir.sharers[i] := false;
-    End;
-
-    dir.state := Dir_I;
-endstartstate;
 ----------------------------------------------------------------------
 -- State logger functions
 ----------------------------------------------------------------------
 Procedure LogNodeState(
     p:  node_n;
+    vb: 0..3;
 );
 Begin
-    if p then
-        put "node:  PROC ";
-        put p;
-        put "\n";
-    else
-        put "node:  DIR\n";
-    endif;
+    if (verbosity >= vb) then
+        if p>0 then
+            put "node:  PROC ";
+            put p;
 
+            put ", state: ";
+            put proc[p].state;
+
+            put ", value: ";
+            put proc[p].value;
+
+            put ", req_queue_size: ";
+            put MultiSetCount(i : proc[p].req_queue, true);
+
+            put ", resp_queue_size: ";
+            put MultiSetCount(i : proc[p].resp_queue, true);
+
+            put ", fwd_queue_size: ";
+            put MultiSetCount(i : proc[p].fwd_queue, true);
+            put "\n";
+        else
+            put "node:  DIR";
+
+            put ", state: ";
+            put dir.state;
+
+            put ", value: ";
+            put dir.value;
+
+            put ", req_queue_size: ";
+            put MultiSetCount(i : dir.req_queue, true);
+
+            put ", resp_queue_size: ";
+            put MultiSetCount(i : dir.resp_queue, true);
+
+            put ", fwd_queue_size: ";
+            put MultiSetCount(i : dir.fwd_queue, true);
+            put "\n";
+        endif;
+    endif;
+End;
+
+Procedure LogMessage(
+    msg:    message_t;
+    vb:     0..3;
+);
+Begin
+    if (verbosity >= vb) then
+        Put "message:   mType "; Put msg.mtype;
+        Put ", value: "; Put msg.value;
+        Put ", src: "; Put msg.src;
+        Put ", dest: "; Put msg.dest;
+        Put ", fwdTo: "; Put msg.fwdTo;
+        Put ", numAck: "; Put msg.numAck;
+        Put "\n";
+    endif;
 End;
 
 ----------------------------------------------------------------------
@@ -210,11 +240,46 @@ Begin
     msg.value   := value;
     msg.fwdTo   := fwdTo;
     msg.numAck  := numAck;
-    if(chan == req) then
-        if msg.dest then
-
-            Assert (MultiSetCount(i : proc[msg.dest].req_queue, true) < NetMax) "Message queue is full";
-
-
-
+    LogMessage(msg, 2);
+    LogNodeState(msg.dest, 3);
+    switch chan
+        case req:
+            if msg.dest>0 then
+                Assert (MultiSetCount(i : proc[msg.dest].req_queue, true) < queueLen) "Message queue is full";
+                MultiSetAdd(msg, proc[msg.dest].req_queue);
+            else
+                Assert (MultiSetCount(i : dir.req_queue, true) < queueLen) "Message queue is full";
+                MultiSetAdd(msg, dir.req_queue);
+            endif;
+        case resp:
+            if msg.dest>0 then
+                Assert (MultiSetCount(i : proc[msg.dest].resp_queue, true) < queueLen) "Message queue is full";
+                MultiSetAdd(msg, proc[msg.dest].resp_queue);
+            else
+                Assert (MultiSetCount(i : dir.resp_queue, true) < queueLen) "Message queue is full";
+                MultiSetAdd(msg, dir.resp_queue);
+            endif;
+        case fwd:
+            if msg.dest>0 then
+                Assert (MultiSetCount(i : proc[msg.dest].fwd_queue, true) < queueLen) "Message queue is full";
+                MultiSetAdd(msg, proc[msg.dest].fwd_queue);
+            else
+                Assert (MultiSetCount(i : dir.fwd_queue, true) < queueLen) "Message queue is full";
+                MultiSetAdd(msg, dir.fwd_queue);
+            endif;
 End;
+
+----------------------------------------------------------------------
+-- Start state to initialize all queues, invalidate all sharers
+----------------------------------------------------------------------
+startstate
+    For i: 0..(numProc-1) Do
+        proc[i].state := Proc_I;
+    End;
+
+    For i: node_n Do
+        dir.sharers[i] := false;
+    End;
+
+    dir.state := Dir_I;
+endstartstate;
