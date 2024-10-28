@@ -19,7 +19,7 @@
 ---- Guaruntee Freshness for atleast 3 processors. Loads and stores issued by one processor are seen by that processor in program order.
 
 -- Waypoint Specific:
----- 4-hop MSI protocol, coarse-vector representation
+---- 4-hop MOSI protocol, coarse-vector representation
 
 ----------------------------------------------------------------------
 -- Constants
@@ -29,7 +29,8 @@ const
     numProc:    3;      -- number of processors
     numDir:     1;      -- number of directories
     queueLen:   10;     -- maximum length of each queue at controller
-
+	ValueCount: 2;      -- number of data values
+    verbose:    1;      -- set verbosity level
 ----------------------------------------------------------------------
 -- Types
 ----------------------------------------------------------------------
@@ -37,14 +38,30 @@ type
 
     -- Node ID 0 to (numDir - 1) for directories
     -- Node ID numDIr to (numDir + numProc - 1) for processors
-    node_n:    0..(numProc + numDir-1);
+    node_n:    	0..(numProc + numDir-1);
+	value_t: 	scalarset(ValueCount); -- arbitrary values for tracking coherence
 
-    -- Request channel (NULL state indicates no request pending at RCV port)
+    -- Types of verbosity
+    verbose_t: enum{
+        none,
+        low,
+        med,
+        high
+    };
+    
+    -- Types of channel
+    channel_t: enum {
+        req,
+        resp,
+        fwd
+    };
+
+    -- Request channel
     mtype_req_t: enum {
         GetS,
         GetM,
         PutS,
-        PutM,
+        PutM
     };
 
     -- Response channel
@@ -52,7 +69,7 @@ type
         DataAck,
         InvAck,
         PutAck,
-        FwdAck,
+        FwdAck
     };
 
     -- Forward channel
@@ -93,49 +110,44 @@ type
     };
 
     ops_t: enum {
-        -- Spontaneous processor operations
+        -- Spontaneous operations at cache-controller level
         load,
         store,
-        writeback
+        evict,
+        serve_req_queue,
+        serve_resp_queue,
+        serve_ack_queue
     };
 
     -- Define each message data-structure
     message_t:
     Record
-        m_id:   integer; -- Message ID (src side for debugging)
         mtype:  mtype_t;
+		value:	value_t;
         src:    node_n; -- Source node number
         dest:   node_n; -- Destination node number
         fwdTo:  node_n; -- Forwarding node number
-        numAck: node_n; -- Max number of acks
+        numAck: node_n; -- Max number of acks (0 for no ack)
     End;
-
-    -- Define message queue at each node
-    queue_t: record
-        elements: array [0..queueLen - 1] of message_t;  -- Array to store elements
-        head: 0..queueLen;  -- Head pointer for dequeue
-        tail: 0..queueLen;  -- Tail pointer for enqueue
-        count: 0..queueLen;  -- Count of elements in the queue
-    end;
 
     -- Define each processor cache controller
     proc_t:
     Record
-        m_id:       integer; -- Counter for request queue, will count outgoing msgs
         state:      proc_state_t;
-        req_queue:  queue_t; 
-        resp_queue: queue_t;
-        fwd_queue:  queue_t;
+        req_queue:  multiset[queueLen] of message_t; 
+        resp_queue: multiset[queueLen] of message_t; 
+        fwd_queue:  multiset[queueLen] of message_t; 
     End;
 
     -- Define each directory controller
     dir_t:
     Record
         state:      dir_state_t;
+		owner:		node_n;
         sharers:    array [0..(numProc + numDir-1)] of boolean; -- Coarse vector
-        req_queue:  queue_t; 
-        resp_queue: queue_t;
-        fwd_queue:  queue_t;
+        req_queue:  multiset[queueLen] of message_t; 
+        resp_queue: multiset[queueLen] of message_t; 
+        fwd_queue:  multiset[queueLen] of message_t; 
     End;
 
 
@@ -143,9 +155,9 @@ type
 -- Variables
 ----------------------------------------------------------------------
 var
-    proc:   array [0..(numProc - 1)] of proc_t;
-    dir:    dir_t; -- TODO/ Can be extended to multiple directories if implemented later
-
+    proc:   	array [node_n] of proc_t;
+    dir:    	dir_t; -- TODO/ Can be extended to multiple directories if implemented later
+	currData:	value_t;
 
 ----------------------------------------------------------------------
 -- Start state to initialize all queues, invalidate all sharers
@@ -153,68 +165,56 @@ var
 startstate
     For i: 0..(numProc-1) Do
         proc[i].state := Proc_I;
-        proc[i].m_id := 0;
-
-        proc[i].req_queue.head := 0;
-        proc[i].req_queue.tail := 0;
-        proc[i].req_queue.count := 0;
-
-        proc[i].resp_queue.head := 0;
-        proc[i].resp_queue.tail := 0;
-        proc[i].resp_queue.count := 0;
-
-        proc[i].fwd_queue.head := 0;
-        proc[i].fwd_queue.tail := 0;
-        proc[i].fwd_queue.count := 0;
     End;
 
-    For i: 0..(numProc + numDir-1) Do
+    For i: node_n Do
         dir.sharers[i] := false;
     End;
 
     dir.state := Dir_I;
-    dir.req_queue.head := 0;
-    dir.req_queue.tail := 0;
-    dir.req_queue.count := 0;
-
-    dir.resp_queue.head := 0;
-    dir.resp_queue.tail := 0;
-    dir.resp_queue.count := 0;
-
-    dir.fwd_queue.head := 0;
-    dir.fwd_queue.tail := 0;
-    dir.fwd_queue.count := 0;
 endstartstate;
-
 ----------------------------------------------------------------------
--- Generic Enqueue procedure for a single queue
+-- State logger functions
 ----------------------------------------------------------------------
-Procedure Enqueue(var q: QueueType; msg: mtype_t);
+Procedure LogNodeState(
+    p:  node_n;
+);
 Begin
-  if q.count < queueLen then
-    q.elements[q.tail] := msg;
-    q.tail := (q.tail + 1) % queueLen;
-    q.count := q.count + 1;
-  else
-    Error "Queue is full";
-  endif;
+    if p then
+        put "node:  PROC ";
+        put p;
+        put "\n";
+    else
+        put "node:  DIR\n";
+    endif;
+
 End;
 
 ----------------------------------------------------------------------
--- Generic Dequeue procedure for a single queue
+-- Router handle for routing generated response
 ----------------------------------------------------------------------
-Procedure Dequeue(var q: QueueType): mtype_t;
-Var
-  msg: mtype_t;
+Procedure Send(
+	mtype:	mtype_t;
+	src:	node_n;
+	dest:	node_n;
+    chan:   channel_t;
+    value:  value_t;
+    fwdTo:  node_n;
+    numAck: node_n;
+);
+var msg: message_t;
 Begin
-  if q.count > 0 then
-    msg := q.elements[q.head];
-    q.head := (q.head + 1) % queueLen;
-    q.count := q.count - 1;
-    return msg;
-  else
-    Error "Queue is empty";
-  endif;
+    msg.mtype   := mtype;
+    msg.src     := src;
+    msg.dest    := dest;
+    msg.value   := value;
+    msg.fwdTo   := fwdTo;
+    msg.numAck  := numAck;
+    if(chan == req) then
+        if msg.dest then
+
+            Assert (MultiSetCount(i : proc[msg.dest].req_queue, true) < NetMax) "Message queue is full";
+
+
+
 End;
-
-
