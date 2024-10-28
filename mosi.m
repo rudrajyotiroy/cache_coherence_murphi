@@ -31,6 +31,7 @@ const
     queueLen:   10;     -- maximum length of each queue at controller
 	ValueCount: 2;      -- number of data values
     verbosity:  1;      -- set verbosity level
+    dir_node:   0;
 ----------------------------------------------------------------------
 -- Types
 ----------------------------------------------------------------------
@@ -40,7 +41,7 @@ type
     -- Node ID numDIr to (numDir + numProc - 1) for processors
     node_n:    	0..(numProc + numDir-1);
 	value_t: 	scalarset(ValueCount); -- arbitrary values for tracking coherence
-    
+
     -- Types of channel
     channel_t: enum {
         req,
@@ -53,7 +54,8 @@ type
         GetS,
         GetM,
         PutS,
-        PutM
+        PutM,
+        PutO
     };
 
     -- Response channel
@@ -103,16 +105,6 @@ type
         -- Transition states
     };
 
-    ops_t: enum {
-        -- Spontaneous operations at cache-controller level
-        load,
-        store,
-        evict,
-        serve_req_queue,
-        serve_resp_queue,
-        serve_ack_queue
-    };
-
     -- Define each message data-structure
     message_t:
     Record
@@ -155,7 +147,6 @@ var
     proc:   	array [node_n] of proc_t;
     dir:    	dir_t; -- TODO/ Can be extended to multiple directories if implemented later
 	lastWrite:	value_t;
-
 
 ----------------------------------------------------------------------
 -- State logger functions
@@ -273,15 +264,62 @@ Begin
                 Assert (MultiSetCount(i : dir.fwd_queue, true) < queueLen) "Message queue is full";
                 MultiSetAdd(msg, dir.fwd_queue);
             endif;
+    endswitch;
 End;
 
+----------------------------------------------------------------------
+-- Ruleset definition
+----------------------------------------------------------------------
+--  Fill cache controller table
+ruleset n:numDir..numProc Do
+    alias p:proc[n] Do
 
+    ruleset v:value_t Do
+    rule "I ==(store)==> M"
+            p.state = Proc_I & p.isStalled = false
+        ==>
+            LogNodeState(n, 3);
+            p.state := Proc_IM_AD;
+            Send(GetM, n, dir_node, req, UNDEFINED, UNDEFINED, 0);
+            lastWrite := v;  --We use LastWrite to sanity check that reads receive the value of the last write
+            LogNodeState(n, 3);
+    endrule;
+    endruleset;
+  endalias;
+endruleset;
+
+--  Fill directory controller table (directory never stalls)
+ruleset n:0..numDir Do
+    alias d: dir Do
+        choose msgId : d.req_queue Do
+        alias i: d.req_queue[msgId] Do
+            rule "I"
+                (d.state = Dir_I) & !(MultiSetCount(i : d.req_queue, true) = 0)
+            ==>
+                switch i.mtype
+                    case GetS:
+                        Send(DataAck, dir_node, i.src, resp, UNDEFINED, UNDEFINED, 0); -- Send data to Req
+                        d.sharers[i.src] := true; -- Add Req to Sharer/S
+                        d.state := Dir_S; -- S
+                    case GetM:
+                        Send(DataAck, dir_node, i.src, resp, UNDEFINED, UNDEFINED, 0); -- Send data to Req
+                        d.owner := i.src; -- Set owner to Req
+                        d.state := Dir_M; -- M
+                    else
+                        put "Invalid message";
+                endswitch;
+                MultiSetRemove(msgId, d.req_queue);
+            endrule;
+        endalias;
+        endchoose;
+    endalias;
+endruleset;
 
 ----------------------------------------------------------------------
 -- Start state to initialize all queues, invalidate all sharers
 ----------------------------------------------------------------------
 startstate
-    For i: 0..(numProc-1) Do
+    For i: 1..numProc Do
         proc[i].state := Proc_I;
         proc[i].isStalled := false;
     End;
