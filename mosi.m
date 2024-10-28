@@ -77,6 +77,7 @@ type
     proc_state_t: enum {
         -- Stable states
         Proc_M,
+        Proc_O,
         Proc_S,
         Proc_I,
         -- Transition states
@@ -87,18 +88,19 @@ type
         Proc_SM_A,
         Proc_SM_AD,
         Proc_SI_A,
-        Proc_MI_A
+        Proc_MI_A,
+        Proc_OM_AC,
+        Proc_OM_A,
+        Proc_OI_A
     };
 
     dir_state_t: enum {
         -- Stable states
         Dir_M,
+        Dir_O,
         Dir_S,
-        Dir_I,
+        Dir_I
         -- Transition states
-        Dir_MX_D,
-        Dir_SM_A,
-        Dir_MM_A
     };
 
     ops_t: enum {
@@ -127,6 +129,7 @@ type
     Record
         state:      proc_state_t;
         value:      value_t;
+        isStalled:  boolean;
         req_queue:  multiset[queueLen] of message_t; 
         resp_queue: multiset[queueLen] of message_t; 
         fwd_queue:  multiset[queueLen] of message_t; 
@@ -151,7 +154,7 @@ type
 var
     proc:   	array [node_n] of proc_t;
     dir:    	dir_t; -- TODO/ Can be extended to multiple directories if implemented later
-	currData:	value_t;
+	lastWrite:	value_t;
 
 
 ----------------------------------------------------------------------
@@ -172,6 +175,9 @@ Begin
 
             put ", value: ";
             put proc[p].value;
+
+            put ", isStalled: ";
+            put proc[p].isStalled;
 
             put ", req_queue_size: ";
             put MultiSetCount(i : proc[p].req_queue, true);
@@ -269,12 +275,15 @@ Begin
             endif;
 End;
 
+
+
 ----------------------------------------------------------------------
 -- Start state to initialize all queues, invalidate all sharers
 ----------------------------------------------------------------------
 startstate
     For i: 0..(numProc-1) Do
         proc[i].state := Proc_I;
+        proc[i].isStalled := false;
     End;
 
     For i: node_n Do
