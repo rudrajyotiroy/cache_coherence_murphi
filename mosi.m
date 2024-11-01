@@ -278,7 +278,6 @@ ruleset n:numDir..numProc Do
     rule "I ==(store)==> M"
             p.state = Proc_I & p.isStalled = false
         ==>
-            LogNodeState(n, 3);
             p.state := Proc_IM_AD;
             Send(GetM, n, dir_node, req, UNDEFINED, UNDEFINED, 0);
             lastWrite := v;  --We use LastWrite to sanity check that reads receive the value of the last write
@@ -286,33 +285,27 @@ ruleset n:numDir..numProc Do
     endrule;
     endruleset;
   endalias;
-endruleset;
+
 
 --  Fill directory controller table (directory never stalls)
-ruleset n:0..numDir Do
-    alias d: dir Do
-        choose msgId : d.req_queue Do
-        alias i: d.req_queue[msgId] Do
-            rule "I"
-                (d.state = Dir_I) & !(MultiSetCount(i : d.req_queue, true) = 0)
-            ==>
-                switch i.mtype
-                    case GetS:
-                        Send(DataAck, dir_node, i.src, resp, UNDEFINED, UNDEFINED, 0); -- Send data to Req
-                        d.sharers[i.src] := true; -- Add Req to Sharer/S
-                        d.state := Dir_S; -- S
-                    case GetM:
-                        Send(DataAck, dir_node, i.src, resp, UNDEFINED, UNDEFINED, 0); -- Send data to Req
-                        d.owner := i.src; -- Set owner to Req
-                        d.state := Dir_M; -- M
-                    else
-                        put "Invalid message";
-                endswitch;
-                MultiSetRemove(msgId, d.req_queue);
-            endrule;
-        endalias;
-        endchoose;
-    endalias;
+ruleset msgId: 0..queueLen Do
+    rule "I"
+        (dir.state = Dir_I) & (MultiSetCount(i : dir.req_queue, true) > msgId)
+    ==>
+    switch (dir.req_queue[msgId].mtype)
+        case GetS:
+            Send(DataAck, dir_node, dir.req_queue[msgId].src, resp, UNDEFINED, UNDEFINED, 0); -- Send data to Req
+            dir.sharers[dir.req_queue[msgId].src] := true; -- Add Req to Sharer/S
+            dir.state := Dir_S; -- S
+        case GetM:
+            Send(DataAck, dir_node, dir.req_queue[msgId].src, resp, UNDEFINED, UNDEFINED, 0); -- Send data to Req
+            dir.owner := dir.req_queue[msgId].src; -- Set owner to Req
+            dir.state := Dir_M; -- M
+        else
+            put "Invalid message";
+    endswitch;
+    MultiSetRemove(msgId, dir.req_queue);
+    endrule;
 endruleset;
 
 ----------------------------------------------------------------------

@@ -2590,14 +2590,14 @@ class mu__subrange_37: public mu__byte
 /*** end of subrange decl ***/
 mu__subrange_37 mu__subrange_37_undefined_var;
 
-class mu__subrange_38: public mu__byte
+class mu__subrange_40: public mu__byte
 {
  public:
   inline int operator=(int val) { return mu__byte::operator=(val); };
-  inline int operator=(const mu__subrange_38& val) { return mu__byte::operator=((int) val); };
-  mu__subrange_38 (char *name, int os): mu__byte(0, 1, 2, name, os) {};
-  mu__subrange_38 (void): mu__byte(0, 1, 2) {};
-  mu__subrange_38 (int val): mu__byte(0, 1, 2, "Parameter or function result.", 0)
+  inline int operator=(const mu__subrange_40& val) { return mu__byte::operator=((int) val); };
+  mu__subrange_40 (char *name, int os): mu__byte(1, 3, 2, name, os) {};
+  mu__subrange_40 (void): mu__byte(1, 3, 2) {};
+  mu__subrange_40 (int val): mu__byte(1, 3, 2, "Parameter or function result.", 0)
   {
     operator=(val);
   };
@@ -2614,33 +2614,7 @@ class mu__subrange_38: public mu__byte
 };
 
 /*** end of subrange decl ***/
-mu__subrange_38 mu__subrange_38_undefined_var;
-
-class mu__subrange_41: public mu__byte
-{
- public:
-  inline int operator=(int val) { return mu__byte::operator=(val); };
-  inline int operator=(const mu__subrange_41& val) { return mu__byte::operator=((int) val); };
-  mu__subrange_41 (char *name, int os): mu__byte(1, 3, 2, name, os) {};
-  mu__subrange_41 (void): mu__byte(1, 3, 2) {};
-  mu__subrange_41 (int val): mu__byte(1, 3, 2, "Parameter or function result.", 0)
-  {
-    operator=(val);
-  };
-  char * Name() { return tsprintf("%d",value()); };
-  virtual void Permute(PermSet& Perm, int i);
-  virtual void SimpleCanonicalize(PermSet& Perm);
-  virtual void Canonicalize(PermSet& Perm);
-  virtual void SimpleLimit(PermSet& Perm);
-  virtual void ArrayLimit(PermSet& Perm);
-  virtual void Limit(PermSet& Perm);
-  virtual void MultisetLimit(PermSet& Perm);
-  virtual void MultisetSort() {};
-  void print_statistic() {};
-};
-
-/*** end of subrange decl ***/
-mu__subrange_41 mu__subrange_41_undefined_var;
+mu__subrange_40 mu__subrange_40_undefined_var;
 
 const int mu_numProc = 3;
 const int mu_numDir = 1;
@@ -3077,27 +3051,20 @@ public:
   }
   char * Name(unsigned r)
   {
-    static mu__subrange_38 mu_n;
-    mu_n.value((r % 2) + 0);
-    r = r / 2;
     static mu_1__type_4_id mu_msgId;
     mu_msgId.value((r % 10) + 0);
     r = r / 10;
-    return tsprintf("I, n:%s, msgId:%s", mu_n.Name(), mu_msgId.Name());
+    return tsprintf("I, msgId:%s", mu_msgId.Name());
   }
   bool Condition(unsigned r)
   {
-    static mu__subrange_38 mu_n;
-    mu_n.value((r % 2) + 0);
-    r = r / 2;
     static mu_1__type_4_id mu_msgId;
     mu_msgId.value((r % 10) + 0);
     r = r / 10;
-  if (!mu_d.mu_req_queue.in(mu_msgId)) { return FALSE; }
-  mu_1_dir_t& mu_d = mu_dir;
-  mu_1_message_t& mu_i = mu_d.mu_req_queue[mu_msgId];
+  if (!mu_dir.mu_req_queue.in(mu_msgId)) { return FALSE; }
+  mu_1_message_t& mu_i = mu_dir.mu_req_queue[mu_msgId];
 bool mu__boolexpr22;
-  if (!((mu_d.mu_state) == (mu_Dir_I))) mu__boolexpr22 = FALSE ;
+  if (!((mu_dir.mu_state) == (mu_Dir_I))) mu__boolexpr22 = FALSE ;
   else {
 /*** begin multisetcount 12 declaration ***/
   int mu__intexpr23 = 0;
@@ -3105,7 +3072,7 @@ bool mu__boolexpr22;
   mu_1__type_4_id mu_i;
   for (mu_i = 0; ; mu_i=mu_i+1)
     {
-      if (mu_d.mu_req_queue.valid[(int)mu_i].value())
+      if (mu_dir.mu_req_queue.valid[(int)mu_i].value())
         {
           if ( mu_true ) mu__intexpr23++;
         }
@@ -3121,19 +3088,15 @@ bool mu__boolexpr22;
   void NextRule(unsigned & what_rule)
   {
     unsigned r = what_rule - 0;
-    static mu__subrange_38 mu_n;
-    mu_n.value((r % 2) + 0);
-    r = r / 2;
     static mu_1__type_4_id mu_msgId;
     mu_msgId.value((r % 10) + 0);
     r = r / 10;
-    while (what_rule < 20 && mu_msgId.value()<10 )
+    while (what_rule < 10 && mu_msgId.value()<10 )
       {
         if ( ( TRUE  ) ) {
-  mu_1_dir_t& mu_d = mu_dir;
-  mu_1_message_t& mu_i = mu_d.mu_req_queue[mu_msgId];
+  mu_1_message_t& mu_i = mu_dir.mu_req_queue[mu_msgId];
 bool mu__boolexpr24;
-  if (!((mu_d.mu_state) == (mu_Dir_I))) mu__boolexpr24 = FALSE ;
+  if (!((mu_dir.mu_state) == (mu_Dir_I))) mu__boolexpr24 = FALSE ;
   else {
 /*** begin multisetcount 12 declaration ***/
   int mu__intexpr25 = 0;
@@ -3141,7 +3104,7 @@ bool mu__boolexpr24;
   mu_1__type_4_id mu_i;
   for (mu_i = 0; ; mu_i=mu_i+1)
     {
-      if (mu_d.mu_req_queue.valid[(int)mu_i].value())
+      if (mu_dir.mu_req_queue.valid[(int)mu_i].value())
         {
           if ( mu_true ) mu__intexpr25++;
         }
@@ -3152,19 +3115,17 @@ bool mu__boolexpr24;
   mu__boolexpr24 = (!((mu__intexpr25) == (0))) ; 
 }
               if (mu__boolexpr24) {
-                if ( ( TRUE && mu_d.mu_req_queue.in(mu_msgId) ) )
+                if ( ( TRUE && mu_dir.mu_req_queue.in(mu_msgId) ) )
                   return;
                 else
                   what_rule++;
               }
               else
-                what_rule += 20;
+                what_rule += 10;
         }
         else
-          what_rule += 20;
+          what_rule += 10;
     r = what_rule - 0;
-    mu_n.value((r % 2) + 0);
-    r = r / 2;
     mu_msgId.value((r % 10) + 0);
     r = r / 10;
     }
@@ -3172,30 +3133,26 @@ bool mu__boolexpr24;
 
   void Code(unsigned r)
   {
-    static mu__subrange_38 mu_n;
-    mu_n.value((r % 2) + 0);
-    r = r / 2;
     static mu_1__type_4_id mu_msgId;
     mu_msgId.value((r % 10) + 0);
     r = r / 10;
-  mu_1_dir_t& mu_d = mu_dir;
-  mu_1_message_t& mu_i = mu_d.mu_req_queue[mu_msgId];
+  mu_1_message_t& mu_i = mu_dir.mu_req_queue[mu_msgId];
 switch ((int) mu_i.mu_mtype) {
 case mu_GetS:
 mu_Send ( (int)mu_DataAck, mu_dir_node, mu_i.mu_src, mu_resp, mu_1_value_t_undefined_var, mu_1_node_n_undefined_var, 0 );
-mu_d.mu_sharers[mu_i.mu_src] = mu_true;
-mu_d.mu_state = mu_Dir_S;
+mu_dir.mu_sharers[mu_i.mu_src] = mu_true;
+mu_dir.mu_state = mu_Dir_S;
 break;
 case mu_GetM:
 mu_Send ( (int)mu_DataAck, mu_dir_node, mu_i.mu_src, mu_resp, mu_1_value_t_undefined_var, mu_1_node_n_undefined_var, 0 );
-mu_d.mu_owner = mu_i.mu_src;
-mu_d.mu_state = mu_Dir_M;
+mu_dir.mu_owner = mu_i.mu_src;
+mu_dir.mu_state = mu_Dir_M;
 break;
 default:
 cout << "Invalid message";
 break;
 }
-mu_d.mu_req_queue.multisetremove(mu_msgId);
+mu_dir.mu_req_queue.multisetremove(mu_msgId);
   };
 
   bool UnFair()
@@ -3238,14 +3195,14 @@ bool mu__boolexpr26;
 
   void NextRule(unsigned & what_rule)
   {
-    unsigned r = what_rule - 20;
+    unsigned r = what_rule - 10;
     static mu_1_value_t mu_v;
     mu_v.value((r % 2) + 1);
     r = r / 2;
     static mu__subrange_37 mu_n;
     mu_n.value((r % 3) + 1);
     r = r / 3;
-    while (what_rule < 26 )
+    while (what_rule < 16 )
       {
         if ( ( TRUE  ) ) {
   mu_1_proc_t& mu_p = mu_proc[mu_n];
@@ -3265,7 +3222,7 @@ bool mu__boolexpr27;
         }
         else
           what_rule += 2;
-    r = what_rule - 20;
+    r = what_rule - 10;
     mu_v.value((r % 2) + 1);
     r = r / 2;
     mu_n.value((r % 3) + 1);
@@ -3282,7 +3239,6 @@ bool mu__boolexpr27;
     mu_n.value((r % 3) + 1);
     r = r / 3;
   mu_1_proc_t& mu_p = mu_proc[mu_n];
-mu_LogNodeState ( (int)mu_n, 3 );
 mu_p.mu_state = mu_Proc_IM_AD;
 mu_Send ( (int)mu_GetM, (int)mu_n, mu_dir_node, mu_req, mu_1_value_t_undefined_var, mu_1_node_n_undefined_var, 0 );
 mu_lastWrite = mu_v;
@@ -3300,43 +3256,43 @@ public:
 void SetNextEnabledRule(unsigned & what_rule)
 {
   category = CONDITION;
-  if (what_rule<20)
+  if (what_rule<10)
     { R0.NextRule(what_rule);
-      if (what_rule<20) return; }
-  if (what_rule>=20 && what_rule<26)
+      if (what_rule<10) return; }
+  if (what_rule>=10 && what_rule<16)
     { R1.NextRule(what_rule);
-      if (what_rule<26) return; }
+      if (what_rule<16) return; }
 }
 bool Condition(unsigned r)
 {
   category = CONDITION;
-  if (r<=19) return R0.Condition(r-0);
-  if (r>=20 && r<=25) return R1.Condition(r-20);
+  if (r<=9) return R0.Condition(r-0);
+  if (r>=10 && r<=15) return R1.Condition(r-10);
 Error.Notrace("Internal: NextStateGenerator -- checking condition for nonexisting rule.");
 }
 void Code(unsigned r)
 {
-  if (r<=19) { R0.Code(r-0); return; } 
-  if (r>=20 && r<=25) { R1.Code(r-20); return; } 
+  if (r<=9) { R0.Code(r-0); return; } 
+  if (r>=10 && r<=15) { R1.Code(r-10); return; } 
 }
 int Priority(unsigned short r)
 {
-  if (r<=19) { return R0.Priority(); } 
-  if (r>=20 && r<=25) { return R1.Priority(); } 
+  if (r<=9) { return R0.Priority(); } 
+  if (r>=10 && r<=15) { return R1.Priority(); } 
 }
 char * Name(unsigned r)
 {
-  if (r<=19) return R0.Name(r-0);
-  if (r>=20 && r<=25) return R1.Name(r-20);
+  if (r<=9) return R0.Name(r-0);
+  if (r>=10 && r<=15) return R1.Name(r-10);
   return NULL;
 }
 };
-const unsigned numrules = 26;
+const unsigned numrules = 16;
 
 /********************
   parameter
  ********************/
-#define RULES_IN_WORLD 26
+#define RULES_IN_WORLD 16
 
 
 /********************
@@ -5384,21 +5340,13 @@ void mu__subrange_37::ArrayLimit(PermSet& Perm) {};
 void mu__subrange_37::Limit(PermSet& Perm) {};
 void mu__subrange_37::MultisetLimit(PermSet& Perm)
 { Error.Error("Internal: calling MultisetLimit for subrange type.\n"); };
-void mu__subrange_38::Permute(PermSet& Perm, int i) {};
-void mu__subrange_38::SimpleCanonicalize(PermSet& Perm) {};
-void mu__subrange_38::Canonicalize(PermSet& Perm) {};
-void mu__subrange_38::SimpleLimit(PermSet& Perm) {};
-void mu__subrange_38::ArrayLimit(PermSet& Perm) {};
-void mu__subrange_38::Limit(PermSet& Perm) {};
-void mu__subrange_38::MultisetLimit(PermSet& Perm)
-{ Error.Error("Internal: calling MultisetLimit for subrange type.\n"); };
-void mu__subrange_41::Permute(PermSet& Perm, int i) {};
-void mu__subrange_41::SimpleCanonicalize(PermSet& Perm) {};
-void mu__subrange_41::Canonicalize(PermSet& Perm) {};
-void mu__subrange_41::SimpleLimit(PermSet& Perm) {};
-void mu__subrange_41::ArrayLimit(PermSet& Perm) {};
-void mu__subrange_41::Limit(PermSet& Perm) {};
-void mu__subrange_41::MultisetLimit(PermSet& Perm)
+void mu__subrange_40::Permute(PermSet& Perm, int i) {};
+void mu__subrange_40::SimpleCanonicalize(PermSet& Perm) {};
+void mu__subrange_40::Canonicalize(PermSet& Perm) {};
+void mu__subrange_40::SimpleLimit(PermSet& Perm) {};
+void mu__subrange_40::ArrayLimit(PermSet& Perm) {};
+void mu__subrange_40::Limit(PermSet& Perm) {};
+void mu__subrange_40::MultisetLimit(PermSet& Perm)
 { Error.Error("Internal: calling MultisetLimit for subrange type.\n"); };
 
 /********************
