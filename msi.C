@@ -11,7 +11,7 @@
 #define MURPHI_VERSION "Murphi Release 3.1"
 #define MURPHI_DATE "Jan 29 1999"
 #define PROTOCOL_NAME "msi"
-#define BITS_IN_WORLD 1616
+#define BITS_IN_WORLD 2408
 #define ALIGN
 
 /********************
@@ -249,14 +249,14 @@ class mu_1_VCType: public mu__byte
 /*** end of subrange decl ***/
 mu_1_VCType mu_1_VCType_undefined_var;
 
-class mu_1_AckCount: public mu__byte
+class mu_1_AckCount: public mu__long
 {
  public:
-  inline int operator=(int val) { return mu__byte::operator=(val); };
-  inline int operator=(const mu_1_AckCount& val) { return mu__byte::operator=((int) val); };
-  mu_1_AckCount (char *name, int os): mu__byte(0, 2, 2, name, os) {};
-  mu_1_AckCount (void): mu__byte(0, 2, 2) {};
-  mu_1_AckCount (int val): mu__byte(0, 2, 2, "Parameter or function result.", 0)
+  inline int operator=(int val) { return mu__long::operator=(val); };
+  inline int operator=(const mu_1_AckCount& val) { return mu__long::operator=((int) val); };
+  mu_1_AckCount (char *name, int os): mu__long(-2, 2, 3, name, os) {};
+  mu_1_AckCount (void): mu__long(-2, 2, 3) {};
+  mu_1_AckCount (int val): mu__long(-2, 2, 3, "Parameter or function result.", 0)
   {
     operator=(val);
   };
@@ -998,6 +998,7 @@ class mu_1_ProcState
   void set_self(char *n, int os);
   mu_1__type_2 mu_state;
   mu_1_Value mu_val;
+  mu_1_AckCount mu_ack_cnt;
   mu_1_ProcState ( char *n, int os ) { set_self(n,os); };
   mu_1_ProcState ( void ) {};
 
@@ -1009,6 +1010,8 @@ friend int CompareWeight(mu_1_ProcState& a, mu_1_ProcState& b)
     if (w!=0) return w;
     w = CompareWeight(a.mu_val, b.mu_val);
     if (w!=0) return w;
+    w = CompareWeight(a.mu_ack_cnt, b.mu_ack_cnt);
+    if (w!=0) return w;
   return 0;
 }
 friend int Compare(mu_1_ProcState& a, mu_1_ProcState& b)
@@ -1017,6 +1020,8 @@ friend int Compare(mu_1_ProcState& a, mu_1_ProcState& b)
     w = Compare(a.mu_state, b.mu_state);
     if (w!=0) return w;
     w = Compare(a.mu_val, b.mu_val);
+    if (w!=0) return w;
+    w = Compare(a.mu_ack_cnt, b.mu_ack_cnt);
     if (w!=0) return w;
   return 0;
 }
@@ -1031,41 +1036,50 @@ friend int Compare(mu_1_ProcState& a, mu_1_ProcState& b)
   {
     mu_state.MultisetSort();
     mu_val.MultisetSort();
+    mu_ack_cnt.MultisetSort();
   }
   void print_statistic()
   {
     mu_state.print_statistic();
     mu_val.print_statistic();
+    mu_ack_cnt.print_statistic();
   }
   void clear() {
     mu_state.clear();
     mu_val.clear();
+    mu_ack_cnt.clear();
  };
   void undefine() {
     mu_state.undefine();
     mu_val.undefine();
+    mu_ack_cnt.undefine();
  };
   void reset() {
     mu_state.reset();
     mu_val.reset();
+    mu_ack_cnt.reset();
  };
   void print() {
     mu_state.print();
     mu_val.print();
+    mu_ack_cnt.print();
   };
   void print_diff(state *prevstate) {
     mu_state.print_diff(prevstate);
     mu_val.print_diff(prevstate);
+    mu_ack_cnt.print_diff(prevstate);
   };
   void to_state(state *thestate) {
     mu_state.to_state(thestate);
     mu_val.to_state(thestate);
+    mu_ack_cnt.to_state(thestate);
   };
 virtual bool isundefined() { Error.Error("Checking undefinedness of a non-base type"); return TRUE;}
 virtual bool ismember() { Error.Error("Checking membership for a non-base type"); return TRUE;}
   mu_1_ProcState& operator= (const mu_1_ProcState& from) {
     mu_state.value(from.mu_state.value());
     mu_val.value(from.mu_val.value());
+    mu_ack_cnt.value(from.mu_ack_cnt.value());
     return *this;
   };
 };
@@ -1089,6 +1103,7 @@ void mu_1_ProcState::set_self(char *n, int os)
   name = n;
   mu_state.set_self_2(name, ".state", os + 0 );
   mu_val.set_self_2(name, ".val", os + 8 );
+  mu_ack_cnt.set_self_2(name, ".ack_cnt", os + 16 );
 }
 
 mu_1_ProcState::~mu_1_ProcState()
@@ -1207,9 +1222,9 @@ void mu_1__type_3::set_self( char *n, int os)
   {
     int i=0;
     name = n;
-array[i].set_self_ar(n,"Proc_1", i * 16 + os);i++;
-array[i].set_self_ar(n,"Proc_2", i * 16 + os);i++;
-array[i].set_self_ar(n,"Proc_3", i * 16 + os);i++;
+array[i].set_self_ar(n,"Proc_1", i * 48 + os);i++;
+array[i].set_self_ar(n,"Proc_2", i * 48 + os);i++;
+array[i].set_self_ar(n,"Proc_3", i * 48 + os);i++;
 }
 mu_1__type_3::~mu_1__type_3()
 {
@@ -1422,8 +1437,8 @@ void mu_1__type_4::set_self( char *n, int os)
   int i,k;
   name = n;
   for(i = 0; i < 4; i++)
-    array[i].set_self(tsprintf("%s{%d}", n,i), i * 48 + os);
-  k = os + i * 48;
+    array[i].set_self(tsprintf("%s{%d}", n,i), i * 72 + os);
+  k = os + i * 72;
   for(i = 0; i < 4; i++)
     valid[i].set_self("", i * 8 + k);
 };
@@ -1537,10 +1552,10 @@ void mu_1__type_5::set_self( char *n, int os)
   {
     int i=0;
     name = n;
-array[i].set_self_ar(n,"HomeDir", i * 224 + os);i++;
-array[i].set_self_ar(n,"Proc_1", i * 224 + os);i++;
-array[i].set_self_ar(n,"Proc_2", i * 224 + os);i++;
-array[i].set_self_ar(n,"Proc_3", i * 224 + os);i++;
+array[i].set_self_ar(n,"HomeDir", i * 320 + os);i++;
+array[i].set_self_ar(n,"Proc_1", i * 320 + os);i++;
+array[i].set_self_ar(n,"Proc_2", i * 320 + os);i++;
+array[i].set_self_ar(n,"Proc_3", i * 320 + os);i++;
 }
 mu_1__type_5::~mu_1__type_5()
 {
@@ -1662,9 +1677,9 @@ friend int Compare(mu_1__type_6& a, mu_1__type_6& b)
     int i=0;
     name = n;
 
-array[i].set_self_ar(n,"RequestChannel", i * 48 + os);i++;
-array[i].set_self_ar(n,"ResponseChannel", i * 48 + os);i++;
-array[i].set_self_ar(n,"ForwardChannel", i * 48 + os);i++;
+array[i].set_self_ar(n,"RequestChannel", i * 72 + os);i++;
+array[i].set_self_ar(n,"ResponseChannel", i * 72 + os);i++;
+array[i].set_self_ar(n,"ForwardChannel", i * 72 + os);i++;
   }
 mu_1__type_6::~mu_1__type_6()
 {
@@ -1776,10 +1791,10 @@ void mu_1__type_7::set_self( char *n, int os)
   {
     int i=0;
     name = n;
-array[i].set_self_ar(n,"HomeDir", i * 144 + os);i++;
-array[i].set_self_ar(n,"Proc_1", i * 144 + os);i++;
-array[i].set_self_ar(n,"Proc_2", i * 144 + os);i++;
-array[i].set_self_ar(n,"Proc_3", i * 144 + os);i++;
+array[i].set_self_ar(n,"HomeDir", i * 216 + os);i++;
+array[i].set_self_ar(n,"Proc_1", i * 216 + os);i++;
+array[i].set_self_ar(n,"Proc_2", i * 216 + os);i++;
+array[i].set_self_ar(n,"Proc_3", i * 216 + os);i++;
 }
 mu_1__type_7::~mu_1__type_7()
 {
@@ -1862,19 +1877,19 @@ const int mu_Proc_MI_A = 37;
 mu_1_HomeState mu_HomeNode("HomeNode",0);
 
 /*** Variable declaration ***/
-mu_1__type_3 mu_Procs("Procs",80);
+mu_1__type_3 mu_Procs("Procs",104);
 
 /*** Variable declaration ***/
-mu_1__type_5 mu_Net("Net",128);
+mu_1__type_5 mu_Net("Net",248);
 
 /*** Variable declaration ***/
-mu_1__type_7 mu_InBox("InBox",1024);
+mu_1__type_7 mu_InBox("InBox",1528);
 
 /*** Variable declaration ***/
-mu_0_boolean mu_msg_processed("msg_processed",1600);
+mu_0_boolean mu_msg_processed("msg_processed",2392);
 
 /*** Variable declaration ***/
-mu_1_Value mu_LastWrite("LastWrite",1608);
+mu_1_Value mu_LastWrite("LastWrite",2400);
 
 void mu_EnumToStr(const mu_1_MessageType& mu_m)
 {
@@ -2142,6 +2157,11 @@ cout << " on ";
 cout << ( mu_msg.mu_vc );
 cout << " at home -- ";
 mu_HomeNode.mu_state.print();
+if ( (mu_msg.mu_mtype) == (mu_InvAck) )
+{
+cout << " -- ";
+mu_HomeNode.mu_ack_cnt.print();
+}
 }
 /*** begin multisetcount 4 declaration ***/
   int mu__intexpr15 = 0;
@@ -2247,7 +2267,7 @@ mu_HomeNode.mu_state = mu_Dir_MX_D;
 mu_Send ( mu_FwdGetS, mu_HomeNode.mu_owner, (int)mu_HomeDir, mu_ForwardChannel, mu_1_Value_undefined_var, mu_msg.mu_src, 0 );
 mu_AddToSharersList ( mu_msg.mu_src );
 mu_AddToSharersList ( mu_HomeNode.mu_owner );
-mu_HomeNode.mu_owner = mu_HomeDir;
+mu_HomeNode.mu_owner.undefine();
 break;
 case mu_GetM:
 mu_HomeNode.mu_state = mu_Dir_MM_A;
@@ -2261,7 +2281,7 @@ case mu_PutM:
 if ( (mu_HomeNode.mu_owner) == (mu_msg.mu_src) )
 {
 mu_HomeNode.mu_val = mu_msg.mu_val;
-mu_HomeNode.mu_owner = mu_HomeDir;
+mu_HomeNode.mu_owner.undefine();
 mu_HomeNode.mu_state = mu_Dir_I;
 }
 mu_Send ( mu_PutAck, mu_msg.mu_src, (int)mu_HomeDir, mu_ResponseChannel, mu_1_Value_undefined_var, mu_1_Node_undefined_var, 0 );
@@ -2373,27 +2393,262 @@ break;
 
 void mu_ProcReceive(mu_1_Message& mu_msg, const mu_1_Proc& mu_p)
 {
+mu_msg_processed = mu_true;
+{
+  mu_1__type_2& mu_pstate = mu_Procs[mu_p].mu_state;
+{
+  mu_1_Value& mu_pval = mu_Procs[mu_p].mu_val;
+{
+  mu_1_AckCount& mu_pcnt = mu_Procs[mu_p].mu_ack_cnt;
 if ( 1 )
 {
 cout << "Receiving ";
 cout << ( mu_msg.mu_mtype );
 cout << " from ";
 cout << ( mu_msg.mu_src );
-cout << " on VC ";
+cout << " on ";
 cout << ( mu_msg.mu_vc );
 cout << " at proc ";
 cout << ( mu_p );
 cout << "\n";
+if ( (mu_msg.mu_mtype) == (mu_InvAck) )
+{
+cout << " -- ";
+mu_pcnt.print();
 }
-mu_msg_processed = mu_true;
+}
+switch ((int) mu_pstate) {
+case mu_Proc_I:
+mu_ErrorUnhandledMsg ( mu_msg, (int)mu_p );
+break;
+case mu_Proc_IS_D:
+switch ((int) mu_msg.mu_mtype) {
+case mu_Inv:
+mu_msg_processed = mu_false;
+break;
+case mu_Data:
+if ( !((mu_msg.mu_ack_cnt) == (0)) ) Error.Error("Assertion failed: Error at Proc_IS_D");
+mu_pstate = mu_Proc_S;
+mu_pval = mu_msg.mu_val;
+break;
+default:
+mu_ErrorUnhandledMsg ( mu_msg, (int)mu_p );
+break;
+}
+break;
+case mu_Proc_IM_AD:
+switch ((int) mu_msg.mu_mtype) {
+case mu_FwdGetS:
+mu_msg_processed = mu_false;
+break;
+case mu_FwdGetM:
+mu_msg_processed = mu_false;
+break;
+case mu_Data:
+if ( (mu_msg.mu_src) == (mu_HomeDir) )
 {
-  mu_1__type_2& mu_ps = mu_Procs[mu_p].mu_state;
+if ( (mu_msg.mu_ack_cnt) == (0) )
 {
-  mu_1_Value& mu_pv = mu_Procs[mu_p].mu_val;
-switch ((int) mu_ps) {
+mu_pstate = mu_Proc_M;
+mu_LastWrite = mu_pval;
+}
+else
+{
+if ( !((mu_pcnt) <= (0)) ) Error.Error("Assertion failed: error at Proc_IM_AD, ack_cnt > 0.");
+mu_pcnt = (mu_pcnt) + (mu_msg.mu_ack_cnt);
+if ( (mu_pcnt) == (0) )
+{
+mu_pstate = mu_Proc_M;
+mu_LastWrite = mu_pval;
+}
+else
+{
+mu_pstate = mu_Proc_IM_A;
+}
+}
+}
+else
+{
+mu_pstate = mu_Proc_M;
+mu_LastWrite = mu_pval;
+}
+break;
+case mu_InvAck:
+mu_pcnt = (mu_pcnt) - (1);
+break;
+default:
+mu_ErrorUnhandledMsg ( mu_msg, (int)mu_p );
+break;
+}
+break;
+case mu_Proc_IM_A:
+switch ((int) mu_msg.mu_mtype) {
+case mu_FwdGetS:
+mu_msg_processed = mu_false;
+break;
+case mu_FwdGetM:
+mu_msg_processed = mu_false;
+break;
+case mu_InvAck:
+mu_pcnt = (mu_pcnt) - (1);
+if ( (mu_pcnt) == (0) )
+{
+mu_pstate = mu_Proc_M;
+mu_LastWrite = mu_pval;
+}
+break;
+default:
+mu_ErrorUnhandledMsg ( mu_msg, (int)mu_p );
+break;
+}
+break;
+case mu_Proc_S:
+switch ((int) mu_msg.mu_mtype) {
+case mu_Inv:
+mu_pstate = mu_Proc_I;
+mu_Send ( mu_InvAck, mu_msg.mu_fwd_to, (int)mu_p, mu_ResponseChannel, mu_1_Value_undefined_var, mu_1_Node_undefined_var, 0 );
+mu_Send ( mu_InvAck, (int)mu_HomeDir, (int)mu_p, mu_ResponseChannel, mu_1_Value_undefined_var, mu_1_Node_undefined_var, 0 );
+mu_pval.undefine();
+break;
+default:
+mu_ErrorUnhandledMsg ( mu_msg, (int)mu_p );
+break;
+}
+break;
+case mu_Proc_SM_AD:
+switch ((int) mu_msg.mu_mtype) {
+case mu_FwdGetS:
+mu_msg_processed = mu_false;
+break;
+case mu_FwdGetM:
+mu_msg_processed = mu_false;
+break;
+case mu_Inv:
+mu_pstate = mu_Proc_IM_AD;
+mu_Send ( mu_InvAck, mu_msg.mu_fwd_to, (int)mu_p, mu_ResponseChannel, mu_1_Value_undefined_var, mu_1_Node_undefined_var, 0 );
+mu_Send ( mu_InvAck, (int)mu_HomeDir, (int)mu_p, mu_ResponseChannel, mu_1_Value_undefined_var, mu_1_Node_undefined_var, 0 );
+break;
+case mu_Data:
+if ( !((mu_msg.mu_src) == (mu_HomeDir)) ) Error.Error("Assertion failed: error at Proc_SM_AD, Data not from dir.");
+if ( (mu_msg.mu_ack_cnt) == (0) )
+{
+mu_pstate = mu_Proc_M;
+mu_LastWrite = mu_pval;
+}
+else
+{
+if ( !((mu_pcnt) <= (0)) ) Error.Error("Assertion failed: error at Proc_SM_AD, ack_cnt > 0.");
+mu_pcnt = (mu_pcnt) + (mu_msg.mu_ack_cnt);
+if ( (mu_pcnt) == (0) )
+{
+mu_pstate = mu_Proc_M;
+mu_LastWrite = mu_pval;
+}
+else
+{
+mu_pstate = mu_Proc_SM_A;
+}
+}
+break;
+case mu_InvAck:
+mu_pcnt = (mu_pcnt) - (1);
+break;
+default:
+mu_ErrorUnhandledMsg ( mu_msg, (int)mu_p );
+break;
+}
+break;
+case mu_Proc_SM_A:
+switch ((int) mu_msg.mu_mtype) {
+case mu_FwdGetS:
+mu_msg_processed = mu_false;
+break;
+case mu_FwdGetM:
+mu_msg_processed = mu_false;
+break;
+case mu_InvAck:
+mu_pcnt = (mu_pcnt) - (1);
+if ( (mu_pcnt) == (0) )
+{
+mu_pstate = mu_Proc_M;
+mu_LastWrite = mu_pval;
+}
+break;
+default:
+mu_ErrorUnhandledMsg ( mu_msg, (int)mu_p );
+break;
+}
+break;
+case mu_Proc_M:
+switch ((int) mu_msg.mu_mtype) {
+case mu_FwdGetS:
+mu_pstate = mu_Proc_S;
+mu_Send ( mu_FwdAck, (int)mu_HomeDir, (int)mu_p, mu_ResponseChannel, mu_pval, mu_1_Node_undefined_var, 0 );
+mu_Send ( mu_Data, mu_msg.mu_fwd_to, (int)mu_p, mu_ResponseChannel, mu_pval, mu_1_Node_undefined_var, 0 );
+break;
+case mu_FwdGetM:
+mu_pstate = mu_Proc_I;
+mu_Send ( mu_Data, mu_msg.mu_fwd_to, (int)mu_p, mu_ResponseChannel, mu_pval, mu_1_Node_undefined_var, 0 );
+mu_Send ( mu_FwdAck, (int)mu_HomeDir, (int)mu_p, mu_ResponseChannel, mu_1_Value_undefined_var, mu_1_Node_undefined_var, 0 );
+mu_pval.undefine();
+break;
+default:
+mu_ErrorUnhandledMsg ( mu_msg, (int)mu_p );
+break;
+}
+break;
+case mu_Proc_MI_A:
+switch ((int) mu_msg.mu_mtype) {
+case mu_FwdGetS:
+mu_pstate = mu_Proc_SI_A;
+mu_Send ( mu_FwdAck, (int)mu_HomeDir, (int)mu_p, mu_ResponseChannel, mu_pval, mu_1_Node_undefined_var, 0 );
+mu_Send ( mu_Data, mu_msg.mu_fwd_to, (int)mu_p, mu_ResponseChannel, mu_pval, mu_1_Node_undefined_var, 0 );
+break;
+case mu_FwdGetM:
+mu_pstate = mu_Proc_II_A;
+mu_Send ( mu_Data, mu_msg.mu_fwd_to, (int)mu_p, mu_ResponseChannel, mu_pval, mu_1_Node_undefined_var, 0 );
+mu_Send ( mu_FwdAck, (int)mu_HomeDir, (int)mu_p, mu_ResponseChannel, mu_1_Value_undefined_var, mu_1_Node_undefined_var, 0 );
+break;
+case mu_PutAck:
+mu_pstate = mu_Proc_I;
+mu_pval.undefine();
+break;
+default:
+mu_ErrorUnhandledMsg ( mu_msg, (int)mu_p );
+break;
+}
+break;
+case mu_Proc_SI_A:
+switch ((int) mu_msg.mu_mtype) {
+case mu_Inv:
+mu_pstate = mu_Proc_II_A;
+mu_Send ( mu_InvAck, mu_msg.mu_fwd_to, (int)mu_p, mu_ResponseChannel, mu_1_Value_undefined_var, mu_1_Node_undefined_var, 0 );
+mu_Send ( mu_InvAck, (int)mu_HomeDir, (int)mu_p, mu_ResponseChannel, mu_1_Value_undefined_var, mu_1_Node_undefined_var, 0 );
+break;
+case mu_PutAck:
+mu_pstate = mu_Proc_I;
+mu_pval.undefine();
+break;
+default:
+mu_ErrorUnhandledMsg ( mu_msg, (int)mu_p );
+break;
+}
+break;
+case mu_Proc_II_A:
+switch ((int) mu_msg.mu_mtype) {
+case mu_PutAck:
+mu_pstate = mu_Proc_I;
+mu_pval.undefine();
+break;
+default:
+mu_ErrorUnhandledMsg ( mu_msg, (int)mu_p );
+break;
+}
+break;
 default:
 mu_ErrorUnhandledState (  );
 break;
+}
 }
 }
 }
@@ -3136,6 +3391,7 @@ mu_LastWrite = mu_HomeNode.mu_val;
 {
 for(int mu_i = 1; mu_i <= 3; mu_i++) {
 mu_Procs[mu_i].mu_state = mu_Proc_I;
+mu_Procs[mu_i].mu_ack_cnt = 0;
 mu_Procs[mu_i].mu_val.undefine();
 };
 };
@@ -3164,102 +3420,146 @@ unsigned short StartStateManager::numstartstates = 1;
 /********************
   Invariant records
  ********************/
-int mu__invariant_16() // Invariant "val is undefined while invalid"
+int mu__invariant_16() // Invariant "Home directory ackcounts are negative"
 {
-bool mu__quant17; 
-mu__quant17 = TRUE;
-{
-for(int mu_n = 1; mu_n <= 3; mu_n++) {
-bool mu__boolexpr18;
-  if (!((mu_Procs[mu_n].mu_state) == (mu_Proc_I))) mu__boolexpr18 = TRUE ;
+bool mu__boolexpr17;
+  if (!(!((mu_HomeNode.mu_state) == (mu_Dir_I)))) mu__boolexpr17 = TRUE ;
   else {
-  mu__boolexpr18 = (mu_Procs[mu_n].mu_val.isundefined()) ; 
+  mu__boolexpr17 = (!((mu_HomeNode.mu_ack_cnt) < (0))) ; 
 }
-if ( !(mu__boolexpr18) )
-  { mu__quant17 = FALSE; break; }
-};
-};
-return mu__quant17;
+return mu__boolexpr17;
 };
 
-bool mu__condition_19() // Condition for Rule "val is undefined while invalid"
+bool mu__condition_18() // Condition for Rule "Home directory ackcounts are negative"
 {
   return mu__invariant_16( );
 }
 
 /**** end rule declaration ****/
 
-int mu__invariant_20() // Invariant "values in valid state match last write"
+int mu__invariant_19() // Invariant "Proc ackcounts are negative"
 {
-bool mu__quant21; 
-mu__quant21 = TRUE;
+bool mu__quant20; 
+mu__quant20 = TRUE;
 {
 for(int mu_n = 1; mu_n <= 3; mu_n++) {
-bool mu__boolexpr22;
-bool mu__boolexpr23;
-  if ((mu_Procs[mu_n].mu_state) == (mu_Proc_M)) mu__boolexpr23 = TRUE ;
+bool mu__boolexpr21;
+  if (!(!((mu_Procs[mu_n].mu_state) == (mu_Proc_I)))) mu__boolexpr21 = TRUE ;
   else {
-  mu__boolexpr23 = ((mu_Procs[mu_n].mu_state) == (mu_Proc_S)) ; 
+  mu__boolexpr21 = (!((mu_Procs[mu_n].mu_ack_cnt) < (0))) ; 
 }
-  if (!(mu__boolexpr23)) mu__boolexpr22 = TRUE ;
-  else {
-  mu__boolexpr22 = ((mu_Procs[mu_n].mu_val) == (mu_LastWrite)) ; 
-}
-if ( !(mu__boolexpr22) )
-  { mu__quant21 = FALSE; break; }
+if ( !(mu__boolexpr21) )
+  { mu__quant20 = FALSE; break; }
 };
 };
-return mu__quant21;
+return mu__quant20;
 };
 
-bool mu__condition_24() // Condition for Rule "values in valid state match last write"
+bool mu__condition_22() // Condition for Rule "Proc ackcounts are negative"
 {
-  return mu__invariant_20( );
+  return mu__invariant_19( );
 }
 
 /**** end rule declaration ****/
 
-int mu__invariant_25() // Invariant "val in memory matches val of last write, when invalid"
+int mu__invariant_23() // Invariant "val is undefined while invalid"
 {
-bool mu__boolexpr26;
-  if (!((mu_HomeNode.mu_state) == (mu_Dir_I))) mu__boolexpr26 = TRUE ;
+bool mu__quant24; 
+mu__quant24 = TRUE;
+{
+for(int mu_n = 1; mu_n <= 3; mu_n++) {
+bool mu__boolexpr25;
+  if (!((mu_Procs[mu_n].mu_state) == (mu_Proc_I))) mu__boolexpr25 = TRUE ;
   else {
-  mu__boolexpr26 = ((mu_HomeNode.mu_val) == (mu_LastWrite)) ; 
+  mu__boolexpr25 = (mu_Procs[mu_n].mu_val.isundefined()) ; 
 }
-return mu__boolexpr26;
+if ( !(mu__boolexpr25) )
+  { mu__quant24 = FALSE; break; }
+};
+};
+return mu__quant24;
 };
 
-bool mu__condition_27() // Condition for Rule "val in memory matches val of last write, when invalid"
+bool mu__condition_26() // Condition for Rule "val is undefined while invalid"
 {
-  return mu__invariant_25( );
+  return mu__invariant_23( );
 }
 
 /**** end rule declaration ****/
 
-int mu__invariant_28() // Invariant "Invalid implies empty owner"
+int mu__invariant_27() // Invariant "values in valid state match last write"
 {
+bool mu__quant28; 
+mu__quant28 = TRUE;
+{
+for(int mu_n = 1; mu_n <= 3; mu_n++) {
 bool mu__boolexpr29;
-  if (!((mu_HomeNode.mu_state) == (mu_Dir_I))) mu__boolexpr29 = TRUE ;
+bool mu__boolexpr30;
+  if ((mu_Procs[mu_n].mu_state) == (mu_Proc_M)) mu__boolexpr30 = TRUE ;
   else {
-  mu__boolexpr29 = (mu_HomeNode.mu_owner.isundefined()) ; 
+  mu__boolexpr30 = ((mu_Procs[mu_n].mu_state) == (mu_Proc_S)) ; 
 }
-return mu__boolexpr29;
+  if (!(mu__boolexpr30)) mu__boolexpr29 = TRUE ;
+  else {
+  mu__boolexpr29 = ((mu_Procs[mu_n].mu_val) == (mu_LastWrite)) ; 
+}
+if ( !(mu__boolexpr29) )
+  { mu__quant28 = FALSE; break; }
+};
+};
+return mu__quant28;
 };
 
-bool mu__condition_30() // Condition for Rule "Invalid implies empty owner"
+bool mu__condition_31() // Condition for Rule "values in valid state match last write"
 {
-  return mu__invariant_28( );
+  return mu__invariant_27( );
+}
+
+/**** end rule declaration ****/
+
+int mu__invariant_32() // Invariant "val in memory matches val of last write, when invalid"
+{
+bool mu__boolexpr33;
+  if (!((mu_HomeNode.mu_state) == (mu_Dir_I))) mu__boolexpr33 = TRUE ;
+  else {
+  mu__boolexpr33 = ((mu_HomeNode.mu_val) == (mu_LastWrite)) ; 
+}
+return mu__boolexpr33;
+};
+
+bool mu__condition_34() // Condition for Rule "val in memory matches val of last write, when invalid"
+{
+  return mu__invariant_32( );
+}
+
+/**** end rule declaration ****/
+
+int mu__invariant_35() // Invariant "Invalid implies empty owner"
+{
+bool mu__boolexpr36;
+  if (!((mu_HomeNode.mu_state) == (mu_Dir_I))) mu__boolexpr36 = TRUE ;
+  else {
+  mu__boolexpr36 = (mu_HomeNode.mu_owner.isundefined()) ; 
+}
+return mu__boolexpr36;
+};
+
+bool mu__condition_37() // Condition for Rule "Invalid implies empty owner"
+{
+  return mu__invariant_35( );
 }
 
 /**** end rule declaration ****/
 
 const rulerec invariants[] = {
-{"Invalid implies empty owner", &mu__condition_30, NULL, FALSE},
-{"val in memory matches val of last write, when invalid", &mu__condition_27, NULL, FALSE},
-{"values in valid state match last write", &mu__condition_24, NULL, FALSE},
-{"val is undefined while invalid", &mu__condition_19, NULL, FALSE},
+{"Invalid implies empty owner", &mu__condition_37, NULL, FALSE},
+{"val in memory matches val of last write, when invalid", &mu__condition_34, NULL, FALSE},
+{"values in valid state match last write", &mu__condition_31, NULL, FALSE},
+{"val is undefined while invalid", &mu__condition_26, NULL, FALSE},
+{"Proc ackcounts are negative", &mu__condition_22, NULL, FALSE},
+{"Home directory ackcounts are negative", &mu__condition_18, NULL, FALSE},
 };
-const unsigned short numinvariants = 4;
+const unsigned short numinvariants = 6;
 
 /******************/
 bool mu__true_live() { return TRUE; }
