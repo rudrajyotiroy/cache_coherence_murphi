@@ -2014,6 +2014,8 @@ cout << ", dst: ";
 cout << ( mu_dst );
 cout << ", ack_cnt: ";
 cout << ( mu_ack_cnt );
+cout << ", src_state: ";
+mu_NodeEnumToStr ( mu_src );
 cout << ", dst_state: ";
 mu_NodeEnumToStr ( mu_dst );
 if ( !(mu_fwd_to.isundefined()) )
@@ -3066,9 +3068,9 @@ public:
     mu_n.value((r % 2) + 1);
     r = r / 2;
   mu_1_ProcState& mu_p = mu_Procs[mu_n];
+mu_p.mu_state = mu_Proc_IS_D;
 cout << "I ==(load)==> S";
 mu_Send ( mu_GetS, (int)mu_HomeDir, (int)mu_n, mu_RequestChannel, mu_1_Value_undefined_var, mu_1_Node_undefined_var, 0 );
-mu_p.mu_state = mu_Proc_IS_D;
   };
 
   bool UnFair()
@@ -3145,10 +3147,10 @@ public:
     mu_n.value((r % 2) + 1);
     r = r / 2;
   mu_1_ProcState& mu_p = mu_Procs[mu_n];
+mu_p.mu_state = mu_Proc_IM_AD;
 cout << "I ==(store)==> M";
 mu_p.mu_val = mu_v;
 mu_Send ( mu_GetM, (int)mu_HomeDir, (int)mu_n, mu_RequestChannel, mu_1_Value_undefined_var, mu_1_Node_undefined_var, 0 );
-mu_p.mu_state = mu_Proc_IM_AD;
   };
 
   bool UnFair()
@@ -3225,10 +3227,10 @@ public:
     mu_n.value((r % 2) + 1);
     r = r / 2;
   mu_1_ProcState& mu_p = mu_Procs[mu_n];
+mu_p.mu_state = mu_Proc_SM_AD;
 cout << "S ==(store)==> M";
 mu_p.mu_val = mu_v;
 mu_Send ( mu_GetM, (int)mu_HomeDir, (int)mu_n, mu_RequestChannel, mu_1_Value_undefined_var, mu_1_Node_undefined_var, 0 );
-mu_p.mu_state = mu_Proc_SM_AD;
   };
 
   bool UnFair()
@@ -3291,9 +3293,9 @@ public:
     mu_n.value((r % 2) + 1);
     r = r / 2;
   mu_1_ProcState& mu_p = mu_Procs[mu_n];
+mu_p.mu_state = mu_Proc_SI_A;
 cout << "S ==(evict)==> I";
 mu_Send ( mu_PutS, (int)mu_HomeDir, (int)mu_n, mu_RequestChannel, mu_1_Value_undefined_var, mu_1_Node_undefined_var, 0 );
-mu_p.mu_state = mu_Proc_SI_A;
   };
 
   bool UnFair()
@@ -3356,9 +3358,9 @@ public:
     mu_n.value((r % 2) + 1);
     r = r / 2;
   mu_1_ProcState& mu_p = mu_Procs[mu_n];
+mu_p.mu_state = mu_Proc_MI_A;
 cout << "M ==(evict)==> I";
 mu_Send ( mu_PutM, (int)mu_HomeDir, (int)mu_n, mu_RequestChannel, mu_p.mu_val, mu_1_Node_undefined_var, 0 );
-mu_p.mu_state = mu_Proc_MI_A;
   };
 
   bool UnFair()

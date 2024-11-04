@@ -207,6 +207,8 @@ Procedure msgTrace(mtype:MessageType;
 		put dst;
 		put ", ack_cnt: ";
 		put ack_cnt;
+    put ", src_state: ";
+    NodeEnumToStr(src);
     put ", dst_state: ";
     NodeEnumToStr(dst);
 		if(!isundefined(fwd_to)) then
@@ -727,27 +729,27 @@ ruleset n: Proc Do
     rule "M ==(evict)==> I"
       p.state = Proc_M
     ==>
+      p.state := Proc_MI_A;
       put "M ==(evict)==> I";
       Send(PutM, HomeDir, n, RequestChannel, p.val, UNDEFINED, 0);
-      p.state := Proc_MI_A;
     endrule;
 
     rule "S ==(evict)==> I"
       p.state = Proc_S
     ==>
+      p.state := Proc_SI_A;
       put "S ==(evict)==> I";
       Send(PutS, HomeDir, n, RequestChannel, UNDEFINED, UNDEFINED, 0);
-      p.state := Proc_SI_A;
     endrule;
 
     ruleset v: Value Do
       rule "S ==(store)==> M"
         p.state = Proc_S
       ==>
+        p.state := Proc_SM_AD;
         put "S ==(store)==> M";
         p.val := v;      
         Send(GetM, HomeDir, n, RequestChannel, UNDEFINED, UNDEFINED, 0);
-        p.state := Proc_SM_AD;
       endrule;
     endruleset;
 
@@ -755,19 +757,19 @@ ruleset n: Proc Do
       rule "I ==(store)==> M"
         p.state = Proc_I
       ==>
+        p.state := Proc_IM_AD;
         put "I ==(store)==> M";
         p.val := v;      
         Send(GetM, HomeDir, n, RequestChannel, UNDEFINED, UNDEFINED, 0);
-        p.state := Proc_IM_AD;
       endrule;
     endruleset;
 
     rule "I ==(load)==> S"
       p.state = Proc_I 
     ==>
+      p.state := Proc_IS_D;
       put "I ==(load)==> S";
       Send(GetS, HomeDir, n, RequestChannel, UNDEFINED, UNDEFINED, 0);
-      p.state := Proc_IS_D;
     endrule;
 
   endalias;
