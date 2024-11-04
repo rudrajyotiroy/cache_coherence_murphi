@@ -29,13 +29,13 @@ Algorithm:
 
 Memory usage:
 
-	* The size of each state is 2176 bits (rounded up to 272 bytes).
+	* The size of each state is 5200 bits (rounded up to 652 bytes).
 	* The memory allocated for the hash table and state queue is
 	  8 Mbytes.
 	  With two words of overhead per state, the maximum size of
-	  the state space is 28949 states.
+	  the state space is 12197 states.
 	   * Use option "-k" or "-m" to increase this, if necessary.
-	* Capacity in queue for breadth-first search: 2894 states.
+	* Capacity in queue for breadth-first search: 1219 states.
 	   * Change the constant gPercentActiveStates in mu_prolog.inc
 	     to increase this, if necessary.
 

@@ -2,6 +2,7 @@
     "files.associations": {
         "cache.C": "cpp",
         "mu.C": "cpp",
-        "mosi.C": "cpp"
+        "mosi.C": "cpp",
+        "msi.C": "cpp"
     }
 }
