@@ -87,12 +87,15 @@ type
       							Dir_S,
                     Dir_I,
                     -- Transition states
+										-- MX_D = Dir_M get_S forwarded, waiting for data to go to S or I depending on ack>0
                     Dir_MX_D,
-                    Dir_SM_A,
-                    Dir_MM_A
+										-- MM_D = Dir_M get_M forwarded, waiting for ack to change owner
+										Dir_MM_A,
+										-- SM_A = Dir_S get_M invalidations sent, waiting for acks
+										Dir_SM_A
                   };
       owner: Node;	-- Assuming has only one memory location
-      value: Value;   -- Assuming has only one memory location
+      val: Value;   -- Assuming has only one memory location
       sharers: multiset [ProcCount] of Node;
       ack_cnt: AckCount;
     End;
@@ -114,7 +117,7 @@ type
                     Proc_SI_A,
                     Proc_MI_A
                   };
-      value: Value;
+      val: Value;
       ack_cnt: AckCount; -- ack_cnt = 0 means don't need extra ack
     End;
 
@@ -126,7 +129,7 @@ var
 	HomeNode:  HomeState;
 	Procs: array [Proc] of ProcState;
 	Net:   array [Node] of multiset [NetMax] of Message;  -- One multiset for each destination - messages are arbitrarily reordered by the multiset
-	InBox: array [Node] of array [VCType] of Message; -- If a message is not processed, it is placed in InBox, blocking that virtual channel
+	InBox: array [Node] of array [channel_t] of Message; -- If a message is not processed, it is placed in InBox, blocking that virtual channel
 	msg_processed: boolean;
 	LastWrite: Value; -- Used to confirm that writes are not lost; this variable would not exist in real hardware
 
@@ -134,10 +137,10 @@ var
 -- Procedures
 ----------------------------------------------------------------------
 Procedure Send(mtype:MessageType;
-				 dst:Node;
-				 src:Node;
-				 vc:channel_t;
-				 val:Value;
+				 dst:			Node;
+				 src:			Node;
+				 vc:			channel_t;
+				 val:			Value;
 				 fwd_to:  Node;
          ack_cnt: AckCount;
 				 );
@@ -198,6 +201,11 @@ Begin
 	return MultiSetCount(i:HomeNode.sharers, HomeNode.sharers[i] = n) > 0
 End;
 
+Function IsSharerListEmpty() : Boolean;
+Begin
+  return MultiSetCount(i: HomeNode.sharers, true) = 0
+End;
+
 Procedure RemoveFromSharersList(n:Node);
 Begin
 	MultiSetRemovePred(i:HomeNode.sharers, HomeNode.sharers[i] = n);
@@ -232,65 +240,166 @@ Begin
 	msg_processed := true;
 
 	switch HomeNode.state
-	case H_Invalid:
+	case Dir_I:
 		switch msg.mtype
-
-		case ReadReq:
-			HomeNode.state := H_Valid;
+    case GetS:
+      HomeNode.state := Dir_S;
+      AddToSharersList(msg.src);
+      Send(Data, msg.src, HomeDir, ResponseChannel, HomeNode.val, UNDEFINED, 0);
+		case GetM:
+			HomeNode.state := Dir_M;
 			HomeNode.owner := msg.src;
-			Send(ReadAck, msg.src, HomeType, VC1, HomeNode.val);
-
+			Send(Data, msg.src, HomeDir, ResponseChannel, HomeNode.val, UNDEFINED, sharerCount);
+		case PutS:
+			Send(PutAck, msg.src, HomeDir, ResponseChannel, UNDEFINED, UNDEFINED, 0);
+		case PutM:
+			assert (msg.src != HomeNode.owner) "error at Dir_I: PutM from owner";
+			Send(PutAck, msg.src, HomeDir, ResponseChannel, UNDEFINED, UNDEFINED, 0);
 		else
-			ErrorUnhandledMsg(msg, HomeType);
-
+			ErrorUnhandledMsg(msg, HomeDir);
 		endswitch;
 
-	case H_Valid:
-		Assert (IsUndefined(HomeNode.owner) = false) 
-			 "HomeNode has no owner, but line is Valid";
-
-		switch msg.mtype
-		case ReadReq:
-			HomeNode.state := HT_Pending;     
-			Send(RecallReq, HomeNode.owner, HomeType, VC0, UNDEFINED);
-			HomeNode.owner := msg.src; --remember who the new owner will be
-						
-		case WBReq:
-			assert (msg.src = HomeNode.owner) "Writeback from non-owner";
-			HomeNode.state := H_Invalid;
-			HomeNode.val := msg.val;
-			Send(WBAck, msg.src, HomeType, VC1, UNDEFINED);
-			undefine HomeNode.owner
-
+  case Dir_S:
+    assert !IsSharerListEmpty() "sharerCount == 0";
+    switch msg.mtype
+    case GetS:
+      AddToSharersList(msg.src);
+      Send(Data, msg.src, HomeDir, ResponseChannel, HomeNode.val, UNDEFINED, 0);
+		case GetM:
+      if IsSharer(msg.src) then
+        if sharerCount = 1 then
+          HomeNode.state := Dir_M;
+        else
+          HomeNode.state := Dir_SM_A;
+          HomeNode.ack_cnt := sharerCount - 1;
+          SendInvReqToSharers(msg.src);
+        endif;
+        Send(Data, msg.src, HomeDir, ResponseChannel, HomeNode.val, UNDEFINED, sharerCount - 1);
+      else
+        HomeNode.state := Dir_SM_A;
+        HomeNode.ack_cnt := sharerCount;
+        SendInvReqToSharers(msg.src);
+        Send(Data, msg.src, HomeDir, ResponseChannel, HomeNode.val, UNDEFINED, sharerCount);
+      endif;
+      undefine HomeNode.sharers;
+			HomeNode.owner := msg.src;
+		case PutS:
+			Send(PutAck, msg.src, HomeDir, ResponseChannel, UNDEFINED, UNDEFINED, 0); 
+      RemoveFromSharersList(msg.src);
+      if IsSharerListEmpty() then
+        HomeNode.state := Dir_I;
+      endif;
+		case PutM:
+			Send(PutAck, msg.src, HomeDir, ResponseChannel, UNDEFINED, UNDEFINED, 0);
+      RemoveFromSharersList(msg.src);
+      if IsSharerListEmpty() then
+        HomeNode.state := Dir_I;
+      endif;
 		else
-			ErrorUnhandledMsg(msg, HomeType);
-
+			ErrorUnhandledMsg(msg, HomeDir);
 		endswitch;
 
-	case HT_Pending:
-		switch msg.mtype
-	 
-		case WBReq:
-			Assert (!IsUnDefined(HomeNode.owner)) "owner undefined";
-			HomeNode.state := H_Valid;
-			HomeNode.val := msg.val;
-			Send(ReadAck, HomeNode.owner, HomeType, VC1, HomeNode.val);
+  case Dir_M:
+    switch msg.mtype
+    case GetS:
+      HomeNode.state := Dir_MX_D;
+      Send(FwdGetS, HomeNode.owner, HomeDir, ForwardChannel, UNDEFINED, msg.src, 0);
+      AddToSharersList(msg.src);
+      AddToSharersList(HomeNode.owner);
+      HomeNode.owner := HomeDir;
+    case GetM:
+      HomeNode.state := Dir_MM_A;
+      Send(FwdGetM, HomeNode.owner, HomeDir, ForwardChannel, UNDEFINED, msg.src, 0);
+      HomeNode.owner := msg.src;
+    case PutS:
+      Send(PutAck, msg.src, HomeDir, ResponseChannel, UNDEFINED, UNDEFINED, 0);
+    case PutM:
+      if HomeNode.owner = msg.src then
+        HomeNode.val := msg.val;
+        HomeNode.owner := HomeDir;
+        HomeNode.state := Dir_I;
+      endif;
+      Send(PutAck, msg.src, HomeDir, ResponseChannel, UNDEFINED, UNDEFINED, 0);
+    else
+      ErrorUnhandledMsg(msg, HomeDir);
+    endswitch;
 
-		case ReadReq:
-			msg_processed := false; -- stall message in InBox
+  case Dir_MX_D:
+    switch msg.mtype
+    case GetS:
+      msg_processed := false;
+    case GetM:
+      msg_processed := false;
+    case PutS:
+      msg_processed := false;
+    case PutM:
+      msg_processed := false;
+    case FwdAck:
+      if sharerCount = 0 then
+        HomeNode.state := Dir_I;
+      else
+        HomeNode.state := Dir_S;
+      endif;
+      HomeNode.val := msg.val;
+    case Data:
+      if sharerCount = 0 then
+        HomeNode.state := Dir_I;
+      else
+        HomeNode.state := Dir_S;
+      endif;
+      HomeNode.val := msg.val;
+    else
+      ErrorUnhandledMsg(msg, HomeDir);
+    endswitch;
+  
+  case Dir_MM_A:
+    switch msg.mtype
+    case GetS:
+      msg_processed := false;
+    case GetM:
+      msg_processed := false;
+    case PutS:
+      msg_processed := false;
+    case PutM:
+      msg_processed := false;
+    case Data:
+      msg_processed := false;
+    case FwdAck:
+      HomeNode.state := Dir_M;
+    else
+      ErrorUnhandledMsg(msg, HomeDir);
+    endswitch;
 
-		else
-			ErrorUnhandledMsg(msg, HomeType);
+  case Dir_SM_A:
+    switch msg.mtype
+    case GetS:
+      msg_processed := false;
+    case GetM:
+      msg_processed := false;
+    case PutS:
+      msg_processed := false;
+    case PutM:
+      msg_processed := false;
+    case Data:
+      msg_processed := false;
+    case InvAck:
+      assert HomeNode.ack_cnt > 0 "Error at Dir_SM_A: HomeNode.ack_cnt == 0.";
+      HomeNode.ack_cnt := HomeNode.ack_cnt - 1;
+      if HomeNode.ack_cnt = 0 then
+        HomeNode.state := Dir_M;
+      endif;
+    else
+      ErrorUnhandledMsg(msg, HomeDir);
+    endswitch;
 
-		endswitch;
-	endswitch;
+  endswitch;
 End;
 
 
 Procedure ProcReceive(msg:Message; p:Proc);
 Begin
---  put "Receiving "; put msg.mtype; put " on VC"; put msg.vc; 
---  put " at proc "; put p; put "\n";
+ put "Receiving "; put msg.mtype; put " on VC "; put msg.vc; 
+ put " at proc "; put p; put "\n";
 
 	-- default to 'processing' message.  set to false otherwise
 	msg_processed := true;
@@ -299,42 +408,43 @@ Begin
 	alias pv:Procs[p].val do
 
 	switch ps
-	case P_Valid:
+	-- case P_Valid:
 
-		switch msg.mtype
-		case RecallReq:
-			Send(WBReq, msg.src, p, VC1, pv);
-			Undefine pv;
-			ps := P_Invalid;
-		else
-			ErrorUnhandledMsg(msg, p);
-		endswitch;
+	-- 	switch msg.mtype
+	-- 	case RecallReq:
+	-- 		Send(WBReq, msg.src, p, VC1, pv);
+	-- 		Undefine pv;
+	-- 		ps := P_Invalid;
+	-- 	else
+	-- 		ErrorUnhandledMsg(msg, p);
+	-- 	endswitch;
 
-	case PT_Pending:
+	-- case PT_Pending:
 
-		switch msg.mtype
-		case ReadAck:
-			pv := msg.val;
-			ps := P_Valid;
-		case RecallReq:
-			msg_processed := false; -- stall message in InBox
-		else
-			ErrorUnhandledMsg(msg, p);
-		endswitch;
+	-- 	switch msg.mtype
+	-- 	case ReadAck:
+	-- 		pv := msg.val;
+	-- 		ps := P_Valid;
+	-- 	case RecallReq:
+	-- 		msg_processed := false; -- stall message in InBox
+	-- 	else
+	-- 		ErrorUnhandledMsg(msg, p);
+	-- 	endswitch;
 
 
-	case PT_WritebackPending:    
+	-- case PT_WritebackPending:    
 
-		switch msg.mtype
-		case WBAck:
-			ps := P_Invalid;
-			undefine pv;
-		case RecallReq:				-- treat a recall request as a Writeback acknowledgement
-			ps := P_Invalid;
-			undefine pv;
-		else
-			ErrorUnhandledMsg(msg, p);
-		endswitch;
+	-- 	switch msg.mtype
+	-- 	case WBAck:
+	-- 		ps := P_Invalid;
+	-- 		undefine pv;
+	-- 	case RecallReq:				-- treat a recall request as a Writeback acknowledgement
+	-- 		ps := P_Invalid;
+	-- 		undefine pv;
+
+		-- else
+		-- 	ErrorUnhandledMsg(msg, p);
+		-- endswitch;
 
 	----------------------------
 	-- Error catch
@@ -353,37 +463,6 @@ End;
 ----------------------------------------------------------------------
 
 -- Processor actions (affecting coherency)
-
-ruleset n:Proc Do
-	alias p:Procs[n] Do
-
-	ruleset v:Value Do
-		rule "store new value"
-	 	 (p.state = P_Valid)
-			==>
- 			 p.val := v;      
- 			 LastWrite := v;  --We use LastWrite to sanity check that reads receive the value of the last write
-		endrule;
-	endruleset;
-
-	rule "read request"
-		p.state = P_Invalid 
-	==>
-		Send(ReadReq, HomeType, n, VC0, UNDEFINED);
-		p.state := PT_Pending;
-	endrule;
-
-
-	rule "writeback"
-		(p.state = P_Valid)
-	==>
-		Send(WBReq, HomeType, n, VC1, p.val); 
-		p.state := PT_WritebackPending;
-		undefine p.val;
-	endrule;
-
-	endalias;
-endruleset;
 
 -- Message delivery rules
 ruleset n:Node do
@@ -420,7 +499,7 @@ ruleset n:Node do
 	endchoose;  
 
 	-- Try to deliver a message from a blocked VC; perhaps the node can handle it now
-	ruleset vc:VCType do
+	ruleset vc:channel_t do
 		rule "receive-blocked-vc"
 			(! isundefined(InBox[n][vc].mtype))
 		==>
@@ -447,22 +526,26 @@ endruleset;
 ----------------------------------------------------------------------
 startstate
 
+  -- directory node initialization
+  HomeNode.state := Dir_I;
+  HomeNode.owner := HomeDir;
+  HomeNode.ack_cnt := 0;
+  undefine HomeNode.sharers;
 	For v:Value do
-	-- home node initialization
-	HomeNode.state := H_Invalid;
-	undefine HomeNode.owner;
-	HomeNode.val := v;
+  	HomeNode.val := v;
 	endfor;
 	LastWrite := HomeNode.val;
-	
-	-- processor initialization
-	for i:Proc do
-		Procs[i].state := P_Invalid;
-		undefine Procs[i].val;
-	endfor;
+  
+  -- processor initialization
+	-- independent iterations ignore warning
+  for i: Proc do
+    Procs[i].state := Proc_I;
+    Procs[i].ack_cnt := 0;
+    undefine Procs[i].val;
+  endfor;
 
-	-- network initialization
-	undefine Net;
+  -- network initialization
+  undefine Net;
 endstartstate;
 
 ----------------------------------------------------------------------
@@ -470,25 +553,25 @@ endstartstate;
 ----------------------------------------------------------------------
 
 invariant "Invalid implies empty owner"
-	HomeNode.state = H_Invalid
+	HomeNode.state = Dir_I
 		->
 			IsUndefined(HomeNode.owner);
 
-invariant "value in memory matches value of last write, when invalid"
-		 HomeNode.state = H_Invalid 
+invariant "val in memory matches val of last write, when invalid"
+		 HomeNode.state = Dir_I 
 		->
 			HomeNode.val = LastWrite;
 
 invariant "values in valid state match last write"
 	Forall n : Proc Do	
-		 Procs[n].state = P_Valid
+		 Procs[n].state = Proc_M | Procs[n].state = Proc_S
 		->
-			Procs[n].val = LastWrite --LastWrite is updated whenever a new value is created 
+			Procs[n].val = LastWrite --LastWrite is updated whenever a new val is created 
 	end;
 	
-invariant "value is undefined while invalid"
+invariant "val is undefined while invalid"
 	Forall n : Proc Do	
-		 Procs[n].state = P_Invalid
+		 Procs[n].state = Proc_I
 		->
 			IsUndefined(Procs[n].val)
 	end;
@@ -506,7 +589,7 @@ invariant "Invalid implies empty sharer list"
 		->
 			MultiSetCount(i:HomeNode.sharers, true) = 0;
 
-invariant "values in memory matches value of last write, when shared or invalid"
+invariant "values in memory matches val of last write, when shared or invalid"
 	Forall n : Proc Do	
 		 HomeNode.state = H_Shared | HomeNode.state = H_Invalid
 		->
