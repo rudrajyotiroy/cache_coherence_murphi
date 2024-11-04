@@ -32,7 +32,8 @@ const
 	QMax: 2;
 	NumVCs: 3;
 	NetMax: ProcCount+1;
-	
+	enableProcTrace: 1;
+	enableMsgTrace: 1;
 
 ----------------------------------------------------------------------
 -- Types
@@ -136,6 +137,26 @@ var
 ----------------------------------------------------------------------
 -- Procedures
 ----------------------------------------------------------------------
+Procedure EnumToStr(m: MessageType);
+begin
+  switch m
+    case GetS: put "GetS";
+    case GetM: put "GetM";
+    case PutS: put "PutS";
+    case PutM: put "PutM";
+    case Data: put "Data";
+    case InvAck: put "InvAck";
+    case PutAck: put "PutAck";
+    case FwdAck: put "FwdAck";
+    case Inv: put "Inv";
+    case FwdGetS: put "FwdGetS";
+    case FwdGetM: put "FwdGetM";
+  else
+    put "Unknown MessageType";
+  end;
+end;
+
+
 Procedure Send(mtype:MessageType;
 				 dst:			Node;
 				 src:			Node;
@@ -145,8 +166,28 @@ Procedure Send(mtype:MessageType;
          ack_cnt: AckCount;
 				 );
 var msg:Message;
+var 
 Begin
 	Assert (MultiSetCount(i:Net[dst], true) < NetMax) "Too many messages";
+	if enableMsgTrace=1 then
+		put "Msg :: type: ";
+		EnumToStr(mtype);
+		put ", src: ";
+		put src;
+		put ", dst: ";
+		put dst;
+		put ", ack_cnt: ";
+		put ack_cnt;
+		if(!isundefined(fwd_to)) then
+			put ", fwd_to: ";
+			put fwd_to;
+		endif;
+		if(!isundefined(val)) then
+			put ", val: ";
+			put val;
+		endif;
+		put "\n";
+	endif;
 	msg.mtype := mtype;
 	msg.src   := src;
 	msg.vc    := vc;
@@ -227,8 +268,10 @@ Procedure HomeReceive(msg:Message);
 var sharerCount:0..ProcCount;  -- for counting sharers
 Begin
 	-- Debug output may be helpful:
-	put "Receiving "; put msg.mtype; put " on VC "; put msg.vc; 
-	put " at home -- "; put HomeNode.state;
+	if(enableProcTrace=1) then
+		put "Receiving "; put msg.mtype; put " from processor "; put msg.src; put " on "; put msg.vc; 
+		put " at home -- "; put HomeNode.state;
+	endif;
 
 	-- The line below is not needed in Valid/Invalid protocol.  However, the 
 	-- compiler barfs if we put this inside a switch, so it is useful to
@@ -398,8 +441,10 @@ End;
 
 Procedure ProcReceive(msg:Message; p:Proc);
 Begin
- put "Receiving "; put msg.mtype; put " on VC "; put msg.vc; 
- put " at proc "; put p; put "\n";
+	if(enableProcTrace=1) then
+ 		put "Receiving "; put msg.mtype; put " from "; put msg.src; put " on VC "; put msg.vc; 
+ 		put " at proc "; put p; put "\n";
+	endif;
 
 	-- default to 'processing' message.  set to false otherwise
 	msg_processed := true;
@@ -463,6 +508,52 @@ End;
 ----------------------------------------------------------------------
 
 -- Processor actions (affecting coherency)
+ruleset n: Proc Do
+  alias p: Procs[n] Do
+
+    rule "M ==(evict)==> I"
+      p.state = Proc_M
+    ==>
+      Send(PutM, HomeDir, n, RequestChannel, p.val, UNDEFINED, 0);
+      p.state := Proc_MI_A;
+    endrule;
+
+    rule "S ==(evict)==> I"
+      p.state = Proc_S
+    ==>
+      Send(PutS, HomeDir, n, RequestChannel, UNDEFINED, UNDEFINED, 0);
+      p.state := Proc_SI_A;
+    endrule;
+
+    ruleset v: Value Do
+      rule "S ==(store)==> M"
+        p.state = Proc_S
+      ==>
+        p.val := v;      
+        Send(GetM, HomeDir, n, RequestChannel, UNDEFINED, UNDEFINED, 0);
+        p.state := Proc_SM_AD;
+      endrule;
+    endruleset;
+
+    ruleset v: Value Do
+      rule "I ==(store)==> M"
+        p.state = Proc_I
+      ==>
+        p.val := v;      
+        Send(GetM, HomeDir, n, RequestChannel, UNDEFINED, UNDEFINED, 0);
+        p.state := Proc_IM_AD;
+      endrule;
+    endruleset;
+
+    rule "I ==(load)==> S"
+      p.state = Proc_I 
+    ==>
+      Send(GetS, HomeDir, n, RequestChannel, UNDEFINED, UNDEFINED, 0);
+      p.state := Proc_IS_D;
+    endrule;
+
+  endalias;
+endruleset;
 
 -- Message delivery rules
 ruleset n:Node do
@@ -528,7 +619,6 @@ startstate
 
   -- directory node initialization
   HomeNode.state := Dir_I;
-  HomeNode.owner := HomeDir;
   HomeNode.ack_cnt := 0;
   undefine HomeNode.sharers;
 	For v:Value do

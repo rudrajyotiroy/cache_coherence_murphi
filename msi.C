@@ -1834,6 +1834,8 @@ const int mu_numVCs = 3;
 const int mu_QMax = 2;
 const int mu_NumVCs = 3;
 const int mu_NetMax = 4;
+const int mu_enableProcTrace = 1;
+const int mu_enableMsgTrace = 1;
 const int mu_Proc_1 = 1;
 const int mu_Proc_2 = 2;
 const int mu_Proc_3 = 3;
@@ -1889,6 +1891,49 @@ mu_0_boolean mu_msg_processed("msg_processed",1624);
 /*** Variable declaration ***/
 mu_1_Value mu_LastWrite("LastWrite",1632);
 
+void mu_EnumToStr(const mu_1_MessageType& mu_m)
+{
+switch ((int) mu_m) {
+case mu_GetS:
+cout << "GetS";
+break;
+case mu_GetM:
+cout << "GetM";
+break;
+case mu_PutS:
+cout << "PutS";
+break;
+case mu_PutM:
+cout << "PutM";
+break;
+case mu_Data:
+cout << "Data";
+break;
+case mu_InvAck:
+cout << "InvAck";
+break;
+case mu_PutAck:
+cout << "PutAck";
+break;
+case mu_FwdAck:
+cout << "FwdAck";
+break;
+case mu_Inv:
+cout << "Inv";
+break;
+case mu_FwdGetS:
+cout << "FwdGetS";
+break;
+case mu_FwdGetM:
+cout << "FwdGetM";
+break;
+default:
+cout << "Unknown MessageType";
+break;
+}
+};
+/*** end procedure declaration ***/
+
 void mu_Send(const mu_1_MessageType& mu_mtype, const mu_1_Node& mu_dst, const mu_1_Node& mu_src, const mu_1_channel_t& mu_vc, const mu_1_Value& mu_val, const mu_1_Node& mu_fwd_to, const mu_1_AckCount& mu_ack_cnt)
 {
 /*** Variable declaration ***/
@@ -1909,6 +1954,28 @@ mu_1_Message mu_msg("msg",0);
   }
 /*** end multisetcount 0 declaration ***/
 if ( !((mu__intexpr9) < (mu_NetMax)) ) Error.Error("Assertion failed: Too many messages");
+if ( 1 )
+{
+cout << "Msg :: type: ";
+mu_EnumToStr ( mu_mtype );
+cout << ", src: ";
+cout << ( mu_src );
+cout << ", dst: ";
+cout << ( mu_dst );
+cout << ", ack_cnt: ";
+cout << ( mu_ack_cnt );
+if ( !(mu_fwd_to.isundefined()) )
+{
+cout << ", fwd_to: ";
+cout << ( mu_fwd_to );
+}
+if ( !(mu_val.isundefined()) )
+{
+cout << ", val: ";
+cout << ( mu_val );
+}
+cout << "\n";
+}
 if (mu_mtype.isundefined())
   mu_msg.mu_mtype.undefine();
 else
@@ -2080,12 +2147,17 @@ void mu_HomeReceive(mu_1_Message& mu_msg)
 /*** Variable declaration ***/
 mu_1__type_8 mu_sharerCount("sharerCount",0);
 
+if ( 1 )
+{
 cout << "Receiving ";
 cout << ( mu_msg.mu_mtype );
-cout << " on VC ";
+cout << " from processor ";
+cout << ( mu_msg.mu_src );
+cout << " on ";
 cout << ( mu_msg.mu_vc );
 cout << " at home -- ";
 mu_HomeNode.mu_state.print();
+}
 /*** begin multisetcount 4 declaration ***/
   int mu__intexpr15 = 0;
   {
@@ -2316,13 +2388,18 @@ break;
 
 void mu_ProcReceive(mu_1_Message& mu_msg, const mu_1_Proc& mu_p)
 {
+if ( 1 )
+{
 cout << "Receiving ";
 cout << ( mu_msg.mu_mtype );
+cout << " from ";
+cout << ( mu_msg.mu_src );
 cout << " on VC ";
 cout << ( mu_msg.mu_vc );
 cout << " at proc ";
 cout << ( mu_p );
 cout << "\n";
+}
 mu_msg_processed = mu_true;
 {
   mu_1__type_2& mu_ps = mu_Procs[mu_p].mu_state;
@@ -2612,10 +2689,365 @@ mu_chan.multisetremove(mu_midx);
   bool UnFair()
   { return FALSE; }
 };
+/******************** RuleBase2 ********************/
+class RuleBase2
+{
+public:
+  int Priority()
+  {
+    return 0;
+  }
+  char * Name(unsigned r)
+  {
+    static mu_1_Proc mu_n;
+    mu_n.value((r % 3) + 1);
+    r = r / 3;
+    return tsprintf("I ==(load)==> S, n:%s", mu_n.Name());
+  }
+  bool Condition(unsigned r)
+  {
+    static mu_1_Proc mu_n;
+    mu_n.value((r % 3) + 1);
+    r = r / 3;
+  mu_1_ProcState& mu_p = mu_Procs[mu_n];
+  return (mu_p.mu_state) == (mu_Proc_I);
+  }
+
+  void NextRule(unsigned & what_rule)
+  {
+    unsigned r = what_rule - 28;
+    static mu_1_Proc mu_n;
+    mu_n.value((r % 3) + 1);
+    r = r / 3;
+    while (what_rule < 31 )
+      {
+        if ( ( TRUE  ) ) {
+  mu_1_ProcState& mu_p = mu_Procs[mu_n];
+              if ((mu_p.mu_state) == (mu_Proc_I)) {
+                if ( ( TRUE  ) )
+                  return;
+                else
+                  what_rule++;
+              }
+              else
+                what_rule += 1;
+        }
+        else
+          what_rule += 1;
+    r = what_rule - 28;
+    mu_n.value((r % 3) + 1);
+    r = r / 3;
+    }
+  }
+
+  void Code(unsigned r)
+  {
+    static mu_1_Proc mu_n;
+    mu_n.value((r % 3) + 1);
+    r = r / 3;
+  mu_1_ProcState& mu_p = mu_Procs[mu_n];
+mu_Send ( mu_GetS, (int)mu_HomeDir, (int)mu_n, mu_RequestChannel, mu_1_Value_undefined_var, mu_1_Node_undefined_var, 0 );
+mu_p.mu_state = mu_Proc_IS_D;
+  };
+
+  bool UnFair()
+  { return FALSE; }
+};
+/******************** RuleBase3 ********************/
+class RuleBase3
+{
+public:
+  int Priority()
+  {
+    return 0;
+  }
+  char * Name(unsigned r)
+  {
+    static mu_1_Value mu_v;
+    mu_v.value((r % 2) + 4);
+    r = r / 2;
+    static mu_1_Proc mu_n;
+    mu_n.value((r % 3) + 1);
+    r = r / 3;
+    return tsprintf("I ==(store)==> M, v:%s, n:%s", mu_v.Name(), mu_n.Name());
+  }
+  bool Condition(unsigned r)
+  {
+    static mu_1_Value mu_v;
+    mu_v.value((r % 2) + 4);
+    r = r / 2;
+    static mu_1_Proc mu_n;
+    mu_n.value((r % 3) + 1);
+    r = r / 3;
+  mu_1_ProcState& mu_p = mu_Procs[mu_n];
+  return (mu_p.mu_state) == (mu_Proc_I);
+  }
+
+  void NextRule(unsigned & what_rule)
+  {
+    unsigned r = what_rule - 31;
+    static mu_1_Value mu_v;
+    mu_v.value((r % 2) + 4);
+    r = r / 2;
+    static mu_1_Proc mu_n;
+    mu_n.value((r % 3) + 1);
+    r = r / 3;
+    while (what_rule < 37 )
+      {
+        if ( ( TRUE  ) ) {
+  mu_1_ProcState& mu_p = mu_Procs[mu_n];
+              if ((mu_p.mu_state) == (mu_Proc_I)) {
+                if ( ( TRUE  ) )
+                  return;
+                else
+                  what_rule++;
+              }
+              else
+                what_rule += 2;
+        }
+        else
+          what_rule += 2;
+    r = what_rule - 31;
+    mu_v.value((r % 2) + 4);
+    r = r / 2;
+    mu_n.value((r % 3) + 1);
+    r = r / 3;
+    }
+  }
+
+  void Code(unsigned r)
+  {
+    static mu_1_Value mu_v;
+    mu_v.value((r % 2) + 4);
+    r = r / 2;
+    static mu_1_Proc mu_n;
+    mu_n.value((r % 3) + 1);
+    r = r / 3;
+  mu_1_ProcState& mu_p = mu_Procs[mu_n];
+mu_p.mu_val = mu_v;
+mu_Send ( mu_GetM, (int)mu_HomeDir, (int)mu_n, mu_RequestChannel, mu_1_Value_undefined_var, mu_1_Node_undefined_var, 0 );
+mu_p.mu_state = mu_Proc_IM_AD;
+  };
+
+  bool UnFair()
+  { return FALSE; }
+};
+/******************** RuleBase4 ********************/
+class RuleBase4
+{
+public:
+  int Priority()
+  {
+    return 0;
+  }
+  char * Name(unsigned r)
+  {
+    static mu_1_Value mu_v;
+    mu_v.value((r % 2) + 4);
+    r = r / 2;
+    static mu_1_Proc mu_n;
+    mu_n.value((r % 3) + 1);
+    r = r / 3;
+    return tsprintf("S ==(store)==> M, v:%s, n:%s", mu_v.Name(), mu_n.Name());
+  }
+  bool Condition(unsigned r)
+  {
+    static mu_1_Value mu_v;
+    mu_v.value((r % 2) + 4);
+    r = r / 2;
+    static mu_1_Proc mu_n;
+    mu_n.value((r % 3) + 1);
+    r = r / 3;
+  mu_1_ProcState& mu_p = mu_Procs[mu_n];
+  return (mu_p.mu_state) == (mu_Proc_S);
+  }
+
+  void NextRule(unsigned & what_rule)
+  {
+    unsigned r = what_rule - 37;
+    static mu_1_Value mu_v;
+    mu_v.value((r % 2) + 4);
+    r = r / 2;
+    static mu_1_Proc mu_n;
+    mu_n.value((r % 3) + 1);
+    r = r / 3;
+    while (what_rule < 43 )
+      {
+        if ( ( TRUE  ) ) {
+  mu_1_ProcState& mu_p = mu_Procs[mu_n];
+              if ((mu_p.mu_state) == (mu_Proc_S)) {
+                if ( ( TRUE  ) )
+                  return;
+                else
+                  what_rule++;
+              }
+              else
+                what_rule += 2;
+        }
+        else
+          what_rule += 2;
+    r = what_rule - 37;
+    mu_v.value((r % 2) + 4);
+    r = r / 2;
+    mu_n.value((r % 3) + 1);
+    r = r / 3;
+    }
+  }
+
+  void Code(unsigned r)
+  {
+    static mu_1_Value mu_v;
+    mu_v.value((r % 2) + 4);
+    r = r / 2;
+    static mu_1_Proc mu_n;
+    mu_n.value((r % 3) + 1);
+    r = r / 3;
+  mu_1_ProcState& mu_p = mu_Procs[mu_n];
+mu_p.mu_val = mu_v;
+mu_Send ( mu_GetM, (int)mu_HomeDir, (int)mu_n, mu_RequestChannel, mu_1_Value_undefined_var, mu_1_Node_undefined_var, 0 );
+mu_p.mu_state = mu_Proc_SM_AD;
+  };
+
+  bool UnFair()
+  { return FALSE; }
+};
+/******************** RuleBase5 ********************/
+class RuleBase5
+{
+public:
+  int Priority()
+  {
+    return 0;
+  }
+  char * Name(unsigned r)
+  {
+    static mu_1_Proc mu_n;
+    mu_n.value((r % 3) + 1);
+    r = r / 3;
+    return tsprintf("S ==(evict)==> I, n:%s", mu_n.Name());
+  }
+  bool Condition(unsigned r)
+  {
+    static mu_1_Proc mu_n;
+    mu_n.value((r % 3) + 1);
+    r = r / 3;
+  mu_1_ProcState& mu_p = mu_Procs[mu_n];
+  return (mu_p.mu_state) == (mu_Proc_S);
+  }
+
+  void NextRule(unsigned & what_rule)
+  {
+    unsigned r = what_rule - 43;
+    static mu_1_Proc mu_n;
+    mu_n.value((r % 3) + 1);
+    r = r / 3;
+    while (what_rule < 46 )
+      {
+        if ( ( TRUE  ) ) {
+  mu_1_ProcState& mu_p = mu_Procs[mu_n];
+              if ((mu_p.mu_state) == (mu_Proc_S)) {
+                if ( ( TRUE  ) )
+                  return;
+                else
+                  what_rule++;
+              }
+              else
+                what_rule += 1;
+        }
+        else
+          what_rule += 1;
+    r = what_rule - 43;
+    mu_n.value((r % 3) + 1);
+    r = r / 3;
+    }
+  }
+
+  void Code(unsigned r)
+  {
+    static mu_1_Proc mu_n;
+    mu_n.value((r % 3) + 1);
+    r = r / 3;
+  mu_1_ProcState& mu_p = mu_Procs[mu_n];
+mu_Send ( mu_PutS, (int)mu_HomeDir, (int)mu_n, mu_RequestChannel, mu_1_Value_undefined_var, mu_1_Node_undefined_var, 0 );
+mu_p.mu_state = mu_Proc_SI_A;
+  };
+
+  bool UnFair()
+  { return FALSE; }
+};
+/******************** RuleBase6 ********************/
+class RuleBase6
+{
+public:
+  int Priority()
+  {
+    return 0;
+  }
+  char * Name(unsigned r)
+  {
+    static mu_1_Proc mu_n;
+    mu_n.value((r % 3) + 1);
+    r = r / 3;
+    return tsprintf("M ==(evict)==> I, n:%s", mu_n.Name());
+  }
+  bool Condition(unsigned r)
+  {
+    static mu_1_Proc mu_n;
+    mu_n.value((r % 3) + 1);
+    r = r / 3;
+  mu_1_ProcState& mu_p = mu_Procs[mu_n];
+  return (mu_p.mu_state) == (mu_Proc_M);
+  }
+
+  void NextRule(unsigned & what_rule)
+  {
+    unsigned r = what_rule - 46;
+    static mu_1_Proc mu_n;
+    mu_n.value((r % 3) + 1);
+    r = r / 3;
+    while (what_rule < 49 )
+      {
+        if ( ( TRUE  ) ) {
+  mu_1_ProcState& mu_p = mu_Procs[mu_n];
+              if ((mu_p.mu_state) == (mu_Proc_M)) {
+                if ( ( TRUE  ) )
+                  return;
+                else
+                  what_rule++;
+              }
+              else
+                what_rule += 1;
+        }
+        else
+          what_rule += 1;
+    r = what_rule - 46;
+    mu_n.value((r % 3) + 1);
+    r = r / 3;
+    }
+  }
+
+  void Code(unsigned r)
+  {
+    static mu_1_Proc mu_n;
+    mu_n.value((r % 3) + 1);
+    r = r / 3;
+  mu_1_ProcState& mu_p = mu_Procs[mu_n];
+mu_Send ( mu_PutM, (int)mu_HomeDir, (int)mu_n, mu_RequestChannel, mu_p.mu_val, mu_1_Node_undefined_var, 0 );
+mu_p.mu_state = mu_Proc_MI_A;
+  };
+
+  bool UnFair()
+  { return FALSE; }
+};
 class NextStateGenerator
 {
   RuleBase0 R0;
   RuleBase1 R1;
+  RuleBase2 R2;
+  RuleBase3 R3;
+  RuleBase4 R4;
+  RuleBase5 R5;
+  RuleBase6 R6;
 public:
 void SetNextEnabledRule(unsigned & what_rule)
 {
@@ -2626,37 +3058,72 @@ void SetNextEnabledRule(unsigned & what_rule)
   if (what_rule>=12 && what_rule<28)
     { R1.NextRule(what_rule);
       if (what_rule<28) return; }
+  if (what_rule>=28 && what_rule<31)
+    { R2.NextRule(what_rule);
+      if (what_rule<31) return; }
+  if (what_rule>=31 && what_rule<37)
+    { R3.NextRule(what_rule);
+      if (what_rule<37) return; }
+  if (what_rule>=37 && what_rule<43)
+    { R4.NextRule(what_rule);
+      if (what_rule<43) return; }
+  if (what_rule>=43 && what_rule<46)
+    { R5.NextRule(what_rule);
+      if (what_rule<46) return; }
+  if (what_rule>=46 && what_rule<49)
+    { R6.NextRule(what_rule);
+      if (what_rule<49) return; }
 }
 bool Condition(unsigned r)
 {
   category = CONDITION;
   if (r<=11) return R0.Condition(r-0);
   if (r>=12 && r<=27) return R1.Condition(r-12);
+  if (r>=28 && r<=30) return R2.Condition(r-28);
+  if (r>=31 && r<=36) return R3.Condition(r-31);
+  if (r>=37 && r<=42) return R4.Condition(r-37);
+  if (r>=43 && r<=45) return R5.Condition(r-43);
+  if (r>=46 && r<=48) return R6.Condition(r-46);
 Error.Notrace("Internal: NextStateGenerator -- checking condition for nonexisting rule.");
 }
 void Code(unsigned r)
 {
   if (r<=11) { R0.Code(r-0); return; } 
   if (r>=12 && r<=27) { R1.Code(r-12); return; } 
+  if (r>=28 && r<=30) { R2.Code(r-28); return; } 
+  if (r>=31 && r<=36) { R3.Code(r-31); return; } 
+  if (r>=37 && r<=42) { R4.Code(r-37); return; } 
+  if (r>=43 && r<=45) { R5.Code(r-43); return; } 
+  if (r>=46 && r<=48) { R6.Code(r-46); return; } 
 }
 int Priority(unsigned short r)
 {
   if (r<=11) { return R0.Priority(); } 
   if (r>=12 && r<=27) { return R1.Priority(); } 
+  if (r>=28 && r<=30) { return R2.Priority(); } 
+  if (r>=31 && r<=36) { return R3.Priority(); } 
+  if (r>=37 && r<=42) { return R4.Priority(); } 
+  if (r>=43 && r<=45) { return R5.Priority(); } 
+  if (r>=46 && r<=48) { return R6.Priority(); } 
 }
 char * Name(unsigned r)
 {
   if (r<=11) return R0.Name(r-0);
   if (r>=12 && r<=27) return R1.Name(r-12);
+  if (r>=28 && r<=30) return R2.Name(r-28);
+  if (r>=31 && r<=36) return R3.Name(r-31);
+  if (r>=37 && r<=42) return R4.Name(r-37);
+  if (r>=43 && r<=45) return R5.Name(r-43);
+  if (r>=46 && r<=48) return R6.Name(r-46);
   return NULL;
 }
 };
-const unsigned numrules = 28;
+const unsigned numrules = 49;
 
 /********************
   parameter
  ********************/
-#define RULES_IN_WORLD 28
+#define RULES_IN_WORLD 49
 
 
 /********************
@@ -2673,7 +3140,6 @@ public:
   void Code(unsigned short r)
   {
 mu_HomeNode.mu_state = mu_Dir_I;
-mu_HomeNode.mu_owner = mu_HomeDir;
 mu_HomeNode.mu_ack_cnt = 0;
 mu_HomeNode.mu_sharers.undefine();
 {
