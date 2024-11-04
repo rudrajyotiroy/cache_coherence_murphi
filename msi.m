@@ -31,9 +31,10 @@ const
 	numVCs:	3;
 	QMax: 2;
 	NumVCs: 3;
-	NetMax: ProcCount+1;
+	NetMax: ProcCount+10;
 	enableProcTrace: 0;
 	enableMsgTrace: 1;
+  maxMsgs: 99999;
 
 ----------------------------------------------------------------------
 -- Types
@@ -44,6 +45,7 @@ type
 	Home: enum { HomeDir };
 	Node: union { Home , Proc };
 	VCType: 0..NumVCs-1;
+  counter_t: 0..maxMsgs-1;
 	AckCount:	(1-ProcCount)..ProcCount-1; -- Negative values for debugging only
 	channel_t: enum{
 						RequestChannel,
@@ -73,6 +75,7 @@ type
 		Record
 			mtype: MessageType;
 			src: Node;
+      mid: counter_t; -- debug purpose
 			-- do not need a destination for verification; the destination is indicated by which array entry in the Net the message is placed
 			vc: channel_t;
 			val: Value;
@@ -132,6 +135,7 @@ var
 	Net:   array [Node] of multiset [NetMax] of Message;  -- One multiset for each destination - messages are arbitrarily reordered by the multiset
 	InBox: array [Node] of array [channel_t] of Message; -- If a message is not processed, it is placed in InBox, blocking that virtual channel
 	msg_processed: boolean;
+  running_msgid: counter_t;
 	LastWrite: Value; -- Used to confirm that writes are not lost; this variable would not exist in real hardware
 
 ----------------------------------------------------------------------
@@ -190,7 +194,8 @@ begin
   end;
 end;
 
-Procedure msgTrace(mtype:MessageType;
+Procedure msgTrace(mid:counter_t;
+         mtype:MessageType;
 				 dst:			Node;
 				 src:			Node;
 				 vc:			channel_t;
@@ -199,7 +204,9 @@ Procedure msgTrace(mtype:MessageType;
          ack_cnt: AckCount;
          );
   if enableMsgTrace=1 then
-		put "Msg :: type: ";
+		put "Msg ";
+    put mid;
+    put ":: type: ";
 		MsgEnumToStr(mtype);
 		put ", src: ";
 		put src;
@@ -237,7 +244,9 @@ var
 Begin
 	Assert (MultiSetCount(i:Net[dst], true) < NetMax) "Too many messages";
   put " Create ";
-	msgTrace(mtype, dst, src, vc, val, fwd_to, ack_cnt);
+  msg.mid   := running_msgid;
+  running_msgid :=  running_msgid + 1;
+	msgTrace(msg.mid, mtype, dst, src, vc, val, fwd_to, ack_cnt);
 	msg.mtype := mtype;
 	msg.src   := src;
 	msg.vc    := vc;
@@ -787,7 +796,7 @@ ruleset n:Node do
 			(isundefined(box[msg.vc].mtype))
 		==>
       put "  Receive ";
-      msgTrace(msg.mtype, n, msg.src, msg.vc, msg.val, msg.fwd_to, msg.ack_cnt);
+      msgTrace(msg.mid, msg.mtype, n, msg.src, msg.vc, msg.val, msg.fwd_to, msg.ack_cnt);
 			if IsMember(n, Home)
 			then
 				HomeReceive(msg);
@@ -846,6 +855,7 @@ startstate
   	HomeNode.val := v;
 	endfor;
 	LastWrite := HomeNode.val;
+  running_msgid := 0;
   
   -- processor initialization
 	-- independent iterations ignore warning

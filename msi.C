@@ -11,7 +11,7 @@
 #define MURPHI_VERSION "Murphi Release 3.1"
 #define MURPHI_DATE "Jan 29 1999"
 #define PROTOCOL_NAME "msi"
-#define BITS_IN_WORLD 1568
+#define BITS_IN_WORLD 2176
 #define ALIGN
 
 /********************
@@ -249,6 +249,32 @@ class mu_1_VCType: public mu__byte
 /*** end of subrange decl ***/
 mu_1_VCType mu_1_VCType_undefined_var;
 
+class mu_1_counter_t: public mu__long
+{
+ public:
+  inline int operator=(int val) { return mu__long::operator=(val); };
+  inline int operator=(const mu_1_counter_t& val) { return mu__long::operator=((int) val); };
+  mu_1_counter_t (char *name, int os): mu__long(0, 99998, 17, name, os) {};
+  mu_1_counter_t (void): mu__long(0, 99998, 17) {};
+  mu_1_counter_t (int val): mu__long(0, 99998, 17, "Parameter or function result.", 0)
+  {
+    operator=(val);
+  };
+  char * Name() { return tsprintf("%d",value()); };
+  virtual void Permute(PermSet& Perm, int i);
+  virtual void SimpleCanonicalize(PermSet& Perm);
+  virtual void Canonicalize(PermSet& Perm);
+  virtual void SimpleLimit(PermSet& Perm);
+  virtual void ArrayLimit(PermSet& Perm);
+  virtual void Limit(PermSet& Perm);
+  virtual void MultisetLimit(PermSet& Perm);
+  virtual void MultisetSort() {};
+  void print_statistic() {};
+};
+
+/*** end of subrange decl ***/
+mu_1_counter_t mu_1_counter_t_undefined_var;
+
 class mu_1_AckCount: public mu__long
 {
  public:
@@ -371,6 +397,7 @@ class mu_1_Message
   void set_self(char *n, int os);
   mu_1_MessageType mu_mtype;
   mu_1_Node mu_src;
+  mu_1_counter_t mu_mid;
   mu_1_channel_t mu_vc;
   mu_1_Value mu_val;
   mu_1_Node mu_fwd_to;
@@ -385,6 +412,8 @@ friend int CompareWeight(mu_1_Message& a, mu_1_Message& b)
     w = CompareWeight(a.mu_mtype, b.mu_mtype);
     if (w!=0) return w;
     w = CompareWeight(a.mu_src, b.mu_src);
+    if (w!=0) return w;
+    w = CompareWeight(a.mu_mid, b.mu_mid);
     if (w!=0) return w;
     w = CompareWeight(a.mu_vc, b.mu_vc);
     if (w!=0) return w;
@@ -402,6 +431,8 @@ friend int Compare(mu_1_Message& a, mu_1_Message& b)
     w = Compare(a.mu_mtype, b.mu_mtype);
     if (w!=0) return w;
     w = Compare(a.mu_src, b.mu_src);
+    if (w!=0) return w;
+    w = Compare(a.mu_mid, b.mu_mid);
     if (w!=0) return w;
     w = Compare(a.mu_vc, b.mu_vc);
     if (w!=0) return w;
@@ -424,6 +455,7 @@ friend int Compare(mu_1_Message& a, mu_1_Message& b)
   {
     mu_mtype.MultisetSort();
     mu_src.MultisetSort();
+    mu_mid.MultisetSort();
     mu_vc.MultisetSort();
     mu_val.MultisetSort();
     mu_fwd_to.MultisetSort();
@@ -433,6 +465,7 @@ friend int Compare(mu_1_Message& a, mu_1_Message& b)
   {
     mu_mtype.print_statistic();
     mu_src.print_statistic();
+    mu_mid.print_statistic();
     mu_vc.print_statistic();
     mu_val.print_statistic();
     mu_fwd_to.print_statistic();
@@ -441,6 +474,7 @@ friend int Compare(mu_1_Message& a, mu_1_Message& b)
   void clear() {
     mu_mtype.clear();
     mu_src.clear();
+    mu_mid.clear();
     mu_vc.clear();
     mu_val.clear();
     mu_fwd_to.clear();
@@ -449,6 +483,7 @@ friend int Compare(mu_1_Message& a, mu_1_Message& b)
   void undefine() {
     mu_mtype.undefine();
     mu_src.undefine();
+    mu_mid.undefine();
     mu_vc.undefine();
     mu_val.undefine();
     mu_fwd_to.undefine();
@@ -457,6 +492,7 @@ friend int Compare(mu_1_Message& a, mu_1_Message& b)
   void reset() {
     mu_mtype.reset();
     mu_src.reset();
+    mu_mid.reset();
     mu_vc.reset();
     mu_val.reset();
     mu_fwd_to.reset();
@@ -465,6 +501,7 @@ friend int Compare(mu_1_Message& a, mu_1_Message& b)
   void print() {
     mu_mtype.print();
     mu_src.print();
+    mu_mid.print();
     mu_vc.print();
     mu_val.print();
     mu_fwd_to.print();
@@ -473,6 +510,7 @@ friend int Compare(mu_1_Message& a, mu_1_Message& b)
   void print_diff(state *prevstate) {
     mu_mtype.print_diff(prevstate);
     mu_src.print_diff(prevstate);
+    mu_mid.print_diff(prevstate);
     mu_vc.print_diff(prevstate);
     mu_val.print_diff(prevstate);
     mu_fwd_to.print_diff(prevstate);
@@ -481,6 +519,7 @@ friend int Compare(mu_1_Message& a, mu_1_Message& b)
   void to_state(state *thestate) {
     mu_mtype.to_state(thestate);
     mu_src.to_state(thestate);
+    mu_mid.to_state(thestate);
     mu_vc.to_state(thestate);
     mu_val.to_state(thestate);
     mu_fwd_to.to_state(thestate);
@@ -491,6 +530,7 @@ virtual bool ismember() { Error.Error("Checking membership for a non-base type")
   mu_1_Message& operator= (const mu_1_Message& from) {
     mu_mtype.value(from.mu_mtype.value());
     mu_src.value(from.mu_src.value());
+    mu_mid.value(from.mu_mid.value());
     mu_vc.value(from.mu_vc.value());
     mu_val.value(from.mu_val.value());
     mu_fwd_to.value(from.mu_fwd_to.value());
@@ -518,10 +558,11 @@ void mu_1_Message::set_self(char *n, int os)
   name = n;
   mu_mtype.set_self_2(name, ".mtype", os + 0 );
   mu_src.set_self_2(name, ".src", os + 8 );
-  mu_vc.set_self_2(name, ".vc", os + 16 );
-  mu_val.set_self_2(name, ".val", os + 24 );
-  mu_fwd_to.set_self_2(name, ".fwd_to", os + 32 );
-  mu_ack_cnt.set_self_2(name, ".ack_cnt", os + 40 );
+  mu_mid.set_self_2(name, ".mid", os + 16 );
+  mu_vc.set_self_2(name, ".vc", os + 48 );
+  mu_val.set_self_2(name, ".val", os + 56 );
+  mu_fwd_to.set_self_2(name, ".fwd_to", os + 64 );
+  mu_ack_cnt.set_self_2(name, ".ack_cnt", os + 72 );
 }
 
 mu_1_Message::~mu_1_Message()
@@ -1436,8 +1477,8 @@ void mu_1__type_4::set_self( char *n, int os)
   int i,k;
   name = n;
   for(i = 0; i < 3; i++)
-    array[i].set_self(tsprintf("%s{%d}", n,i), i * 72 + os);
-  k = os + i * 72;
+    array[i].set_self(tsprintf("%s{%d}", n,i), i * 104 + os);
+  k = os + i * 104;
   for(i = 0; i < 3; i++)
     valid[i].set_self("", i * 8 + k);
 };
@@ -1551,9 +1592,9 @@ void mu_1__type_5::set_self( char *n, int os)
   {
     int i=0;
     name = n;
-array[i].set_self_ar(n,"HomeDir", i * 240 + os);i++;
-array[i].set_self_ar(n,"Proc_1", i * 240 + os);i++;
-array[i].set_self_ar(n,"Proc_2", i * 240 + os);i++;
+array[i].set_self_ar(n,"HomeDir", i * 336 + os);i++;
+array[i].set_self_ar(n,"Proc_1", i * 336 + os);i++;
+array[i].set_self_ar(n,"Proc_2", i * 336 + os);i++;
 }
 mu_1__type_5::~mu_1__type_5()
 {
@@ -1675,9 +1716,9 @@ friend int Compare(mu_1__type_6& a, mu_1__type_6& b)
     int i=0;
     name = n;
 
-array[i].set_self_ar(n,"RequestChannel", i * 72 + os);i++;
-array[i].set_self_ar(n,"ResponseChannel", i * 72 + os);i++;
-array[i].set_self_ar(n,"ForwardChannel", i * 72 + os);i++;
+array[i].set_self_ar(n,"RequestChannel", i * 104 + os);i++;
+array[i].set_self_ar(n,"ResponseChannel", i * 104 + os);i++;
+array[i].set_self_ar(n,"ForwardChannel", i * 104 + os);i++;
   }
 mu_1__type_6::~mu_1__type_6()
 {
@@ -1789,9 +1830,9 @@ void mu_1__type_7::set_self( char *n, int os)
   {
     int i=0;
     name = n;
-array[i].set_self_ar(n,"HomeDir", i * 216 + os);i++;
-array[i].set_self_ar(n,"Proc_1", i * 216 + os);i++;
-array[i].set_self_ar(n,"Proc_2", i * 216 + os);i++;
+array[i].set_self_ar(n,"HomeDir", i * 312 + os);i++;
+array[i].set_self_ar(n,"Proc_1", i * 312 + os);i++;
+array[i].set_self_ar(n,"Proc_2", i * 312 + os);i++;
 }
 mu_1__type_7::~mu_1__type_7()
 {
@@ -1833,6 +1874,7 @@ const int mu_NumVCs = 3;
 const int mu_NetMax = 3;
 const int mu_enableProcTrace = 0;
 const int mu_enableMsgTrace = 1;
+const int mu_maxMsgs = 99999;
 const int mu_Proc_1 = 1;
 const int mu_Proc_2 = 2;
 const int mu_Value_1 = 3;
@@ -1879,13 +1921,16 @@ mu_1__type_3 mu_Procs("Procs",88);
 mu_1__type_5 mu_Net("Net",184);
 
 /*** Variable declaration ***/
-mu_1__type_7 mu_InBox("InBox",904);
+mu_1__type_7 mu_InBox("InBox",1192);
 
 /*** Variable declaration ***/
-mu_0_boolean mu_msg_processed("msg_processed",1552);
+mu_0_boolean mu_msg_processed("msg_processed",2128);
 
 /*** Variable declaration ***/
-mu_1_Value mu_LastWrite("LastWrite",1560);
+mu_1_counter_t mu_running_msgid("running_msgid",2136);
+
+/*** Variable declaration ***/
+mu_1_Value mu_LastWrite("LastWrite",2168);
 
 void mu_MsgEnumToStr(const mu_1_MessageType& mu_m)
 {
@@ -2002,11 +2047,13 @@ break;
 };
 /*** end procedure declaration ***/
 
-void mu_msgTrace(const mu_1_MessageType& mu_mtype, const mu_1_Node& mu_dst, const mu_1_Node& mu_src, const mu_1_channel_t& mu_vc, const mu_1_Value& mu_val, const mu_1_Node& mu_fwd_to, const mu_1_AckCount& mu_ack_cnt)
+void mu_msgTrace(const mu_1_counter_t& mu_mid, const mu_1_MessageType& mu_mtype, const mu_1_Node& mu_dst, const mu_1_Node& mu_src, const mu_1_channel_t& mu_vc, const mu_1_Value& mu_val, const mu_1_Node& mu_fwd_to, const mu_1_AckCount& mu_ack_cnt)
 {
 if ( 1 )
 {
-cout << "Msg :: type: ";
+cout << "Msg ";
+cout << ( mu_mid );
+cout << ":: type: ";
 mu_MsgEnumToStr ( mu_mtype );
 cout << ", src: ";
 cout << ( mu_src );
@@ -2054,7 +2101,12 @@ mu_1_Message mu_msg("msg",0);
 /*** end multisetcount 0 declaration ***/
 if ( !((mu__intexpr9) < (mu_NetMax)) ) Error.Error("Assertion failed: Too many messages");
 cout << " Create ";
-mu_msgTrace ( mu_mtype, mu_dst, mu_src, mu_vc, mu_val, mu_fwd_to, mu_ack_cnt );
+if (mu_running_msgid.isundefined())
+  mu_msg.mu_mid.undefine();
+else
+  mu_msg.mu_mid = mu_running_msgid;
+mu_running_msgid = (mu_running_msgid) + (1);
+mu_msgTrace ( mu_msg.mu_mid, mu_mtype, mu_dst, mu_src, mu_vc, mu_val, mu_fwd_to, mu_ack_cnt );
 if (mu_mtype.isundefined())
   mu_msg.mu_mtype.undefine();
 else
@@ -2749,6 +2801,7 @@ void world_class::clear()
   mu_Net.clear();
   mu_InBox.clear();
   mu_msg_processed.clear();
+  mu_running_msgid.clear();
   mu_LastWrite.clear();
 }
 void world_class::undefine()
@@ -2758,6 +2811,7 @@ void world_class::undefine()
   mu_Net.undefine();
   mu_InBox.undefine();
   mu_msg_processed.undefine();
+  mu_running_msgid.undefine();
   mu_LastWrite.undefine();
 }
 void world_class::reset()
@@ -2767,6 +2821,7 @@ void world_class::reset()
   mu_Net.reset();
   mu_InBox.reset();
   mu_msg_processed.reset();
+  mu_running_msgid.reset();
   mu_LastWrite.reset();
 }
 void world_class::print()
@@ -2779,6 +2834,7 @@ void world_class::print()
   mu_Net.print();
   mu_InBox.print();
   mu_msg_processed.print();
+  mu_running_msgid.print();
   mu_LastWrite.print();
     num_calls--;
 }
@@ -2793,6 +2849,7 @@ void world_class::print_statistic()
   mu_Net.print_statistic();
   mu_InBox.print_statistic();
   mu_msg_processed.print_statistic();
+  mu_running_msgid.print_statistic();
   mu_LastWrite.print_statistic();
     num_calls--;
 }
@@ -2806,6 +2863,7 @@ void world_class::print_diff( state *prevstate )
     mu_Net.print_diff(prevstate);
     mu_InBox.print_diff(prevstate);
     mu_msg_processed.print_diff(prevstate);
+    mu_running_msgid.print_diff(prevstate);
     mu_LastWrite.print_diff(prevstate);
   }
   else
@@ -2818,6 +2876,7 @@ void world_class::to_state(state *newstate)
   mu_Net.to_state( newstate );
   mu_InBox.to_state( newstate );
   mu_msg_processed.to_state( newstate );
+  mu_running_msgid.to_state( newstate );
   mu_LastWrite.to_state( newstate );
 }
 void world_class::setstate(state *thestate)
@@ -2992,7 +3051,7 @@ public:
   mu_1_Message& mu_msg = mu_chan[mu_midx];
   mu_1__type_6& mu_box = mu_InBox[mu_n];
 cout << "  Receive ";
-mu_msgTrace ( mu_msg.mu_mtype, mu_n, mu_msg.mu_src, mu_msg.mu_vc, mu_msg.mu_val, mu_msg.mu_fwd_to, mu_msg.mu_ack_cnt );
+mu_msgTrace ( mu_msg.mu_mid, mu_msg.mu_mtype, mu_n, mu_msg.mu_src, mu_msg.mu_vc, mu_msg.mu_val, mu_msg.mu_fwd_to, mu_msg.mu_ack_cnt );
 if ( (mu_n>=5 && mu_n<=5) )
 {
 mu_HomeReceive ( mu_msg );
@@ -3475,6 +3534,7 @@ mu_HomeNode.mu_val = mu_v;
 };
 };
 mu_LastWrite = mu_HomeNode.mu_val;
+mu_running_msgid = 0;
 {
 for(int mu_i = 1; mu_i <= 2; mu_i++) {
 mu_Procs[mu_i].mu_state = mu_Proc_I;
@@ -3670,12 +3730,13 @@ const unsigned short numfairnesses = 0;
   Normal/Canonicalization for scalarset
  ********************/
 /*
+running_msgid:NoScalarset
 msg_processed:NoScalarset
 LastWrite:ScalarsetVariable
-Procs:ScalarsetArrayOfScalarset
 InBox:ScalarsetArrayOfScalarset
-Net:Complex
+Procs:ScalarsetArrayOfScalarset
 HomeNode:Complex
+Net:Complex
 */
 
 /********************
@@ -4294,12 +4355,13 @@ public:
  ********************/
 void SymmetryClass::MultisetSort(state* s)
 {
+        mu_running_msgid.MultisetSort();
         mu_msg_processed.MultisetSort();
         mu_LastWrite.MultisetSort();
-        mu_Procs.MultisetSort();
         mu_InBox.MultisetSort();
-        mu_Net.MultisetSort();
+        mu_Procs.MultisetSort();
         mu_HomeNode.MultisetSort();
+        mu_Net.MultisetSort();
 }
 void SymmetryClass::Normalize(state* s)
 {
@@ -4498,6 +4560,14 @@ void mu_1_VCType::SimpleLimit(PermSet& Perm) {};
 void mu_1_VCType::ArrayLimit(PermSet& Perm) {};
 void mu_1_VCType::Limit(PermSet& Perm) {};
 void mu_1_VCType::MultisetLimit(PermSet& Perm)
+{ Error.Error("Internal: calling MultisetLimit for subrange type.\n"); };
+void mu_1_counter_t::Permute(PermSet& Perm, int i) {};
+void mu_1_counter_t::SimpleCanonicalize(PermSet& Perm) {};
+void mu_1_counter_t::Canonicalize(PermSet& Perm) {};
+void mu_1_counter_t::SimpleLimit(PermSet& Perm) {};
+void mu_1_counter_t::ArrayLimit(PermSet& Perm) {};
+void mu_1_counter_t::Limit(PermSet& Perm) {};
+void mu_1_counter_t::MultisetLimit(PermSet& Perm)
 { Error.Error("Internal: calling MultisetLimit for subrange type.\n"); };
 void mu_1_AckCount::Permute(PermSet& Perm, int i) {};
 void mu_1_AckCount::SimpleCanonicalize(PermSet& Perm) {};
@@ -6822,24 +6892,27 @@ bool match(state* ns, StatePtr p)
               if (ns != workingstate)
                   StateCopy(workingstate, ns);
               
+              mu_running_msgid.Permute(Perm,i);
+              if (args->multiset_reduction.value)
+                mu_running_msgid.MultisetSort();
               mu_msg_processed.Permute(Perm,i);
               if (args->multiset_reduction.value)
                 mu_msg_processed.MultisetSort();
               mu_LastWrite.Permute(Perm,i);
               if (args->multiset_reduction.value)
                 mu_LastWrite.MultisetSort();
-              mu_Procs.Permute(Perm,i);
-              if (args->multiset_reduction.value)
-                mu_Procs.MultisetSort();
               mu_InBox.Permute(Perm,i);
               if (args->multiset_reduction.value)
                 mu_InBox.MultisetSort();
-              mu_Net.Permute(Perm,i);
+              mu_Procs.Permute(Perm,i);
               if (args->multiset_reduction.value)
-                mu_Net.MultisetSort();
+                mu_Procs.MultisetSort();
               mu_HomeNode.Permute(Perm,i);
               if (args->multiset_reduction.value)
                 mu_HomeNode.MultisetSort();
+              mu_Net.Permute(Perm,i);
+              if (args->multiset_reduction.value)
+                mu_Net.MultisetSort();
             if (p.compare(workingstate)) {
               StateCopy(workingstate,&temp); return TRUE; }
           }
@@ -6852,24 +6925,27 @@ bool match(state* ns, StatePtr p)
         if (ns != workingstate)
           StateCopy(workingstate, ns);
 
+          mu_running_msgid.Permute(Perm,0);
+          if (args->multiset_reduction.value)
+            mu_running_msgid.MultisetSort();
           mu_msg_processed.Permute(Perm,0);
           if (args->multiset_reduction.value)
             mu_msg_processed.MultisetSort();
           mu_LastWrite.Permute(Perm,0);
           if (args->multiset_reduction.value)
             mu_LastWrite.MultisetSort();
-          mu_Procs.Permute(Perm,0);
-          if (args->multiset_reduction.value)
-            mu_Procs.MultisetSort();
           mu_InBox.Permute(Perm,0);
           if (args->multiset_reduction.value)
             mu_InBox.MultisetSort();
-          mu_Net.Permute(Perm,0);
+          mu_Procs.Permute(Perm,0);
           if (args->multiset_reduction.value)
-            mu_Net.MultisetSort();
+            mu_Procs.MultisetSort();
           mu_HomeNode.Permute(Perm,0);
           if (args->multiset_reduction.value)
             mu_HomeNode.MultisetSort();
+          mu_Net.Permute(Perm,0);
+          if (args->multiset_reduction.value)
+            mu_Net.MultisetSort();
         if (p.compare(workingstate)) {
           StateCopy(workingstate,&temp); return TRUE; }
 
@@ -6878,24 +6954,27 @@ bool match(state* ns, StatePtr p)
             if (ns != workingstate)
               StateCopy(workingstate, ns);
               
+              mu_running_msgid.Permute(Perm,0);
+              if (args->multiset_reduction.value)
+                mu_running_msgid.MultisetSort();
               mu_msg_processed.Permute(Perm,0);
               if (args->multiset_reduction.value)
                 mu_msg_processed.MultisetSort();
               mu_LastWrite.Permute(Perm,0);
               if (args->multiset_reduction.value)
                 mu_LastWrite.MultisetSort();
-              mu_Procs.Permute(Perm,0);
-              if (args->multiset_reduction.value)
-                mu_Procs.MultisetSort();
               mu_InBox.Permute(Perm,0);
               if (args->multiset_reduction.value)
                 mu_InBox.MultisetSort();
-              mu_Net.Permute(Perm,0);
+              mu_Procs.Permute(Perm,0);
               if (args->multiset_reduction.value)
-                mu_Net.MultisetSort();
+                mu_Procs.MultisetSort();
               mu_HomeNode.Permute(Perm,0);
               if (args->multiset_reduction.value)
                 mu_HomeNode.MultisetSort();
+              mu_Net.Permute(Perm,0);
+              if (args->multiset_reduction.value)
+                mu_Net.MultisetSort();
             if (p.compare(workingstate)) {
               StateCopy(workingstate,&temp); return TRUE; }
           }
@@ -6908,12 +6987,13 @@ bool match(state* ns, StatePtr p)
     {
       if (ns != workingstate)
           StateCopy(workingstate, ns);
+      mu_running_msgid.MultisetSort();
       mu_msg_processed.MultisetSort();
       mu_LastWrite.MultisetSort();
-      mu_Procs.MultisetSort();
       mu_InBox.MultisetSort();
-      mu_Net.MultisetSort();
+      mu_Procs.MultisetSort();
       mu_HomeNode.MultisetSort();
+      mu_Net.MultisetSort();
       if (p.compare(workingstate)) {
         StateCopy(workingstate,&temp); return TRUE; }
       StateCopy(workingstate,&temp);
@@ -6931,6 +7011,19 @@ void SymmetryClass::Exhaustive_Fast_Canonicalize(state* s)
   int i;
   static state temp;
   Perm.ResetToExplicit();
+
+  StateCopy(&temp, workingstate);
+  ResetBestResult();
+  for (i=0; i<Perm.count; i++)
+    if (Perm.In(i))
+      {
+        StateCopy(workingstate, &temp);
+        mu_running_msgid.Permute(Perm,i);
+        if (args->multiset_reduction.value)
+          mu_running_msgid.MultisetSort();
+        SetBestResult(i, workingstate);
+      }
+  StateCopy(workingstate, &BestPermutedState);
 
   StateCopy(&temp, workingstate);
   ResetBestResult();
@@ -6964,19 +7057,6 @@ void SymmetryClass::Exhaustive_Fast_Canonicalize(state* s)
     if (Perm.In(i))
       {
         StateCopy(workingstate, &temp);
-        mu_Procs.Permute(Perm,i);
-        if (args->multiset_reduction.value)
-          mu_Procs.MultisetSort();
-        SetBestResult(i, workingstate);
-      }
-  StateCopy(workingstate, &BestPermutedState);
-
-  StateCopy(&temp, workingstate);
-  ResetBestResult();
-  for (i=0; i<Perm.count; i++)
-    if (Perm.In(i))
-      {
-        StateCopy(workingstate, &temp);
         mu_InBox.Permute(Perm,i);
         if (args->multiset_reduction.value)
           mu_InBox.MultisetSort();
@@ -6990,9 +7070,9 @@ void SymmetryClass::Exhaustive_Fast_Canonicalize(state* s)
     if (Perm.In(i))
       {
         StateCopy(workingstate, &temp);
-        mu_Net.Permute(Perm,i);
+        mu_Procs.Permute(Perm,i);
         if (args->multiset_reduction.value)
-          mu_Net.MultisetSort();
+          mu_Procs.MultisetSort();
         SetBestResult(i, workingstate);
       }
   StateCopy(workingstate, &BestPermutedState);
@@ -7006,6 +7086,19 @@ void SymmetryClass::Exhaustive_Fast_Canonicalize(state* s)
         mu_HomeNode.Permute(Perm,i);
         if (args->multiset_reduction.value)
           mu_HomeNode.MultisetSort();
+        SetBestResult(i, workingstate);
+      }
+  StateCopy(workingstate, &BestPermutedState);
+
+  StateCopy(&temp, workingstate);
+  ResetBestResult();
+  for (i=0; i<Perm.count; i++)
+    if (Perm.In(i))
+      {
+        StateCopy(workingstate, &temp);
+        mu_Net.Permute(Perm,i);
+        if (args->multiset_reduction.value)
+          mu_Net.MultisetSort();
         SetBestResult(i, workingstate);
       }
   StateCopy(workingstate, &BestPermutedState);
@@ -7033,11 +7126,11 @@ void SymmetryClass::Heuristic_Fast_Canonicalize(state* s)
   }
 
   if (Perm.MoreThanOneRemain()) {
-    mu_Procs.ArrayLimit(Perm);
+    mu_InBox.ArrayLimit(Perm);
   }
 
   if (Perm.MoreThanOneRemain()) {
-    mu_InBox.ArrayLimit(Perm);
+    mu_Procs.ArrayLimit(Perm);
   }
 
   if (Perm.MoreThanOneRemain()) {
@@ -7045,27 +7138,14 @@ void SymmetryClass::Heuristic_Fast_Canonicalize(state* s)
   }
 
   if (Perm.MoreThanOneRemain()) {
-    mu_Procs.Limit(Perm);
-  }
-
-  if (Perm.MoreThanOneRemain()) {
     mu_InBox.Limit(Perm);
   }
 
-  Perm.SimpleToExplicit();
+  if (Perm.MoreThanOneRemain()) {
+    mu_Procs.Limit(Perm);
+  }
 
-  StateCopy(&temp, workingstate);
-  ResetBestResult();
-  for (i=0; i<Perm.count; i++)
-    if (Perm.In(i))
-      {
-        StateCopy(workingstate, &temp);
-        mu_Procs.Permute(Perm,i);
-        if (args->multiset_reduction.value)
-          mu_Procs.MultisetSort();
-        SetBestResult(i, workingstate);
-      }
-  StateCopy(workingstate, &BestPermutedState);
+  Perm.SimpleToExplicit();
 
   StateCopy(&temp, workingstate);
   ResetBestResult();
@@ -7086,9 +7166,9 @@ void SymmetryClass::Heuristic_Fast_Canonicalize(state* s)
     if (Perm.In(i))
       {
         StateCopy(workingstate, &temp);
-        mu_Net.Permute(Perm,i);
+        mu_Procs.Permute(Perm,i);
         if (args->multiset_reduction.value)
-          mu_Net.MultisetSort();
+          mu_Procs.MultisetSort();
         SetBestResult(i, workingstate);
       }
   StateCopy(workingstate, &BestPermutedState);
@@ -7102,6 +7182,19 @@ void SymmetryClass::Heuristic_Fast_Canonicalize(state* s)
         mu_HomeNode.Permute(Perm,i);
         if (args->multiset_reduction.value)
           mu_HomeNode.MultisetSort();
+        SetBestResult(i, workingstate);
+      }
+  StateCopy(workingstate, &BestPermutedState);
+
+  StateCopy(&temp, workingstate);
+  ResetBestResult();
+  for (i=0; i<Perm.count; i++)
+    if (Perm.In(i))
+      {
+        StateCopy(workingstate, &temp);
+        mu_Net.Permute(Perm,i);
+        if (args->multiset_reduction.value)
+          mu_Net.MultisetSort();
         SetBestResult(i, workingstate);
       }
   StateCopy(workingstate, &BestPermutedState);
@@ -7130,11 +7223,11 @@ void SymmetryClass::Heuristic_Small_Mem_Canonicalize(state* s)
   }
 
   if (Perm.MoreThanOneRemain()) {
-    mu_Procs.ArrayLimit(Perm);
+    mu_InBox.ArrayLimit(Perm);
   }
 
   if (Perm.MoreThanOneRemain()) {
-    mu_InBox.ArrayLimit(Perm);
+    mu_Procs.ArrayLimit(Perm);
   }
 
   if (Perm.MoreThanOneRemain()) {
@@ -7142,29 +7235,29 @@ void SymmetryClass::Heuristic_Small_Mem_Canonicalize(state* s)
   }
 
   if (Perm.MoreThanOneRemain()) {
-    mu_Procs.Limit(Perm);
+    mu_InBox.Limit(Perm);
   }
 
   if (Perm.MoreThanOneRemain()) {
-    mu_InBox.Limit(Perm);
+    mu_Procs.Limit(Perm);
   }
 
   Perm.SimpleToOne();
 
   StateCopy(&temp, workingstate);
   ResetBestResult();
-  mu_Procs.Permute(Perm,0);
-  if (args->multiset_reduction.value)
-    mu_Procs.MultisetSort();
   mu_InBox.Permute(Perm,0);
   if (args->multiset_reduction.value)
     mu_InBox.MultisetSort();
-  mu_Net.Permute(Perm,0);
+  mu_Procs.Permute(Perm,0);
   if (args->multiset_reduction.value)
-    mu_Net.MultisetSort();
+    mu_Procs.MultisetSort();
   mu_HomeNode.Permute(Perm,0);
   if (args->multiset_reduction.value)
     mu_HomeNode.MultisetSort();
+  mu_Net.Permute(Perm,0);
+  if (args->multiset_reduction.value)
+    mu_Net.MultisetSort();
   BestPermutedState = *workingstate;
   BestInitialized = TRUE;
 
@@ -7174,18 +7267,18 @@ void SymmetryClass::Heuristic_Small_Mem_Canonicalize(state* s)
       if (args->perm_limit.value != 0
           && cycle++ >= args->perm_limit.value) break;
       StateCopy(workingstate, &temp);
-      mu_Procs.Permute(Perm,0);
-      if (args->multiset_reduction.value)
-        mu_Procs.MultisetSort();
       mu_InBox.Permute(Perm,0);
       if (args->multiset_reduction.value)
         mu_InBox.MultisetSort();
-      mu_Net.Permute(Perm,0);
+      mu_Procs.Permute(Perm,0);
       if (args->multiset_reduction.value)
-        mu_Net.MultisetSort();
+        mu_Procs.MultisetSort();
       mu_HomeNode.Permute(Perm,0);
       if (args->multiset_reduction.value)
         mu_HomeNode.MultisetSort();
+      mu_Net.Permute(Perm,0);
+      if (args->multiset_reduction.value)
+        mu_Net.MultisetSort();
       switch (StateCmp(workingstate, &BestPermutedState)) {
       case -1:
         BestPermutedState = *workingstate;
@@ -7222,38 +7315,38 @@ void SymmetryClass::Heuristic_Fast_Normalize(state* s)
   }
 
   if (Perm.MoreThanOneRemain()) {
-    mu_Procs.ArrayLimit(Perm);
-  }
-
-  if (Perm.MoreThanOneRemain()) {
     mu_InBox.ArrayLimit(Perm);
   }
 
   if (Perm.MoreThanOneRemain()) {
-    mu_Procs.Limit(Perm);
+    mu_Procs.ArrayLimit(Perm);
   }
 
   if (Perm.MoreThanOneRemain()) {
     mu_InBox.Limit(Perm);
   }
 
-  Perm.SimpleToOne();
+  if (Perm.MoreThanOneRemain()) {
+    mu_Procs.Limit(Perm);
+  }
 
-  mu_Procs.Permute(Perm,0);
-  if (args->multiset_reduction.value)
-    mu_Procs.MultisetSort();
+  Perm.SimpleToOne();
 
   mu_InBox.Permute(Perm,0);
   if (args->multiset_reduction.value)
     mu_InBox.MultisetSort();
 
-  mu_Net.Permute(Perm,0);
+  mu_Procs.Permute(Perm,0);
   if (args->multiset_reduction.value)
-    mu_Net.MultisetSort();
+    mu_Procs.MultisetSort();
 
   mu_HomeNode.Permute(Perm,0);
   if (args->multiset_reduction.value)
     mu_HomeNode.MultisetSort();
+
+  mu_Net.Permute(Perm,0);
+  if (args->multiset_reduction.value)
+    mu_Net.MultisetSort();
 
 };
 
