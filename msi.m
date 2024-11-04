@@ -119,7 +119,6 @@ type
                     Proc_MI_A
                   };
       val: Value;
-      ack_cnt: AckCount; -- ack_cnt = 0 means don't need extra ack
     End;
 
 
@@ -630,7 +629,6 @@ startstate
 	-- independent iterations ignore warning
   for i: Proc do
     Procs[i].state := Proc_I;
-    Procs[i].ack_cnt := 0;
     undefine Procs[i].val;
   endfor;
 

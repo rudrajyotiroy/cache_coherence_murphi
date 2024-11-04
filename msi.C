@@ -11,7 +11,7 @@
 #define MURPHI_VERSION "Murphi Release 3.1"
 #define MURPHI_DATE "Jan 29 1999"
 #define PROTOCOL_NAME "msi"
-#define BITS_IN_WORLD 1640
+#define BITS_IN_WORLD 1616
 #define ALIGN
 
 /********************
@@ -998,7 +998,6 @@ class mu_1_ProcState
   void set_self(char *n, int os);
   mu_1__type_2 mu_state;
   mu_1_Value mu_val;
-  mu_1_AckCount mu_ack_cnt;
   mu_1_ProcState ( char *n, int os ) { set_self(n,os); };
   mu_1_ProcState ( void ) {};
 
@@ -1010,8 +1009,6 @@ friend int CompareWeight(mu_1_ProcState& a, mu_1_ProcState& b)
     if (w!=0) return w;
     w = CompareWeight(a.mu_val, b.mu_val);
     if (w!=0) return w;
-    w = CompareWeight(a.mu_ack_cnt, b.mu_ack_cnt);
-    if (w!=0) return w;
   return 0;
 }
 friend int Compare(mu_1_ProcState& a, mu_1_ProcState& b)
@@ -1020,8 +1017,6 @@ friend int Compare(mu_1_ProcState& a, mu_1_ProcState& b)
     w = Compare(a.mu_state, b.mu_state);
     if (w!=0) return w;
     w = Compare(a.mu_val, b.mu_val);
-    if (w!=0) return w;
-    w = Compare(a.mu_ack_cnt, b.mu_ack_cnt);
     if (w!=0) return w;
   return 0;
 }
@@ -1036,50 +1031,41 @@ friend int Compare(mu_1_ProcState& a, mu_1_ProcState& b)
   {
     mu_state.MultisetSort();
     mu_val.MultisetSort();
-    mu_ack_cnt.MultisetSort();
   }
   void print_statistic()
   {
     mu_state.print_statistic();
     mu_val.print_statistic();
-    mu_ack_cnt.print_statistic();
   }
   void clear() {
     mu_state.clear();
     mu_val.clear();
-    mu_ack_cnt.clear();
  };
   void undefine() {
     mu_state.undefine();
     mu_val.undefine();
-    mu_ack_cnt.undefine();
  };
   void reset() {
     mu_state.reset();
     mu_val.reset();
-    mu_ack_cnt.reset();
  };
   void print() {
     mu_state.print();
     mu_val.print();
-    mu_ack_cnt.print();
   };
   void print_diff(state *prevstate) {
     mu_state.print_diff(prevstate);
     mu_val.print_diff(prevstate);
-    mu_ack_cnt.print_diff(prevstate);
   };
   void to_state(state *thestate) {
     mu_state.to_state(thestate);
     mu_val.to_state(thestate);
-    mu_ack_cnt.to_state(thestate);
   };
 virtual bool isundefined() { Error.Error("Checking undefinedness of a non-base type"); return TRUE;}
 virtual bool ismember() { Error.Error("Checking membership for a non-base type"); return TRUE;}
   mu_1_ProcState& operator= (const mu_1_ProcState& from) {
     mu_state.value(from.mu_state.value());
     mu_val.value(from.mu_val.value());
-    mu_ack_cnt.value(from.mu_ack_cnt.value());
     return *this;
   };
 };
@@ -1103,7 +1089,6 @@ void mu_1_ProcState::set_self(char *n, int os)
   name = n;
   mu_state.set_self_2(name, ".state", os + 0 );
   mu_val.set_self_2(name, ".val", os + 8 );
-  mu_ack_cnt.set_self_2(name, ".ack_cnt", os + 16 );
 }
 
 mu_1_ProcState::~mu_1_ProcState()
@@ -1222,9 +1207,9 @@ void mu_1__type_3::set_self( char *n, int os)
   {
     int i=0;
     name = n;
-array[i].set_self_ar(n,"Proc_1", i * 24 + os);i++;
-array[i].set_self_ar(n,"Proc_2", i * 24 + os);i++;
-array[i].set_self_ar(n,"Proc_3", i * 24 + os);i++;
+array[i].set_self_ar(n,"Proc_1", i * 16 + os);i++;
+array[i].set_self_ar(n,"Proc_2", i * 16 + os);i++;
+array[i].set_self_ar(n,"Proc_3", i * 16 + os);i++;
 }
 mu_1__type_3::~mu_1__type_3()
 {
@@ -1880,16 +1865,16 @@ mu_1_HomeState mu_HomeNode("HomeNode",0);
 mu_1__type_3 mu_Procs("Procs",80);
 
 /*** Variable declaration ***/
-mu_1__type_5 mu_Net("Net",152);
+mu_1__type_5 mu_Net("Net",128);
 
 /*** Variable declaration ***/
-mu_1__type_7 mu_InBox("InBox",1048);
+mu_1__type_7 mu_InBox("InBox",1024);
 
 /*** Variable declaration ***/
-mu_0_boolean mu_msg_processed("msg_processed",1624);
+mu_0_boolean mu_msg_processed("msg_processed",1600);
 
 /*** Variable declaration ***/
-mu_1_Value mu_LastWrite("LastWrite",1632);
+mu_1_Value mu_LastWrite("LastWrite",1608);
 
 void mu_EnumToStr(const mu_1_MessageType& mu_m)
 {
@@ -3151,7 +3136,6 @@ mu_LastWrite = mu_HomeNode.mu_val;
 {
 for(int mu_i = 1; mu_i <= 3; mu_i++) {
 mu_Procs[mu_i].mu_state = mu_Proc_I;
-mu_Procs[mu_i].mu_ack_cnt = 0;
 mu_Procs[mu_i].mu_val.undefine();
 };
 };
