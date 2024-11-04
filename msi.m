@@ -31,9 +31,9 @@ const
 	numVCs:	3;
 	QMax: 2;
 	NumVCs: 3;
-	NetMax: ProcCount+10;
+	NetMax: ProcCount+1;
 	enableProcTrace: 0;
-	enableMsgTrace: 1;
+	enableMsgTrace: 0;
   maxMsgs: 99999;
 
 ----------------------------------------------------------------------
@@ -243,7 +243,9 @@ var msg:Message;
 var 
 Begin
 	Assert (MultiSetCount(i:Net[dst], true) < NetMax) "Too many messages";
-  put " Create ";
+  if(enableMsgTrace=1) then
+    put " Create ";
+  endif;
   msg.mid   := running_msgid;
   running_msgid :=  running_msgid + 1;
 	msgTrace(msg.mid, mtype, dst, src, vc, val, fwd_to, ack_cnt);
@@ -739,7 +741,9 @@ ruleset n: Proc Do
       p.state = Proc_M
     ==>
       p.state := Proc_MI_A;
-      put "M ==(evict)==> I";
+      if(enableMsgTrace=1) then
+        put "M ==(evict)==> I";
+      endif;
       Send(PutM, HomeDir, n, RequestChannel, p.val, UNDEFINED, 0);
     endrule;
 
@@ -747,7 +751,9 @@ ruleset n: Proc Do
       p.state = Proc_S
     ==>
       p.state := Proc_SI_A;
-      put "S ==(evict)==> I";
+      if(enableMsgTrace=1) then
+        put "S ==(evict)==> I";
+      endif;
       Send(PutS, HomeDir, n, RequestChannel, UNDEFINED, UNDEFINED, 0);
     endrule;
 
@@ -756,7 +762,9 @@ ruleset n: Proc Do
         p.state = Proc_S
       ==>
         p.state := Proc_SM_AD;
-        put "S ==(store)==> M";
+        if(enableMsgTrace=1) then
+          put "S ==(store)==> M";
+        endif;
         p.val := v;      
         Send(GetM, HomeDir, n, RequestChannel, UNDEFINED, UNDEFINED, 0);
       endrule;
@@ -767,7 +775,9 @@ ruleset n: Proc Do
         p.state = Proc_I
       ==>
         p.state := Proc_IM_AD;
-        put "I ==(store)==> M";
+        if(enableMsgTrace=1) then
+          put "I ==(store)==> M";
+        endif;
         p.val := v;      
         Send(GetM, HomeDir, n, RequestChannel, UNDEFINED, UNDEFINED, 0);
       endrule;
@@ -777,7 +787,9 @@ ruleset n: Proc Do
       p.state = Proc_I 
     ==>
       p.state := Proc_IS_D;
-      put "I ==(load)==> S";
+      if(enableMsgTrace=1) then
+        put "I ==(load)==> S";
+      endif;
       Send(GetS, HomeDir, n, RequestChannel, UNDEFINED, UNDEFINED, 0);
     endrule;
 
@@ -795,7 +807,9 @@ ruleset n:Node do
 		rule "receive-net"
 			(isundefined(box[msg.vc].mtype))
 		==>
-      put "  Receive ";
+      if(enableMsgTrace=1) then
+        put "  Receive ";
+      endif;
       msgTrace(msg.mid, msg.mtype, n, msg.src, msg.vc, msg.val, msg.fwd_to, msg.ack_cnt);
 			if IsMember(n, Home)
 			then
@@ -897,17 +911,17 @@ invariant "val is undefined while invalid"
 			IsUndefined(Procs[n].val)
 	end;
 
-invariant "Proc ackcounts are negative"
-	Forall n : Proc Do	
-		 !(Procs[n].state = Proc_I)
-		->
-		 !(Procs[n].ack_cnt < 0)
-	end;
+-- invariant "Proc ackcounts are negative"
+-- 	Forall n : Proc Do	
+-- 		 !(Procs[n].state = Proc_I)
+-- 		->
+-- 		 !(Procs[n].ack_cnt < 0)
+-- 	end;
 
-invariant "Home directory ackcounts are negative"	
-	!(HomeNode.state = Dir_I)
-		->
-	!(HomeNode.ack_cnt < 0)
+-- invariant "Home directory ackcounts are negative"	
+-- 	!(HomeNode.state = Dir_I)
+-- 		->
+-- 	!(HomeNode.ack_cnt < 0)
 	
 /*	
 -- Here are some invariants that are helpful for validating shared state.

@@ -52,11 +52,26 @@ CFLAGS = -Wno-write-strings -m32
 #OFLAGS = -O3
 
 # rules for compiling
-%:
-	${MURPHI_INSTALL_PATH}/src/mu $@.m;
-	${CXX} ${CFLAGS} ${OFLAGS} -o bin_$@ $@.C -I${MURPHI_INSTALL_PATH}/include -lm;
-	./bin_$@ -s | tee $@_sim.log;
-	./bin_$@ $(ARG) > $@_verif.log;
+msi_opt_verif:
+	${MURPHI_INSTALL_PATH}/src/mu msi_opt.m;
+	${CXX} ${CFLAGS} ${OFLAGS} -o bin_msi_opt msi_opt.C -I${MURPHI_INSTALL_PATH}/include -lm;
+	./bin_msi_opt | tee msi_opt_verif.log;
+
+msi_opt_sim:
+	${MURPHI_INSTALL_PATH}/src/mu msi_opt.m;
+	${CXX} ${CFLAGS} ${OFLAGS} -o bin_msi_opt msi_opt.C -I${MURPHI_INSTALL_PATH}/include -lm;
+	./bin_msi_opt -s | tee msi_opt_sim.log;
+
+msi_verif:
+	${MURPHI_INSTALL_PATH}/src/mu msi.m;
+	${CXX} ${CFLAGS} ${OFLAGS} -o bin_msi msi.C -I${MURPHI_INSTALL_PATH}/include -lm;
+	./bin_msi | tee msi_verif.log;
+
+msi_sim:
+	${MURPHI_INSTALL_PATH}/src/mu msi.m;
+	${CXX} ${CFLAGS} ${OFLAGS} -o bin_msi msi.C -I${MURPHI_INSTALL_PATH}/include -lm;
+	./bin_msi -s | tee msi_sim.log;
+
 clean:
 	rm -rf *.C
 	rm -rf bin_*
