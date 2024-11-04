@@ -1,24 +1,3 @@
-../Murphi3.1/src/mu msi.m;
-
-===========================================================================
-Murphi Release 3.1
-Finite-state Concurrent System Compiler.
-
-Copyright (C) 1992 - 1999 by the Board of Trustees of
-Leland Stanford Junior University.
-===========================================================================
-Call with the -l flag or read the license file for terms
-and conditions of use.
-Run this program with "-h" for the list of options.
-Bugs, questions, and comments should be directed to
-"murphi@verify.stanford.edu".
-
-Murphi compiler last modified date: Jan 29 1999
-Murphi compiler last compiled date: Oct 24 2024
-===========================================================================
-Code generated in file msi.C
-g++ -DCATCH_DIV  -Wno-write-strings -m32  -o bin_msi msi.C -I../Murphi3.1/include -lm;
-./bin_msi ;
 This program should be regarded as a DEBUGGING aid, not as a 
 certifier of correctness.
 Call with the -l flag or read the license file for terms
@@ -50,1123 +29,371 @@ Algorithm:
 
 Memory usage:
 
-	* The size of each state is 2408 bits (rounded up to 304 bytes).
+	* The size of each state is 1568 bits (rounded up to 196 bytes).
 	* The memory allocated for the hash table and state queue is
 	  8 Mbytes.
 	  With two words of overhead per state, the maximum size of
-	  the state space is 25943 states.
+	  the state space is 39929 states.
 	   * Use option "-k" or "-m" to increase this, if necessary.
-	* Capacity in queue for breadth-first search: 2594 states.
+	* Capacity in queue for breadth-first search: 3992 states.
 	   * Change the constant gPercentActiveStates in mu_prolog.inc
 	     to increase this, if necessary.
 
 Warning: No trace will not be printed in the case of protocol errors!
          Check the options if you want to have error traces.
-Msg :: type: GetS, src: 1, dst: 6, ack_cnt: 0
-Msg :: type: GetS, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetS, src: 3, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 1, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 1, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 3, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 3, dst: 6, ack_cnt: 0
-Receiving GetS from processor Proc_3 on RequestChannel at home -- HomeNode.state:Dir_I
-Msg :: type: Data, src: 6, dst: 3, ack_cnt: 0, val: 4
-Msg :: type: GetS, src: 1, dst: 6, ack_cnt: 0
-Msg :: type: GetS, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 1, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 1, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 2, dst: 6, ack_cnt: 0
-Receiving GetM from processor Proc_3 on RequestChannel at home -- HomeNode.state:Dir_I
-Msg :: type: Data, src: 6, dst: 3, ack_cnt: 0, val: 4
-Msg :: type: GetS, src: 1, dst: 6, ack_cnt: 0
-Msg :: type: GetS, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 1, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 1, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 2, dst: 6, ack_cnt: 0
-Receiving GetM from processor Proc_3 on RequestChannel at home -- HomeNode.state:Dir_I
-Msg :: type: Data, src: 6, dst: 3, ack_cnt: 0, val: 4
-Msg :: type: GetS, src: 1, dst: 6, ack_cnt: 0
-Msg :: type: GetS, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 1, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 1, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 2, dst: 6, ack_cnt: 0
-Receiving Data from HomeDir on ResponseChannel at proc 3
-Msg :: type: GetS, src: 1, dst: 6, ack_cnt: 0
-Msg :: type: GetS, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 1, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 1, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 2, dst: 6, ack_cnt: 0
-Receiving GetS from processor Proc_2 on RequestChannel at home -- HomeNode.state:Dir_I
-Msg :: type: Data, src: 6, dst: 2, ack_cnt: 0, val: 4
-Receiving GetS from processor Proc_3 on RequestChannel at home -- HomeNode.state:Dir_I
-Msg :: type: Data, src: 6, dst: 3, ack_cnt: 0, val: 4
-Msg :: type: GetS, src: 1, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 1, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 1, dst: 6, ack_cnt: 0
-Receiving GetS from processor Proc_2 on RequestChannel at home -- HomeNode.state:Dir_I
-Msg :: type: Data, src: 6, dst: 2, ack_cnt: 0, val: 4
-Receiving GetM from processor Proc_3 on RequestChannel at home -- HomeNode.state:Dir_I
-Msg :: type: Data, src: 6, dst: 3, ack_cnt: 0, val: 4
-Msg :: type: GetS, src: 1, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 1, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 1, dst: 6, ack_cnt: 0
-Receiving GetS from processor Proc_2 on RequestChannel at home -- HomeNode.state:Dir_I
-Msg :: type: Data, src: 6, dst: 2, ack_cnt: 0, val: 4
-Receiving GetM from processor Proc_3 on RequestChannel at home -- HomeNode.state:Dir_I
-Msg :: type: Data, src: 6, dst: 3, ack_cnt: 0, val: 4
-Msg :: type: GetS, src: 1, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 1, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 1, dst: 6, ack_cnt: 0
-Receiving Data from HomeDir on ResponseChannel at proc 1
-Msg :: type: GetS, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetS, src: 3, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 3, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 3, dst: 6, ack_cnt: 0
-Receiving GetM from processor Proc_2 on RequestChannel at home -- HomeNode.state:Dir_I
-Msg :: type: Data, src: 6, dst: 2, ack_cnt: 0, val: 4
-Receiving GetM from processor Proc_3 on RequestChannel at home -- HomeNode.state:Dir_I
-Msg :: type: Data, src: 6, dst: 3, ack_cnt: 0, val: 4
-Msg :: type: GetS, src: 1, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 1, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 1, dst: 6, ack_cnt: 0
-Receiving GetM from processor Proc_2 on RequestChannel at home -- HomeNode.state:Dir_I
-Msg :: type: Data, src: 6, dst: 2, ack_cnt: 0, val: 4
-Receiving GetM from processor Proc_3 on RequestChannel at home -- HomeNode.state:Dir_I
-Msg :: type: Data, src: 6, dst: 3, ack_cnt: 0, val: 4
-Msg :: type: GetS, src: 1, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 1, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 1, dst: 6, ack_cnt: 0
-Receiving Data from HomeDir on ResponseChannel at proc 1
-Msg :: type: GetS, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetS, src: 3, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 3, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 3, dst: 6, ack_cnt: 0
-Receiving GetM from processor Proc_2 on RequestChannel at home -- HomeNode.state:Dir_I
-Msg :: type: Data, src: 6, dst: 2, ack_cnt: 0, val: 4
-Receiving GetM from processor Proc_3 on RequestChannel at home -- HomeNode.state:Dir_I
-Msg :: type: Data, src: 6, dst: 3, ack_cnt: 0, val: 4
-Msg :: type: GetS, src: 1, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 1, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 1, dst: 6, ack_cnt: 0
-Msg :: type: GetS, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetS, src: 3, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 3, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 3, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 1, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 1, dst: 6, ack_cnt: 0
-Msg :: type: PutS, src: 1, dst: 6, ack_cnt: 0
-Receiving GetS from processor Proc_3 on RequestChannel at home -- HomeNode.state:Dir_S
-Msg :: type: Data, src: 6, dst: 3, ack_cnt: 0, val: 4
-Receiving Data from HomeDir on ResponseChannel at proc 2
-Msg :: type: GetS, src: 1, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 1, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 1, dst: 6, ack_cnt: 0
-Receiving GetM from processor Proc_3 on RequestChannel at home -- HomeNode.state:Dir_S
-Msg :: type: Inv, src: 6, dst: 2, ack_cnt: 0, fwd_to: 3
-Msg :: type: Data, src: 6, dst: 3, ack_cnt: 1, val: 4
-Receiving Data from HomeDir on ResponseChannel at proc 2
-Msg :: type: GetS, src: 1, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 1, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 1, dst: 6, ack_cnt: 0
-Receiving GetM from processor Proc_3 on RequestChannel at home -- HomeNode.state:Dir_S
-Msg :: type: Inv, src: 6, dst: 2, ack_cnt: 0, fwd_to: 3
-Msg :: type: Data, src: 6, dst: 3, ack_cnt: 1, val: 4
-Receiving Data from HomeDir on ResponseChannel at proc 2
-Msg :: type: GetS, src: 1, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 1, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 1, dst: 6, ack_cnt: 0
-Receiving GetS from processor Proc_1 on RequestChannel at home -- HomeNode.state:Dir_I
-Msg :: type: Data, src: 6, dst: 1, ack_cnt: 0, val: 4
-Receiving GetS from processor Proc_2 on RequestChannel at home -- HomeNode.state:Dir_I
-Msg :: type: Data, src: 6, dst: 2, ack_cnt: 0, val: 4
-Receiving GetS from processor Proc_3 on RequestChannel at home -- HomeNode.state:Dir_I
-Msg :: type: Data, src: 6, dst: 3, ack_cnt: 0, val: 4
-Receiving GetS from processor Proc_1 on RequestChannel at home -- HomeNode.state:Dir_I
-Msg :: type: Data, src: 6, dst: 1, ack_cnt: 0, val: 4
-Receiving GetS from processor Proc_2 on RequestChannel at home -- HomeNode.state:Dir_I
-Msg :: type: Data, src: 6, dst: 2, ack_cnt: 0, val: 4
-Receiving GetM from processor Proc_3 on RequestChannel at home -- HomeNode.state:Dir_I
-Msg :: type: Data, src: 6, dst: 3, ack_cnt: 0, val: 4
-Receiving GetS from processor Proc_1 on RequestChannel at home -- HomeNode.state:Dir_I
-Msg :: type: Data, src: 6, dst: 1, ack_cnt: 0, val: 4
-Receiving GetS from processor Proc_2 on RequestChannel at home -- HomeNode.state:Dir_I
-Msg :: type: Data, src: 6, dst: 2, ack_cnt: 0, val: 4
-Receiving GetM from processor Proc_3 on RequestChannel at home -- HomeNode.state:Dir_I
-Msg :: type: Data, src: 6, dst: 3, ack_cnt: 0, val: 4
-Receiving GetS from processor Proc_3 on RequestChannel at home -- HomeNode.state:Dir_M
-Msg :: type: FwdGetS, src: 6, dst: 1, ack_cnt: 0, fwd_to: 3
-Receiving Data from HomeDir on ResponseChannel at proc 1
-Msg :: type: GetS, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 2, dst: 6, ack_cnt: 0
-Receiving GetS from processor Proc_1 on RequestChannel at home -- HomeNode.state:Dir_I
-Msg :: type: Data, src: 6, dst: 1, ack_cnt: 0, val: 4
-Receiving GetM from processor Proc_2 on RequestChannel at home -- HomeNode.state:Dir_I
-Msg :: type: Data, src: 6, dst: 2, ack_cnt: 0, val: 4
-Receiving GetM from processor Proc_3 on RequestChannel at home -- HomeNode.state:Dir_I
-Msg :: type: Data, src: 6, dst: 3, ack_cnt: 0, val: 4
-Receiving GetS from processor Proc_1 on RequestChannel at home -- HomeNode.state:Dir_I
-Msg :: type: Data, src: 6, dst: 1, ack_cnt: 0, val: 4
-Receiving GetM from processor Proc_2 on RequestChannel at home -- HomeNode.state:Dir_I
-Msg :: type: Data, src: 6, dst: 2, ack_cnt: 0, val: 4
-Receiving GetM from processor Proc_3 on RequestChannel at home -- HomeNode.state:Dir_I
-Msg :: type: Data, src: 6, dst: 3, ack_cnt: 0, val: 4
-Receiving GetS from processor Proc_3 on RequestChannel at home -- HomeNode.state:Dir_M
-Msg :: type: FwdGetS, src: 6, dst: 1, ack_cnt: 0, fwd_to: 3
-Receiving Data from HomeDir on ResponseChannel at proc 1
-Msg :: type: GetS, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 2, dst: 6, ack_cnt: 0
-Receiving GetS from processor Proc_1 on RequestChannel at home -- HomeNode.state:Dir_I
-Msg :: type: Data, src: 6, dst: 1, ack_cnt: 0, val: 4
-Receiving GetM from processor Proc_2 on RequestChannel at home -- HomeNode.state:Dir_I
-Msg :: type: Data, src: 6, dst: 2, ack_cnt: 0, val: 4
-Receiving GetM from processor Proc_3 on RequestChannel at home -- HomeNode.state:Dir_I
-Msg :: type: Data, src: 6, dst: 3, ack_cnt: 0, val: 4
-Msg :: type: GetS, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetS, src: 3, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 3, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 3, dst: 6, ack_cnt: 0
-Msg :: type: PutM, src: 1, dst: 6, ack_cnt: 0, val: 4
-Receiving GetM from processor Proc_3 on RequestChannel at home -- HomeNode.state:Dir_M
-Msg :: type: FwdGetM, src: 6, dst: 1, ack_cnt: 0, fwd_to: 3
-Receiving Data from HomeDir on ResponseChannel at proc 1
-Msg :: type: GetS, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 2, dst: 6, ack_cnt: 0
-Receiving GetM from processor Proc_3 on RequestChannel at home -- HomeNode.state:Dir_M
-Msg :: type: FwdGetM, src: 6, dst: 1, ack_cnt: 0, fwd_to: 3
-Receiving Data from HomeDir on ResponseChannel at proc 1
-Msg :: type: GetS, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 2, dst: 6, ack_cnt: 0
-Receiving GetM from processor Proc_1 on RequestChannel at home -- HomeNode.state:Dir_I
-Msg :: type: Data, src: 6, dst: 1, ack_cnt: 0, val: 4
-Receiving GetM from processor Proc_2 on RequestChannel at home -- HomeNode.state:Dir_I
-Msg :: type: Data, src: 6, dst: 2, ack_cnt: 0, val: 4
-Receiving GetM from processor Proc_3 on RequestChannel at home -- HomeNode.state:Dir_I
-Msg :: type: Data, src: 6, dst: 3, ack_cnt: 0, val: 4
-Receiving GetM from processor Proc_1 on RequestChannel at home -- HomeNode.state:Dir_I
-Msg :: type: Data, src: 6, dst: 1, ack_cnt: 0, val: 4
-Receiving GetM from processor Proc_2 on RequestChannel at home -- HomeNode.state:Dir_I
-Msg :: type: Data, src: 6, dst: 2, ack_cnt: 0, val: 4
-Receiving GetM from processor Proc_3 on RequestChannel at home -- HomeNode.state:Dir_I
-Msg :: type: Data, src: 6, dst: 3, ack_cnt: 0, val: 4
-Receiving GetM from processor Proc_3 on RequestChannel at home -- HomeNode.state:Dir_M
-Msg :: type: FwdGetM, src: 6, dst: 1, ack_cnt: 0, fwd_to: 3
-Receiving Data from HomeDir on ResponseChannel at proc 1
-Msg :: type: GetS, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 2, dst: 6, ack_cnt: 0
-Receiving GetM from processor Proc_1 on RequestChannel at home -- HomeNode.state:Dir_I
-Msg :: type: Data, src: 6, dst: 1, ack_cnt: 0, val: 4
-Receiving GetM from processor Proc_2 on RequestChannel at home -- HomeNode.state:Dir_I
-Msg :: type: Data, src: 6, dst: 2, ack_cnt: 0, val: 4
-Receiving GetM from processor Proc_3 on RequestChannel at home -- HomeNode.state:Dir_I
-Msg :: type: Data, src: 6, dst: 3, ack_cnt: 0, val: 4
-Msg :: type: GetS, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetS, src: 3, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 3, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 3, dst: 6, ack_cnt: 0
-Msg :: type: PutM, src: 1, dst: 6, ack_cnt: 0, val: 4
-Receiving GetM from processor Proc_3 on RequestChannel at home -- HomeNode.state:Dir_M
-Msg :: type: FwdGetM, src: 6, dst: 1, ack_cnt: 0, fwd_to: 3
-Receiving Data from HomeDir on ResponseChannel at proc 1
-Msg :: type: GetS, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 2, dst: 6, ack_cnt: 0
-Receiving GetM from processor Proc_1 on RequestChannel at home -- HomeNode.state:Dir_I
-Msg :: type: Data, src: 6, dst: 1, ack_cnt: 0, val: 4
-Receiving GetM from processor Proc_2 on RequestChannel at home -- HomeNode.state:Dir_I
-Msg :: type: Data, src: 6, dst: 2, ack_cnt: 0, val: 4
-Receiving GetM from processor Proc_3 on RequestChannel at home -- HomeNode.state:Dir_I
-Msg :: type: Data, src: 6, dst: 3, ack_cnt: 0, val: 4
-Receiving GetS from processor Proc_3 on RequestChannel at home -- HomeNode.state:Dir_S
-Msg :: type: Data, src: 6, dst: 3, ack_cnt: 0, val: 4
-Msg :: type: GetS, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 1, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 1, dst: 6, ack_cnt: 0
-Msg :: type: PutS, src: 1, dst: 6, ack_cnt: 0
-Receiving GetM from processor Proc_3 on RequestChannel at home -- HomeNode.state:Dir_S
-Msg :: type: Inv, src: 6, dst: 1, ack_cnt: 0, fwd_to: 3
-Msg :: type: Data, src: 6, dst: 3, ack_cnt: 1, val: 4
-Msg :: type: GetS, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 1, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 1, dst: 6, ack_cnt: 0
-Msg :: type: PutS, src: 1, dst: 6, ack_cnt: 0
-Receiving GetM from processor Proc_3 on RequestChannel at home -- HomeNode.state:Dir_S
-Msg :: type: Inv, src: 6, dst: 1, ack_cnt: 0, fwd_to: 3
-Msg :: type: Data, src: 6, dst: 3, ack_cnt: 1, val: 4
-Msg :: type: GetS, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 1, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 1, dst: 6, ack_cnt: 0
-Msg :: type: PutS, src: 1, dst: 6, ack_cnt: 0
-Receiving GetM from processor Proc_3 on RequestChannel at home -- HomeNode.state:Dir_S
-Msg :: type: Data, src: 6, dst: 3, ack_cnt: 0, val: 4
-Msg :: type: GetS, src: 1, dst: 6, ack_cnt: 0
-Msg :: type: GetS, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 1, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 1, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 2, dst: 6, ack_cnt: 0
-Receiving GetM from processor Proc_3 on RequestChannel at home -- HomeNode.state:Dir_S
-Msg :: type: Data, src: 6, dst: 3, ack_cnt: 0, val: 4
-Msg :: type: GetS, src: 1, dst: 6, ack_cnt: 0
-Msg :: type: GetS, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 1, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 1, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 2, dst: 6, ack_cnt: 0
-Receiving PutS from processor Proc_3 on RequestChannel at home -- HomeNode.state:Dir_S
-Msg :: type: PutAck, src: 6, dst: 3, ack_cnt: 0
-Msg :: type: GetS, src: 1, dst: 6, ack_cnt: 0
-Msg :: type: GetS, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 1, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 1, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 2, dst: 6, ack_cnt: 0
-Receiving Data from HomeDir on ResponseChannel at proc 2
-Receiving Data from HomeDir on ResponseChannel at proc 3
-Msg :: type: GetS, src: 1, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 1, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 1, dst: 6, ack_cnt: 0
-Receiving GetS from processor Proc_2 on RequestChannel at home -- HomeNode.state:Dir_S
-Msg :: type: Data, src: 6, dst: 2, ack_cnt: 0, val: 4
-Receiving GetS from processor Proc_3 on RequestChannel at home -- HomeNode.state:Dir_S
-Msg :: type: Data, src: 6, dst: 3, ack_cnt: 0, val: 4
-Receiving Data from HomeDir on ResponseChannel at proc 1
-Receiving GetS from processor Proc_2 on RequestChannel at home -- HomeNode.state:Dir_S
-Msg :: type: Data, src: 6, dst: 2, ack_cnt: 0, val: 4
-Receiving GetM from processor Proc_3 on RequestChannel at home -- HomeNode.state:Dir_S
-Msg :: type: Inv, src: 6, dst: 1, ack_cnt: 0, fwd_to: 3
-Msg :: type: Data, src: 6, dst: 3, ack_cnt: 1, val: 4
-Receiving Data from HomeDir on ResponseChannel at proc 1
-Receiving GetS from processor Proc_2 on RequestChannel at home -- HomeNode.state:Dir_S
-Msg :: type: Data, src: 6, dst: 2, ack_cnt: 0, val: 4
-Receiving GetM from processor Proc_3 on RequestChannel at home -- HomeNode.state:Dir_S
-Msg :: type: Inv, src: 6, dst: 1, ack_cnt: 0, fwd_to: 3
-Msg :: type: Data, src: 6, dst: 3, ack_cnt: 1, val: 4
-Receiving Data from HomeDir on ResponseChannel at proc 1
-Receiving Data from HomeDir on ResponseChannel at proc 1
-Receiving Data from HomeDir on ResponseChannel at proc 3
-Receiving Inv from HomeDir on ForwardChannel at proc 3
-Msg :: type: GetS, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 2, dst: 6, ack_cnt: 0
-Receiving GetM from processor Proc_2 on RequestChannel at home -- HomeNode.state:Dir_S
-Msg :: type: Inv, src: 6, dst: 1, ack_cnt: 0, fwd_to: 2
-Msg :: type: Data, src: 6, dst: 2, ack_cnt: 1, val: 4
-Receiving GetM from processor Proc_3 on RequestChannel at home -- HomeNode.state:Dir_S
-Msg :: type: Inv, src: 6, dst: 1, ack_cnt: 0, fwd_to: 3
-Msg :: type: Data, src: 6, dst: 3, ack_cnt: 1, val: 4
-Receiving Data from HomeDir on ResponseChannel at proc 1
-Receiving GetM from processor Proc_2 on RequestChannel at home -- HomeNode.state:Dir_S
-Msg :: type: Inv, src: 6, dst: 1, ack_cnt: 0, fwd_to: 2
-Msg :: type: Data, src: 6, dst: 2, ack_cnt: 1, val: 4
-Receiving GetM from processor Proc_3 on RequestChannel at home -- HomeNode.state:Dir_S
-Msg :: type: Inv, src: 6, dst: 1, ack_cnt: 0, fwd_to: 3
-Msg :: type: Data, src: 6, dst: 3, ack_cnt: 1, val: 4
-Receiving Data from HomeDir on ResponseChannel at proc 1
-Receiving Data from HomeDir on ResponseChannel at proc 1
-Receiving Data from HomeDir on ResponseChannel at proc 3
-Receiving Inv from HomeDir on ForwardChannel at proc 3
-Msg :: type: GetS, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 2, dst: 6, ack_cnt: 0
-Receiving GetM from processor Proc_2 on RequestChannel at home -- HomeNode.state:Dir_S
-Msg :: type: Inv, src: 6, dst: 1, ack_cnt: 0, fwd_to: 2
-Msg :: type: Data, src: 6, dst: 2, ack_cnt: 1, val: 4
-Receiving GetM from processor Proc_3 on RequestChannel at home -- HomeNode.state:Dir_S
-Msg :: type: Inv, src: 6, dst: 1, ack_cnt: 0, fwd_to: 3
-Msg :: type: Data, src: 6, dst: 3, ack_cnt: 1, val: 4
-Receiving Data from HomeDir on ResponseChannel at proc 1
-Receiving GetS from processor Proc_2 on RequestChannel at home -- HomeNode.state:Dir_M
-Msg :: type: FwdGetS, src: 6, dst: 1, ack_cnt: 0, fwd_to: 2
-Receiving GetS from processor Proc_3 on RequestChannel at home -- HomeNode.state:Dir_M
-Msg :: type: FwdGetS, src: 6, dst: 1, ack_cnt: 0, fwd_to: 3
-Receiving Data from HomeDir on ResponseChannel at proc 1
-Receiving GetS from processor Proc_2 on RequestChannel at home -- HomeNode.state:Dir_M
-Msg :: type: FwdGetS, src: 6, dst: 1, ack_cnt: 0, fwd_to: 2
-Receiving GetS from processor Proc_3 on RequestChannel at home -- HomeNode.state:Dir_M
-Msg :: type: FwdGetS, src: 6, dst: 1, ack_cnt: 0, fwd_to: 3
-Receiving Data from HomeDir on ResponseChannel at proc 1
-Receiving Data from HomeDir on ResponseChannel at proc 3
-Receiving FwdGetS from HomeDir on ForwardChannel at proc 3
-Msg :: type: GetS, src: 1, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 1, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 1, dst: 6, ack_cnt: 0
-Receiving GetS from processor Proc_3 on RequestChannel at home -- HomeNode.state:Dir_M
-Msg :: type: FwdGetS, src: 6, dst: 1, ack_cnt: 0, fwd_to: 3
-Msg :: type: GetS, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: PutM, src: 1, dst: 6, ack_cnt: 0, val: 4
-Receiving GetS from processor Proc_2 on RequestChannel at home -- HomeNode.state:Dir_M
-Msg :: type: FwdGetS, src: 6, dst: 1, ack_cnt: 0, fwd_to: 2
-Receiving GetM from processor Proc_3 on RequestChannel at home -- HomeNode.state:Dir_M
-Msg :: type: FwdGetM, src: 6, dst: 1, ack_cnt: 0, fwd_to: 3
-Receiving Data from HomeDir on ResponseChannel at proc 1
-Receiving GetS from processor Proc_2 on RequestChannel at home -- HomeNode.state:Dir_M
-Msg :: type: FwdGetS, src: 6, dst: 1, ack_cnt: 0, fwd_to: 2
-Receiving GetM from processor Proc_3 on RequestChannel at home -- HomeNode.state:Dir_M
-Msg :: type: FwdGetM, src: 6, dst: 1, ack_cnt: 0, fwd_to: 3
-Receiving Data from HomeDir on ResponseChannel at proc 1
-Receiving GetS from processor Proc_2 on RequestChannel at home -- HomeNode.state:Dir_M
-Msg :: type: FwdGetS, src: 6, dst: 1, ack_cnt: 0, fwd_to: 2
-Receiving GetM from processor Proc_3 on RequestChannel at home -- HomeNode.state:Dir_M
-Msg :: type: FwdGetM, src: 6, dst: 1, ack_cnt: 0, fwd_to: 3
-Receiving Data from HomeDir on ResponseChannel at proc 1
-Receiving Data from HomeDir on ResponseChannel at proc 3
-Receiving FwdGetS from HomeDir on ForwardChannel at proc 3
-Msg :: type: GetS, src: 1, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 1, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 1, dst: 6, ack_cnt: 0
-Receiving GetS from processor Proc_3 on RequestChannel at home -- HomeNode.state:Dir_M
-Msg :: type: FwdGetS, src: 6, dst: 1, ack_cnt: 0, fwd_to: 3
-Msg :: type: GetS, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: PutM, src: 1, dst: 6, ack_cnt: 0, val: 4
-Receiving GetS from processor Proc_2 on RequestChannel at home -- HomeNode.state:Dir_M
-Msg :: type: FwdGetS, src: 6, dst: 1, ack_cnt: 0, fwd_to: 2
-Receiving GetM from processor Proc_3 on RequestChannel at home -- HomeNode.state:Dir_M
-Msg :: type: FwdGetM, src: 6, dst: 1, ack_cnt: 0, fwd_to: 3
-Receiving Data from HomeDir on ResponseChannel at proc 1
-Receiving GetM from processor Proc_3 on RequestChannel at home -- HomeNode.state:Dir_M
-Msg :: type: FwdGetM, src: 6, dst: 1, ack_cnt: 0, fwd_to: 3
-Msg :: type: GetS, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: PutM, src: 1, dst: 6, ack_cnt: 0, val: 4
-Receiving GetM from processor Proc_3 on RequestChannel at home -- HomeNode.state:Dir_M
-Msg :: type: FwdGetM, src: 6, dst: 1, ack_cnt: 0, fwd_to: 3
-Msg :: type: GetS, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: PutM, src: 1, dst: 6, ack_cnt: 0, val: 4
-Receiving PutM from processor Proc_1 on RequestChannel at home -- HomeNode.state:Dir_M
-Msg :: type: PutAck, src: 6, dst: 1, ack_cnt: 0
-Msg :: type: GetS, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetS, src: 3, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 3, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 3, dst: 6, ack_cnt: 0
-Receiving Data from HomeDir on ResponseChannel at proc 3
-Receiving FwdGetM from HomeDir on ForwardChannel at proc 3
-Msg :: type: GetS, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 2, dst: 6, ack_cnt: 0
-Receiving GetM from processor Proc_2 on RequestChannel at home -- HomeNode.state:Dir_M
-Msg :: type: FwdGetM, src: 6, dst: 1, ack_cnt: 0, fwd_to: 2
-Receiving GetM from processor Proc_3 on RequestChannel at home -- HomeNode.state:Dir_M
-Msg :: type: FwdGetM, src: 6, dst: 1, ack_cnt: 0, fwd_to: 3
-Receiving Data from HomeDir on ResponseChannel at proc 1
-Receiving GetM from processor Proc_2 on RequestChannel at home -- HomeNode.state:Dir_M
-Msg :: type: FwdGetM, src: 6, dst: 1, ack_cnt: 0, fwd_to: 2
-Receiving GetM from processor Proc_3 on RequestChannel at home -- HomeNode.state:Dir_M
-Msg :: type: FwdGetM, src: 6, dst: 1, ack_cnt: 0, fwd_to: 3
-Receiving Data from HomeDir on ResponseChannel at proc 1
-Receiving Data from HomeDir on ResponseChannel at proc 3
-Receiving FwdGetM from HomeDir on ForwardChannel at proc 3
-Msg :: type: GetS, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 2, dst: 6, ack_cnt: 0
-Receiving GetM from processor Proc_2 on RequestChannel at home -- HomeNode.state:Dir_M
-Msg :: type: FwdGetM, src: 6, dst: 1, ack_cnt: 0, fwd_to: 2
-Receiving GetM from processor Proc_3 on RequestChannel at home -- HomeNode.state:Dir_M
-Msg :: type: FwdGetM, src: 6, dst: 1, ack_cnt: 0, fwd_to: 3
-Receiving Data from HomeDir on ResponseChannel at proc 1
-Receiving GetM from processor Proc_2 on RequestChannel at home -- HomeNode.state:Dir_M
-Msg :: type: FwdGetM, src: 6, dst: 1, ack_cnt: 0, fwd_to: 2
-Receiving GetM from processor Proc_3 on RequestChannel at home -- HomeNode.state:Dir_M
-Msg :: type: FwdGetM, src: 6, dst: 1, ack_cnt: 0, fwd_to: 3
-Receiving Data from HomeDir on ResponseChannel at proc 1
-Receiving Data from HomeDir on ResponseChannel at proc 3
-Receiving FwdGetM from HomeDir on ForwardChannel at proc 3
-Msg :: type: GetS, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 2, dst: 6, ack_cnt: 0
-Receiving GetM from processor Proc_3 on RequestChannel at home -- HomeNode.state:Dir_M
-Msg :: type: FwdGetM, src: 6, dst: 1, ack_cnt: 0, fwd_to: 3
-Msg :: type: GetS, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: PutM, src: 1, dst: 6, ack_cnt: 0, val: 4
-Receiving GetM from processor Proc_2 on RequestChannel at home -- HomeNode.state:Dir_M
-Msg :: type: FwdGetM, src: 6, dst: 1, ack_cnt: 0, fwd_to: 2
-Receiving GetM from processor Proc_3 on RequestChannel at home -- HomeNode.state:Dir_M
-Msg :: type: FwdGetM, src: 6, dst: 1, ack_cnt: 0, fwd_to: 3
-Receiving Data from HomeDir on ResponseChannel at proc 1
-Receiving GetM from processor Proc_3 on RequestChannel at home -- HomeNode.state:Dir_M
-Msg :: type: FwdGetM, src: 6, dst: 1, ack_cnt: 0, fwd_to: 3
-Msg :: type: GetS, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: PutM, src: 1, dst: 6, ack_cnt: 0, val: 4
-Receiving PutM from processor Proc_1 on RequestChannel at home -- HomeNode.state:Dir_M
-Msg :: type: PutAck, src: 6, dst: 1, ack_cnt: 0
-Msg :: type: GetS, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetS, src: 3, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 3, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 3, dst: 6, ack_cnt: 0
-Receiving Data from HomeDir on ResponseChannel at proc 3
-Receiving FwdGetM from HomeDir on ForwardChannel at proc 3
-Msg :: type: GetS, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 2, dst: 6, ack_cnt: 0
-Receiving GetM from processor Proc_2 on RequestChannel at home -- HomeNode.state:Dir_M
-Msg :: type: FwdGetM, src: 6, dst: 1, ack_cnt: 0, fwd_to: 2
-Receiving GetM from processor Proc_3 on RequestChannel at home -- HomeNode.state:Dir_M
-Msg :: type: FwdGetM, src: 6, dst: 1, ack_cnt: 0, fwd_to: 3
-Receiving Data from HomeDir on ResponseChannel at proc 1
-Receiving Data from HomeDir on ResponseChannel at proc 3
-Msg :: type: GetS, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 1, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 1, dst: 6, ack_cnt: 0
-Msg :: type: PutS, src: 1, dst: 6, ack_cnt: 0
-Receiving GetS from processor Proc_2 on RequestChannel at home -- HomeNode.state:Dir_S
-Msg :: type: Data, src: 6, dst: 2, ack_cnt: 0, val: 4
-Receiving GetS from processor Proc_3 on RequestChannel at home -- HomeNode.state:Dir_S
-Msg :: type: Data, src: 6, dst: 3, ack_cnt: 0, val: 4
-Msg :: type: GetM, src: 1, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 1, dst: 6, ack_cnt: 0
-Msg :: type: PutS, src: 1, dst: 6, ack_cnt: 0
-Receiving GetS from processor Proc_2 on RequestChannel at home -- HomeNode.state:Dir_S
-Msg :: type: Data, src: 6, dst: 2, ack_cnt: 0, val: 4
-Receiving GetM from processor Proc_3 on RequestChannel at home -- HomeNode.state:Dir_S
-Msg :: type: Inv, src: 6, dst: 1, ack_cnt: 0, fwd_to: 3
-Msg :: type: Data, src: 6, dst: 3, ack_cnt: 1, val: 4
-Msg :: type: GetM, src: 1, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 1, dst: 6, ack_cnt: 0
-Msg :: type: PutS, src: 1, dst: 6, ack_cnt: 0
-Receiving GetS from processor Proc_2 on RequestChannel at home -- HomeNode.state:Dir_S
-Msg :: type: Data, src: 6, dst: 2, ack_cnt: 0, val: 4
-Receiving GetM from processor Proc_3 on RequestChannel at home -- HomeNode.state:Dir_S
-Msg :: type: Inv, src: 6, dst: 1, ack_cnt: 0, fwd_to: 3
-Msg :: type: Data, src: 6, dst: 3, ack_cnt: 1, val: 4
-Msg :: type: GetM, src: 1, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 1, dst: 6, ack_cnt: 0
-Msg :: type: PutS, src: 1, dst: 6, ack_cnt: 0
-Receiving GetS from processor Proc_2 on RequestChannel at home -- HomeNode.state:Dir_S
-Msg :: type: Data, src: 6, dst: 2, ack_cnt: 0, val: 4
-Receiving GetM from processor Proc_3 on RequestChannel at home -- HomeNode.state:Dir_S
-Msg :: type: Data, src: 6, dst: 3, ack_cnt: 0, val: 4
-Msg :: type: GetS, src: 1, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 1, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 1, dst: 6, ack_cnt: 0
-Receiving GetS from processor Proc_2 on RequestChannel at home -- HomeNode.state:Dir_S
-Msg :: type: Data, src: 6, dst: 2, ack_cnt: 0, val: 4
-Receiving GetM from processor Proc_3 on RequestChannel at home -- HomeNode.state:Dir_S
-Msg :: type: Data, src: 6, dst: 3, ack_cnt: 0, val: 4
-Msg :: type: GetS, src: 1, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 1, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 1, dst: 6, ack_cnt: 0
-Receiving GetS from processor Proc_2 on RequestChannel at home -- HomeNode.state:Dir_S
-Msg :: type: Data, src: 6, dst: 2, ack_cnt: 0, val: 4
-Receiving PutS from processor Proc_3 on RequestChannel at home -- HomeNode.state:Dir_S
-Msg :: type: PutAck, src: 6, dst: 3, ack_cnt: 0
-Msg :: type: GetS, src: 1, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 1, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 1, dst: 6, ack_cnt: 0
-Receiving Data from HomeDir on ResponseChannel at proc 1
-Receiving Inv from HomeDir on ForwardChannel at proc 2
-Msg :: type: InvAck, src: 2, dst: 1, ack_cnt: 0
-Msg :: type: InvAck, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetS, src: 3, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 3, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 3, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: PutS, src: 2, dst: 6, ack_cnt: 0
-Receiving GetM from processor Proc_2 on RequestChannel at home -- HomeNode.state:Dir_S
-Msg :: type: Inv, src: 6, dst: 1, ack_cnt: 0, fwd_to: 2
-Msg :: type: Data, src: 6, dst: 2, ack_cnt: 1, val: 4
-Receiving GetM from processor Proc_3 on RequestChannel at home -- HomeNode.state:Dir_S
-Msg :: type: Inv, src: 6, dst: 1, ack_cnt: 0, fwd_to: 3
-Msg :: type: Data, src: 6, dst: 3, ack_cnt: 1, val: 4
-Msg :: type: GetM, src: 1, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 1, dst: 6, ack_cnt: 0
-Msg :: type: PutS, src: 1, dst: 6, ack_cnt: 0
-Receiving GetM from processor Proc_2 on RequestChannel at home -- HomeNode.state:Dir_S
-Msg :: type: Inv, src: 6, dst: 1, ack_cnt: 0, fwd_to: 2
-Msg :: type: Data, src: 6, dst: 2, ack_cnt: 1, val: 4
-Receiving GetM from processor Proc_3 on RequestChannel at home -- HomeNode.state:Dir_S
-Msg :: type: Inv, src: 6, dst: 1, ack_cnt: 0, fwd_to: 3
-Msg :: type: Data, src: 6, dst: 3, ack_cnt: 1, val: 4
-Msg :: type: GetM, src: 1, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 1, dst: 6, ack_cnt: 0
-Msg :: type: PutS, src: 1, dst: 6, ack_cnt: 0
-Receiving GetM from processor Proc_2 on RequestChannel at home -- HomeNode.state:Dir_S
-Msg :: type: Inv, src: 6, dst: 3, ack_cnt: 0, fwd_to: 2
-Msg :: type: Data, src: 6, dst: 2, ack_cnt: 1, val: 4
-Receiving GetM from processor Proc_3 on RequestChannel at home -- HomeNode.state:Dir_S
-Msg :: type: Data, src: 6, dst: 3, ack_cnt: 0, val: 4
-Msg :: type: GetS, src: 1, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 1, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 1, dst: 6, ack_cnt: 0
-Receiving GetM from processor Proc_2 on RequestChannel at home -- HomeNode.state:Dir_S
-Msg :: type: Inv, src: 6, dst: 3, ack_cnt: 0, fwd_to: 2
-Msg :: type: Data, src: 6, dst: 2, ack_cnt: 1, val: 4
-Receiving GetM from processor Proc_3 on RequestChannel at home -- HomeNode.state:Dir_S
-Msg :: type: Data, src: 6, dst: 3, ack_cnt: 0, val: 4
-Msg :: type: GetS, src: 1, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 1, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 1, dst: 6, ack_cnt: 0
-Receiving GetM from processor Proc_2 on RequestChannel at home -- HomeNode.state:Dir_S
-Msg :: type: Inv, src: 6, dst: 3, ack_cnt: 0, fwd_to: 2
-Msg :: type: Data, src: 6, dst: 2, ack_cnt: 1, val: 4
-Receiving PutS from processor Proc_3 on RequestChannel at home -- HomeNode.state:Dir_S
-Msg :: type: PutAck, src: 6, dst: 3, ack_cnt: 0
-Msg :: type: GetS, src: 1, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 1, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 1, dst: 6, ack_cnt: 0
-Receiving Data from HomeDir on ResponseChannel at proc 1
-Receiving Inv from HomeDir on ForwardChannel at proc 2
-Msg :: type: InvAck, src: 2, dst: 1, ack_cnt: 0
-Msg :: type: InvAck, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetS, src: 3, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 3, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 3, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: PutS, src: 2, dst: 6, ack_cnt: 0
-Receiving GetM from processor Proc_2 on RequestChannel at home -- HomeNode.state:Dir_S
-Msg :: type: Inv, src: 6, dst: 1, ack_cnt: 0, fwd_to: 2
-Msg :: type: Data, src: 6, dst: 2, ack_cnt: 1, val: 4
-Receiving GetM from processor Proc_3 on RequestChannel at home -- HomeNode.state:Dir_S
-Msg :: type: Inv, src: 6, dst: 1, ack_cnt: 0, fwd_to: 3
-Msg :: type: Data, src: 6, dst: 3, ack_cnt: 1, val: 4
-Msg :: type: GetM, src: 1, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 1, dst: 6, ack_cnt: 0
-Msg :: type: PutS, src: 1, dst: 6, ack_cnt: 0
-Receiving GetM from processor Proc_2 on RequestChannel at home -- HomeNode.state:Dir_S
-Msg :: type: Inv, src: 6, dst: 3, ack_cnt: 0, fwd_to: 2
-Msg :: type: Data, src: 6, dst: 2, ack_cnt: 1, val: 4
-Receiving GetM from processor Proc_3 on RequestChannel at home -- HomeNode.state:Dir_S
-Msg :: type: Data, src: 6, dst: 3, ack_cnt: 0, val: 4
-Msg :: type: GetS, src: 1, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 1, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 1, dst: 6, ack_cnt: 0
-Receiving GetM from processor Proc_2 on RequestChannel at home -- HomeNode.state:Dir_S
-Msg :: type: Inv, src: 6, dst: 3, ack_cnt: 0, fwd_to: 2
-Msg :: type: Data, src: 6, dst: 2, ack_cnt: 1, val: 4
-Receiving GetM from processor Proc_3 on RequestChannel at home -- HomeNode.state:Dir_S
-Msg :: type: Data, src: 6, dst: 3, ack_cnt: 0, val: 4
-Msg :: type: GetS, src: 1, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 1, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 1, dst: 6, ack_cnt: 0
-Receiving GetM from processor Proc_2 on RequestChannel at home -- HomeNode.state:Dir_S
-Msg :: type: Inv, src: 6, dst: 3, ack_cnt: 0, fwd_to: 2
-Msg :: type: Data, src: 6, dst: 2, ack_cnt: 1, val: 4
-Receiving PutS from processor Proc_3 on RequestChannel at home -- HomeNode.state:Dir_S
-Msg :: type: PutAck, src: 6, dst: 3, ack_cnt: 0
-Msg :: type: GetS, src: 1, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 1, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 1, dst: 6, ack_cnt: 0
-Receiving Data from HomeDir on ResponseChannel at proc 1
-Msg :: type: GetS, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetS, src: 3, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 3, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 3, dst: 6, ack_cnt: 0
-Receiving Data from HomeDir on ResponseChannel at proc 1
-Msg :: type: GetS, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetS, src: 3, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 3, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 3, dst: 6, ack_cnt: 0
-Receiving PutAck from HomeDir on ResponseChannel at proc 3
-Msg :: type: GetS, src: 1, dst: 6, ack_cnt: 0
-Msg :: type: GetS, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 1, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 1, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 2, dst: 6, ack_cnt: 0
-Receiving GetS from processor Proc_3 on RequestChannel at home -- HomeNode.state:Dir_S
-Msg :: type: Data, src: 6, dst: 3, ack_cnt: 0, val: 4
-Receiving Data from HomeDir on ResponseChannel at proc 1
-Receiving Data from HomeDir on ResponseChannel at proc 2
-Receiving GetM from processor Proc_3 on RequestChannel at home -- HomeNode.state:Dir_S
-Msg :: type: Inv, src: 6, dst: 1, ack_cnt: 0, fwd_to: 3
-Msg :: type: Inv, src: 6, dst: 2, ack_cnt: 0, fwd_to: 3
-Msg :: type: Data, src: 6, dst: 3, ack_cnt: 2, val: 4
-Receiving Data from HomeDir on ResponseChannel at proc 1
-Receiving Data from HomeDir on ResponseChannel at proc 2
-Receiving GetM from processor Proc_3 on RequestChannel at home -- HomeNode.state:Dir_S
-Msg :: type: Inv, src: 6, dst: 1, ack_cnt: 0, fwd_to: 3
-Msg :: type: Inv, src: 6, dst: 2, ack_cnt: 0, fwd_to: 3
-Msg :: type: Data, src: 6, dst: 3, ack_cnt: 2, val: 4
-Receiving Data from HomeDir on ResponseChannel at proc 1
-Receiving Data from HomeDir on ResponseChannel at proc 2
-Receiving GetS from processor Proc_2 on RequestChannel at home -- HomeNode.state:Dir_SM_A
-Receiving Data from HomeDir on ResponseChannel at proc 1
-Receiving Data from HomeDir on ResponseChannel at proc 3
-Receiving Inv from HomeDir on ForwardChannel at proc 3
-Receiving GetS from processor Proc_2 on RequestChannel at home -- HomeNode.state:Dir_SM_A
-Receiving Data from HomeDir on ResponseChannel at proc 1
-Receiving Data from HomeDir on ResponseChannel at proc 3
-Receiving Inv from HomeDir on ForwardChannel at proc 3
-Receiving Data from HomeDir on ResponseChannel at proc 3
-Receiving Inv from HomeDir on ForwardChannel at proc 3
-Msg :: type: GetS, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 2, dst: 6, ack_cnt: 0
-Receiving Inv from HomeDir on ForwardChannel at proc 3
-Receiving Data from HomeDir on ResponseChannel at proc 1
-Receiving Data from HomeDir on ResponseChannel at proc 3
-Msg :: type: GetS, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 2, dst: 6, ack_cnt: 0
-Receiving GetM from processor Proc_3 on RequestChannel at home -- HomeNode.state:Dir_SM_A
-Receiving Data from HomeDir on ResponseChannel at proc 1
-Receiving Data from HomeDir on ResponseChannel at proc 2
-Receiving Inv from HomeDir on ForwardChannel at proc 2
-Receiving GetM from processor Proc_3 on RequestChannel at home -- HomeNode.state:Dir_SM_A
-Receiving Data from HomeDir on ResponseChannel at proc 1
-Receiving Data from HomeDir on ResponseChannel at proc 2
-Receiving Inv from HomeDir on ForwardChannel at proc 2
-Receiving GetM from processor Proc_3 on RequestChannel at home -- HomeNode.state:Dir_SM_A
-Receiving Data from HomeDir on ResponseChannel at proc 1
-Receiving Data from HomeDir on ResponseChannel at proc 2
-Receiving Inv from HomeDir on ForwardChannel at proc 2
-Receiving Data from HomeDir on ResponseChannel at proc 3
-Receiving Inv from HomeDir on ForwardChannel at proc 3
-Msg :: type: GetS, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 2, dst: 6, ack_cnt: 0
-Receiving Inv from HomeDir on ForwardChannel at proc 3
-Receiving Data from HomeDir on ResponseChannel at proc 1
-Receiving Data from HomeDir on ResponseChannel at proc 3
-Msg :: type: GetS, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 2, dst: 6, ack_cnt: 0
-Receiving GetM from processor Proc_3 on RequestChannel at home -- HomeNode.state:Dir_SM_A
-Receiving Data from HomeDir on ResponseChannel at proc 1
-Receiving Data from HomeDir on ResponseChannel at proc 2
-Receiving Inv from HomeDir on ForwardChannel at proc 2
-Receiving GetS from processor Proc_2 on RequestChannel at home -- HomeNode.state:Dir_MX_D
-Receiving Data from HomeDir on ResponseChannel at proc 3
-Receiving FwdGetS from HomeDir on ForwardChannel at proc 3
-Receiving GetS from processor Proc_2 on RequestChannel at home -- HomeNode.state:Dir_M
-Msg :: type: FwdGetS, src: 6, dst: 1, ack_cnt: 0, fwd_to: 2
-Receiving GetS from processor Proc_3 on RequestChannel at home -- HomeNode.state:Dir_M
-Msg :: type: FwdGetS, src: 6, dst: 1, ack_cnt: 0, fwd_to: 3
-Msg :: type: PutM, src: 1, dst: 6, ack_cnt: 0, val: 4
-Receiving GetS from processor Proc_2 on RequestChannel at home -- HomeNode.state:Dir_MX_D
-Receiving Data from HomeDir on ResponseChannel at proc 3
-Receiving FwdGetS from HomeDir on ForwardChannel at proc 3
-Receiving GetS from processor Proc_2 on RequestChannel at home -- HomeNode.state:Dir_M
-Msg :: type: FwdGetS, src: 6, dst: 1, ack_cnt: 0, fwd_to: 2
-Receiving GetS from processor Proc_3 on RequestChannel at home -- HomeNode.state:Dir_M
-Msg :: type: FwdGetS, src: 6, dst: 1, ack_cnt: 0, fwd_to: 3
-Msg :: type: PutM, src: 1, dst: 6, ack_cnt: 0, val: 4
-Receiving FwdGetS from HomeDir on ForwardChannel at proc 1
-Msg :: type: FwdAck, src: 1, dst: 6, ack_cnt: 0, val: 4
-Msg :: type: Data, src: 1, dst: 3, ack_cnt: 0, val: 4
-Msg :: type: GetS, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: PutM, src: 1, dst: 6, ack_cnt: 0, val: 4
-Receiving FwdGetS from HomeDir on ForwardChannel at proc 3
-Receiving Data from HomeDir on ResponseChannel at proc 3
-Msg :: type: GetS, src: 1, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 1, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 1, dst: 6, ack_cnt: 0
-Receiving GetM from processor Proc_3 on RequestChannel at home -- HomeNode.state:Dir_MX_D
-Receiving Data from HomeDir on ResponseChannel at proc 2
-Receiving FwdGetS from HomeDir on ForwardChannel at proc 2
-Receiving GetM from processor Proc_3 on RequestChannel at home -- HomeNode.state:Dir_MX_D
-Receiving Data from HomeDir on ResponseChannel at proc 2
-Receiving FwdGetS from HomeDir on ForwardChannel at proc 2
-Receiving GetS from processor Proc_2 on RequestChannel at home -- HomeNode.state:Dir_M
-Msg :: type: FwdGetS, src: 6, dst: 1, ack_cnt: 0, fwd_to: 2
-Receiving GetM from processor Proc_3 on RequestChannel at home -- HomeNode.state:Dir_M
-Msg :: type: FwdGetM, src: 6, dst: 1, ack_cnt: 0, fwd_to: 3
-Msg :: type: PutM, src: 1, dst: 6, ack_cnt: 0, val: 4
-Receiving GetS from processor Proc_2 on RequestChannel at home -- HomeNode.state:Dir_M
-Msg :: type: FwdGetS, src: 6, dst: 1, ack_cnt: 0, fwd_to: 2
-Receiving GetM from processor Proc_3 on RequestChannel at home -- HomeNode.state:Dir_M
-Msg :: type: FwdGetM, src: 6, dst: 1, ack_cnt: 0, fwd_to: 3
-Msg :: type: PutM, src: 1, dst: 6, ack_cnt: 0, val: 4
-Receiving GetS from processor Proc_3 on RequestChannel at home -- HomeNode.state:Dir_M
-Msg :: type: FwdGetS, src: 6, dst: 1, ack_cnt: 0, fwd_to: 3
-Receiving PutM from processor Proc_1 on RequestChannel at home -- HomeNode.state:Dir_M
-Msg :: type: PutAck, src: 6, dst: 1, ack_cnt: 0
-Msg :: type: GetS, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 2, dst: 6, ack_cnt: 0
-Receiving GetS from processor Proc_2 on RequestChannel at home -- HomeNode.state:Dir_MM_A
-Receiving Data from HomeDir on ResponseChannel at proc 3
-Receiving FwdGetM from HomeDir on ForwardChannel at proc 3
-Receiving GetS from processor Proc_2 on RequestChannel at home -- HomeNode.state:Dir_MM_A
-Receiving Data from HomeDir on ResponseChannel at proc 3
-Receiving FwdGetM from HomeDir on ForwardChannel at proc 3
-Receiving GetM from processor Proc_3 on RequestChannel at home -- HomeNode.state:Dir_MX_D
-Receiving Data from HomeDir on ResponseChannel at proc 2
-Receiving FwdGetS from HomeDir on ForwardChannel at proc 2
-Receiving GetS from processor Proc_2 on RequestChannel at home -- HomeNode.state:Dir_MM_A
-Receiving Data from HomeDir on ResponseChannel at proc 3
-Receiving FwdGetM from HomeDir on ForwardChannel at proc 3
-Receiving GetS from processor Proc_2 on RequestChannel at home -- HomeNode.state:Dir_M
-Msg :: type: FwdGetS, src: 6, dst: 1, ack_cnt: 0, fwd_to: 2
-Receiving GetM from processor Proc_3 on RequestChannel at home -- HomeNode.state:Dir_M
-Msg :: type: FwdGetM, src: 6, dst: 1, ack_cnt: 0, fwd_to: 3
-Msg :: type: PutM, src: 1, dst: 6, ack_cnt: 0, val: 4
-Receiving FwdGetS from HomeDir on ForwardChannel at proc 1
-Msg :: type: FwdAck, src: 1, dst: 6, ack_cnt: 0, val: 4
-Msg :: type: Data, src: 1, dst: 3, ack_cnt: 0, val: 4
-Msg :: type: GetS, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: PutM, src: 1, dst: 6, ack_cnt: 0, val: 4
-Receiving FwdGetS from HomeDir on ForwardChannel at proc 3
-Receiving Data from HomeDir on ResponseChannel at proc 3
-Msg :: type: GetS, src: 1, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 1, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 1, dst: 6, ack_cnt: 0
-Receiving GetM from processor Proc_3 on RequestChannel at home -- HomeNode.state:Dir_MX_D
-Receiving Data from HomeDir on ResponseChannel at proc 2
-Receiving FwdGetS from HomeDir on ForwardChannel at proc 2
-Receiving GetS from processor Proc_2 on RequestChannel at home -- HomeNode.state:Dir_M
-Msg :: type: FwdGetS, src: 6, dst: 1, ack_cnt: 0, fwd_to: 2
-Receiving GetM from processor Proc_3 on RequestChannel at home -- HomeNode.state:Dir_M
-Msg :: type: FwdGetM, src: 6, dst: 1, ack_cnt: 0, fwd_to: 3
-Msg :: type: PutM, src: 1, dst: 6, ack_cnt: 0, val: 4
-Receiving GetS from processor Proc_3 on RequestChannel at home -- HomeNode.state:Dir_M
-Msg :: type: FwdGetS, src: 6, dst: 1, ack_cnt: 0, fwd_to: 3
-Receiving PutM from processor Proc_1 on RequestChannel at home -- HomeNode.state:Dir_M
-Msg :: type: PutAck, src: 6, dst: 1, ack_cnt: 0
-Msg :: type: GetS, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 2, dst: 6, ack_cnt: 0
-Receiving GetS from processor Proc_2 on RequestChannel at home -- HomeNode.state:Dir_MM_A
-Receiving Data from HomeDir on ResponseChannel at proc 3
-Receiving FwdGetM from HomeDir on ForwardChannel at proc 3
-Receiving FwdGetM from HomeDir on ForwardChannel at proc 2
-Msg :: type: Data, src: 2, dst: 1, ack_cnt: 0, val: 4
-Msg :: type: FwdAck, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetS, src: 3, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 3, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 3, dst: 6, ack_cnt: 0
-Msg :: type: PutM, src: 2, dst: 6, ack_cnt: 0, val: 4
-Receiving GetM from processor Proc_2 on RequestChannel at home -- HomeNode.state:Dir_M
-Msg :: type: FwdGetM, src: 6, dst: 1, ack_cnt: 0, fwd_to: 2
-Receiving GetM from processor Proc_3 on RequestChannel at home -- HomeNode.state:Dir_M
-Msg :: type: FwdGetM, src: 6, dst: 1, ack_cnt: 0, fwd_to: 3
-Msg :: type: PutM, src: 1, dst: 6, ack_cnt: 0, val: 4
-Receiving GetM from processor Proc_2 on RequestChannel at home -- HomeNode.state:Dir_M
-Msg :: type: FwdGetM, src: 6, dst: 1, ack_cnt: 0, fwd_to: 2
-Receiving GetM from processor Proc_3 on RequestChannel at home -- HomeNode.state:Dir_M
-Msg :: type: FwdGetM, src: 6, dst: 1, ack_cnt: 0, fwd_to: 3
-Msg :: type: PutM, src: 1, dst: 6, ack_cnt: 0, val: 4
-Receiving GetM from processor Proc_3 on RequestChannel at home -- HomeNode.state:Dir_M
-Msg :: type: FwdGetM, src: 6, dst: 1, ack_cnt: 0, fwd_to: 3
-Receiving PutM from processor Proc_1 on RequestChannel at home -- HomeNode.state:Dir_M
-Msg :: type: PutAck, src: 6, dst: 1, ack_cnt: 0
-Msg :: type: GetS, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 2, dst: 6, ack_cnt: 0
-Receiving FwdGetM from HomeDir on ForwardChannel at proc 2
-Msg :: type: Data, src: 2, dst: 1, ack_cnt: 0, val: 4
-Msg :: type: FwdAck, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetS, src: 3, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 3, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 3, dst: 6, ack_cnt: 0
-Msg :: type: PutM, src: 2, dst: 6, ack_cnt: 0, val: 4
-Receiving GetM from processor Proc_2 on RequestChannel at home -- HomeNode.state:Dir_M
-Msg :: type: FwdGetM, src: 6, dst: 1, ack_cnt: 0, fwd_to: 2
-Receiving GetM from processor Proc_3 on RequestChannel at home -- HomeNode.state:Dir_M
-Msg :: type: FwdGetM, src: 6, dst: 1, ack_cnt: 0, fwd_to: 3
-Msg :: type: PutM, src: 1, dst: 6, ack_cnt: 0, val: 4
-Receiving GetM from processor Proc_3 on RequestChannel at home -- HomeNode.state:Dir_M
-Msg :: type: FwdGetM, src: 6, dst: 1, ack_cnt: 0, fwd_to: 3
-Receiving PutM from processor Proc_1 on RequestChannel at home -- HomeNode.state:Dir_M
-Msg :: type: PutAck, src: 6, dst: 1, ack_cnt: 0
-Msg :: type: GetS, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 2, dst: 6, ack_cnt: 0
-Receiving PutAck from HomeDir on ResponseChannel at proc 3
-Msg :: type: GetS, src: 1, dst: 6, ack_cnt: 0
-Msg :: type: GetS, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 1, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 1, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 2, dst: 6, ack_cnt: 0
-Receiving FwdGetM from HomeDir on ForwardChannel at proc 3
-Receiving Data from HomeDir on ResponseChannel at proc 3
-Msg :: type: GetS, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 2, dst: 6, ack_cnt: 0
-Receiving GetM from processor Proc_2 on RequestChannel at home -- HomeNode.state:Dir_MM_A
-Receiving Data from HomeDir on ResponseChannel at proc 3
-Receiving FwdGetM from HomeDir on ForwardChannel at proc 3
-Receiving GetM from processor Proc_3 on RequestChannel at home -- HomeNode.state:Dir_MM_A
-Receiving Data from HomeDir on ResponseChannel at proc 2
-Receiving FwdGetM from HomeDir on ForwardChannel at proc 2
-Receiving GetM from processor Proc_2 on RequestChannel at home -- HomeNode.state:Dir_MM_A
-Receiving Data from HomeDir on ResponseChannel at proc 3
-Receiving FwdGetM from HomeDir on ForwardChannel at proc 3
-Receiving FwdGetM from HomeDir on ForwardChannel at proc 3
-Receiving Data from HomeDir on ResponseChannel at proc 3
-Msg :: type: GetS, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 2, dst: 6, ack_cnt: 0
-Receiving GetM from processor Proc_3 on RequestChannel at home -- HomeNode.state:Dir_MM_A
-Receiving Data from HomeDir on ResponseChannel at proc 2
-Receiving FwdGetM from HomeDir on ForwardChannel at proc 2
-Receiving GetM from processor Proc_2 on RequestChannel at home -- HomeNode.state:Dir_MM_A
-Receiving Data from HomeDir on ResponseChannel at proc 3
-Receiving FwdGetM from HomeDir on ForwardChannel at proc 3
-Receiving GetM from processor Proc_2 on RequestChannel at home -- HomeNode.state:Dir_M
-Msg :: type: FwdGetM, src: 6, dst: 1, ack_cnt: 0, fwd_to: 2
-Receiving GetM from processor Proc_3 on RequestChannel at home -- HomeNode.state:Dir_M
-Msg :: type: FwdGetM, src: 6, dst: 1, ack_cnt: 0, fwd_to: 3
-Msg :: type: PutM, src: 1, dst: 6, ack_cnt: 0, val: 4
-Receiving FwdGetM from HomeDir on ForwardChannel at proc 2
-Msg :: type: Data, src: 2, dst: 1, ack_cnt: 0, val: 4
-Msg :: type: FwdAck, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetS, src: 3, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 3, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 3, dst: 6, ack_cnt: 0
-Msg :: type: PutM, src: 2, dst: 6, ack_cnt: 0, val: 4
-Receiving FwdGetM from HomeDir on ForwardChannel at proc 3
-Receiving Data from HomeDir on ResponseChannel at proc 3
-Msg :: type: GetS, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 2, dst: 6, ack_cnt: 0
-Receiving GetM from processor Proc_2 on RequestChannel at home -- HomeNode.state:Dir_MM_A
-Receiving Data from HomeDir on ResponseChannel at proc 3
-Receiving FwdGetM from HomeDir on ForwardChannel at proc 3
-Receiving GetM from processor Proc_2 on RequestChannel at home -- HomeNode.state:Dir_M
-Msg :: type: FwdGetM, src: 6, dst: 1, ack_cnt: 0, fwd_to: 2
-Receiving GetM from processor Proc_3 on RequestChannel at home -- HomeNode.state:Dir_M
-Msg :: type: FwdGetM, src: 6, dst: 1, ack_cnt: 0, fwd_to: 3
-Msg :: type: PutM, src: 1, dst: 6, ack_cnt: 0, val: 4
-Receiving GetM from processor Proc_3 on RequestChannel at home -- HomeNode.state:Dir_M
-Msg :: type: FwdGetM, src: 6, dst: 1, ack_cnt: 0, fwd_to: 3
-Receiving PutM from processor Proc_1 on RequestChannel at home -- HomeNode.state:Dir_M
-Msg :: type: PutAck, src: 6, dst: 1, ack_cnt: 0
-Msg :: type: GetS, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 2, dst: 6, ack_cnt: 0
-Receiving GetM from processor Proc_2 on RequestChannel at home -- HomeNode.state:Dir_MM_A
-Receiving Data from HomeDir on ResponseChannel at proc 3
-Receiving FwdGetM from HomeDir on ForwardChannel at proc 3
-Receiving FwdGetM from HomeDir on ForwardChannel at proc 2
-Msg :: type: Data, src: 2, dst: 1, ack_cnt: 0, val: 4
-Msg :: type: FwdAck, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetS, src: 3, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 3, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 3, dst: 6, ack_cnt: 0
-Msg :: type: PutM, src: 2, dst: 6, ack_cnt: 0, val: 4
-Receiving GetM from processor Proc_2 on RequestChannel at home -- HomeNode.state:Dir_M
-Msg :: type: FwdGetM, src: 6, dst: 1, ack_cnt: 0, fwd_to: 2
-Receiving GetM from processor Proc_3 on RequestChannel at home -- HomeNode.state:Dir_M
-Msg :: type: FwdGetM, src: 6, dst: 1, ack_cnt: 0, fwd_to: 3
-Msg :: type: PutM, src: 1, dst: 6, ack_cnt: 0, val: 4
-Receiving GetM from processor Proc_3 on RequestChannel at home -- HomeNode.state:Dir_M
-Msg :: type: FwdGetM, src: 6, dst: 1, ack_cnt: 0, fwd_to: 3
-Receiving PutM from processor Proc_1 on RequestChannel at home -- HomeNode.state:Dir_M
-Msg :: type: PutAck, src: 6, dst: 1, ack_cnt: 0
-Msg :: type: GetS, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 2, dst: 6, ack_cnt: 0
-Receiving FwdGetM from HomeDir on ForwardChannel at proc 3
-Receiving Data from HomeDir on ResponseChannel at proc 3
-Msg :: type: GetS, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 2, dst: 6, ack_cnt: 0
-Receiving GetM from processor Proc_2 on RequestChannel at home -- HomeNode.state:Dir_MM_A
-Receiving Data from HomeDir on ResponseChannel at proc 3
-Receiving FwdGetM from HomeDir on ForwardChannel at proc 3
-Msg :: type: GetS, src: 3, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 3, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 3, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 1, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 1, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: PutS, src: 1, dst: 6, ack_cnt: 0
-Msg :: type: PutS, src: 2, dst: 6, ack_cnt: 0
-Receiving GetS from processor Proc_3 on RequestChannel at home -- HomeNode.state:Dir_S
-Msg :: type: Data, src: 6, dst: 3, ack_cnt: 0, val: 4
-Receiving Data from HomeDir on ResponseChannel at proc 2
-Msg :: type: GetM, src: 1, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 1, dst: 6, ack_cnt: 0
-Msg :: type: PutS, src: 1, dst: 6, ack_cnt: 0
-Receiving GetM from processor Proc_3 on RequestChannel at home -- HomeNode.state:Dir_S
-Msg :: type: Inv, src: 6, dst: 1, ack_cnt: 0, fwd_to: 3
-Msg :: type: Inv, src: 6, dst: 2, ack_cnt: 0, fwd_to: 3
-Msg :: type: Data, src: 6, dst: 3, ack_cnt: 2, val: 4
-Receiving Data from HomeDir on ResponseChannel at proc 2
-Msg :: type: GetM, src: 1, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 1, dst: 6, ack_cnt: 0
-Msg :: type: PutS, src: 1, dst: 6, ack_cnt: 0
-Receiving GetM from processor Proc_3 on RequestChannel at home -- HomeNode.state:Dir_S
-Msg :: type: Inv, src: 6, dst: 1, ack_cnt: 0, fwd_to: 3
-Msg :: type: Inv, src: 6, dst: 2, ack_cnt: 0, fwd_to: 3
-Msg :: type: Data, src: 6, dst: 3, ack_cnt: 2, val: 4
-Receiving Data from HomeDir on ResponseChannel at proc 2
-Msg :: type: GetM, src: 1, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 1, dst: 6, ack_cnt: 0
-Msg :: type: PutS, src: 1, dst: 6, ack_cnt: 0
-Receiving GetM from processor Proc_3 on RequestChannel at home -- HomeNode.state:Dir_S
-Msg :: type: Inv, src: 6, dst: 2, ack_cnt: 0, fwd_to: 3
-Msg :: type: Data, src: 6, dst: 3, ack_cnt: 1, val: 4
-Receiving Data from HomeDir on ResponseChannel at proc 2
-Msg :: type: GetS, src: 1, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 1, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 1, dst: 6, ack_cnt: 0
-Receiving GetM from processor Proc_3 on RequestChannel at home -- HomeNode.state:Dir_S
-Msg :: type: Inv, src: 6, dst: 2, ack_cnt: 0, fwd_to: 3
-Msg :: type: Data, src: 6, dst: 3, ack_cnt: 1, val: 4
-Receiving Data from HomeDir on ResponseChannel at proc 2
-Msg :: type: GetS, src: 1, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 1, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 1, dst: 6, ack_cnt: 0
-Receiving PutS from processor Proc_3 on RequestChannel at home -- HomeNode.state:Dir_S
-Msg :: type: PutAck, src: 6, dst: 3, ack_cnt: 0
-Receiving Data from HomeDir on ResponseChannel at proc 2
-Msg :: type: GetS, src: 1, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 1, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 1, dst: 6, ack_cnt: 0
-Receiving GetS from processor Proc_1 on RequestChannel at home -- HomeNode.state:Dir_S
-Msg :: type: Data, src: 6, dst: 1, ack_cnt: 0, val: 4
-Receiving GetS from processor Proc_2 on RequestChannel at home -- HomeNode.state:Dir_S
-Msg :: type: Data, src: 6, dst: 2, ack_cnt: 0, val: 4
-Receiving GetM from processor Proc_3 on RequestChannel at home -- HomeNode.state:Dir_S
-Msg :: type: Data, src: 6, dst: 3, ack_cnt: 0, val: 4
-Receiving GetS from processor Proc_1 on RequestChannel at home -- HomeNode.state:Dir_S
-Msg :: type: Data, src: 6, dst: 1, ack_cnt: 0, val: 4
-Receiving GetS from processor Proc_2 on RequestChannel at home -- HomeNode.state:Dir_S
-Msg :: type: Data, src: 6, dst: 2, ack_cnt: 0, val: 4
-Receiving GetM from processor Proc_3 on RequestChannel at home -- HomeNode.state:Dir_S
-Msg :: type: Data, src: 6, dst: 3, ack_cnt: 0, val: 4
-Receiving GetS from processor Proc_1 on RequestChannel at home -- HomeNode.state:Dir_S
-Msg :: type: Data, src: 6, dst: 1, ack_cnt: 0, val: 4
-Receiving GetS from processor Proc_2 on RequestChannel at home -- HomeNode.state:Dir_S
-Msg :: type: Data, src: 6, dst: 2, ack_cnt: 0, val: 4
-Receiving PutS from processor Proc_3 on RequestChannel at home -- HomeNode.state:Dir_S
-Msg :: type: PutAck, src: 6, dst: 3, ack_cnt: 0
-Receiving GetS from processor Proc_3 on RequestChannel at home -- HomeNode.state:Dir_SM_A
-Receiving Data from HomeDir on ResponseChannel at proc 1
-Receiving Inv from HomeDir on ForwardChannel at proc 2
-Msg :: type: InvAck, src: 2, dst: 1, ack_cnt: 0
-Msg :: type: InvAck, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: PutS, src: 2, dst: 6, ack_cnt: 0
-Receiving GetS from processor Proc_1 on RequestChannel at home -- HomeNode.state:Dir_S
-Msg :: type: Data, src: 6, dst: 1, ack_cnt: 0, val: 4
-Receiving GetM from processor Proc_2 on RequestChannel at home -- HomeNode.state:Dir_S
-Msg :: type: Inv, src: 6, dst: 3, ack_cnt: 0, fwd_to: 2
-Msg :: type: Data, src: 6, dst: 2, ack_cnt: 1, val: 4
-Receiving GetM from processor Proc_3 on RequestChannel at home -- HomeNode.state:Dir_S
-Msg :: type: Data, src: 6, dst: 3, ack_cnt: 0, val: 4
-Receiving GetS from processor Proc_1 on RequestChannel at home -- HomeNode.state:Dir_S
-Msg :: type: Data, src: 6, dst: 1, ack_cnt: 0, val: 4
-Receiving GetM from processor Proc_2 on RequestChannel at home -- HomeNode.state:Dir_S
-Msg :: type: Inv, src: 6, dst: 3, ack_cnt: 0, fwd_to: 2
-Msg :: type: Data, src: 6, dst: 2, ack_cnt: 1, val: 4
-Receiving GetM from processor Proc_3 on RequestChannel at home -- HomeNode.state:Dir_S
-Msg :: type: Data, src: 6, dst: 3, ack_cnt: 0, val: 4
-Receiving GetS from processor Proc_1 on RequestChannel at home -- HomeNode.state:Dir_S
-Msg :: type: Data, src: 6, dst: 1, ack_cnt: 0, val: 4
-Receiving GetM from processor Proc_2 on RequestChannel at home -- HomeNode.state:Dir_S
-Msg :: type: Inv, src: 6, dst: 3, ack_cnt: 0, fwd_to: 2
-Msg :: type: Data, src: 6, dst: 2, ack_cnt: 1, val: 4
-Receiving PutS from processor Proc_3 on RequestChannel at home -- HomeNode.state:Dir_S
-Msg :: type: PutAck, src: 6, dst: 3, ack_cnt: 0
-Receiving GetS from processor Proc_3 on RequestChannel at home -- HomeNode.state:Dir_SM_A
-Receiving Data from HomeDir on ResponseChannel at proc 1
-Receiving Inv from HomeDir on ForwardChannel at proc 2
-Msg :: type: InvAck, src: 2, dst: 1, ack_cnt: 0
-Msg :: type: InvAck, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: PutS, src: 2, dst: 6, ack_cnt: 0
-Receiving GetS from processor Proc_1 on RequestChannel at home -- HomeNode.state:Dir_S
-Msg :: type: Data, src: 6, dst: 1, ack_cnt: 0, val: 4
-Receiving GetM from processor Proc_2 on RequestChannel at home -- HomeNode.state:Dir_S
-Msg :: type: Inv, src: 6, dst: 3, ack_cnt: 0, fwd_to: 2
-Msg :: type: Data, src: 6, dst: 2, ack_cnt: 1, val: 4
-Receiving GetM from processor Proc_3 on RequestChannel at home -- HomeNode.state:Dir_S
-Msg :: type: Data, src: 6, dst: 3, ack_cnt: 0, val: 4
-Receiving GetS from processor Proc_1 on RequestChannel at home -- HomeNode.state:Dir_S
-Msg :: type: Data, src: 6, dst: 1, ack_cnt: 0, val: 4
-Receiving GetM from processor Proc_2 on RequestChannel at home -- HomeNode.state:Dir_S
-Msg :: type: Inv, src: 6, dst: 3, ack_cnt: 0, fwd_to: 2
-Msg :: type: Data, src: 6, dst: 2, ack_cnt: 1, val: 4
-Receiving GetM from processor Proc_3 on RequestChannel at home -- HomeNode.state:Dir_S
-Msg :: type: Data, src: 6, dst: 3, ack_cnt: 0, val: 4
-Receiving GetS from processor Proc_1 on RequestChannel at home -- HomeNode.state:Dir_S
-Msg :: type: Data, src: 6, dst: 1, ack_cnt: 0, val: 4
-Receiving GetM from processor Proc_2 on RequestChannel at home -- HomeNode.state:Dir_S
-Msg :: type: Inv, src: 6, dst: 3, ack_cnt: 0, fwd_to: 2
-Msg :: type: Data, src: 6, dst: 2, ack_cnt: 1, val: 4
-Receiving PutS from processor Proc_3 on RequestChannel at home -- HomeNode.state:Dir_S
-Msg :: type: PutAck, src: 6, dst: 3, ack_cnt: 0
-Receiving GetS from processor Proc_3 on RequestChannel at home -- HomeNode.state:Dir_M
-Msg :: type: FwdGetS, src: 6, dst: 1, ack_cnt: 0, fwd_to: 3
-Receiving Data from HomeDir on ResponseChannel at proc 1
-Msg :: type: GetS, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 2, dst: 6, ack_cnt: 0
-Receiving GetS from processor Proc_3 on RequestChannel at home -- HomeNode.state:Dir_M
-Msg :: type: FwdGetS, src: 6, dst: 1, ack_cnt: 0, fwd_to: 3
-Receiving Data from HomeDir on ResponseChannel at proc 1
-Msg :: type: GetS, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 2, dst: 6, ack_cnt: 0
-Receiving GetS from processor Proc_2 on RequestChannel at home -- HomeNode.state:Dir_I
-Msg :: type: Data, src: 6, dst: 2, ack_cnt: 0, val: 4
-Receiving PutAck from HomeDir on ResponseChannel at proc 3
-Msg :: type: GetS, src: 1, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 1, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 1, dst: 6, ack_cnt: 0
-Receiving Inv from HomeDir on ForwardChannel at proc 2
-Msg :: type: InvAck, src: 2, dst: 1, ack_cnt: 0
-Msg :: type: InvAck, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetS, src: 3, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 3, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 3, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: GetM, src: 2, dst: 6, ack_cnt: 0
-Msg :: type: PutS, src: 2, dst: 6, ack_cnt: 0
-Receiving InvAck from processor Proc_2 on ResponseChannel at home -- HomeNode.state:Dir_SM_A
- -- HomeNode.ack_cnt:1
-Receiving Data from HomeDir on ResponseChannel at proc 1
-Receiving InvAck from Proc_2 on ResponseChannel at proc 1
- -- Procs[Proc_1].ack_cnt:0
+I ==(load)==> S Create Msg :: type: GetS, src: 1, dst: 5, ack_cnt: 0, dst_state: Dir_I
+I ==(load)==> S Create Msg :: type: GetS, src: 2, dst: 5, ack_cnt: 0, dst_state: Dir_I
+I ==(store)==> M Create Msg :: type: GetM, src: 1, dst: 5, ack_cnt: 0, dst_state: Dir_I
+I ==(store)==> M Create Msg :: type: GetM, src: 1, dst: 5, ack_cnt: 0, dst_state: Dir_I
+I ==(store)==> M Create Msg :: type: GetM, src: 2, dst: 5, ack_cnt: 0, dst_state: Dir_I
+I ==(store)==> M Create Msg :: type: GetM, src: 2, dst: 5, ack_cnt: 0, dst_state: Dir_I
+  Receive Msg :: type: GetS, src: 2, dst: 5, ack_cnt: 0, dst_state: Dir_I
+ Create Msg :: type: Data, src: 5, dst: 2, ack_cnt: 0, dst_state: Proc_IS_D, val: 3
+I ==(load)==> S Create Msg :: type: GetS, src: 1, dst: 5, ack_cnt: 0, dst_state: Dir_I
+I ==(store)==> M Create Msg :: type: GetM, src: 1, dst: 5, ack_cnt: 0, dst_state: Dir_I
+I ==(store)==> M Create Msg :: type: GetM, src: 1, dst: 5, ack_cnt: 0, dst_state: Dir_I
+  Receive Msg :: type: GetM, src: 2, dst: 5, ack_cnt: 0, dst_state: Dir_I
+ Create Msg :: type: Data, src: 5, dst: 2, ack_cnt: 0, dst_state: Proc_IM_AD, val: 3
+I ==(load)==> S Create Msg :: type: GetS, src: 1, dst: 5, ack_cnt: 0, dst_state: Dir_I
+I ==(store)==> M Create Msg :: type: GetM, src: 1, dst: 5, ack_cnt: 0, dst_state: Dir_I
+I ==(store)==> M Create Msg :: type: GetM, src: 1, dst: 5, ack_cnt: 0, dst_state: Dir_I
+  Receive Msg :: type: GetM, src: 2, dst: 5, ack_cnt: 0, dst_state: Dir_I
+ Create Msg :: type: Data, src: 5, dst: 2, ack_cnt: 0, dst_state: Proc_IM_AD, val: 3
+I ==(load)==> S Create Msg :: type: GetS, src: 1, dst: 5, ack_cnt: 0, dst_state: Dir_I
+I ==(store)==> M Create Msg :: type: GetM, src: 1, dst: 5, ack_cnt: 0, dst_state: Dir_I
+I ==(store)==> M Create Msg :: type: GetM, src: 1, dst: 5, ack_cnt: 0, dst_state: Dir_I
+  Receive Msg :: type: Data, src: 5, dst: 2, ack_cnt: 0, dst_state: Proc_IS_D, val: 3
+I ==(load)==> S Create Msg :: type: GetS, src: 1, dst: 5, ack_cnt: 0, dst_state: Dir_S
+I ==(store)==> M Create Msg :: type: GetM, src: 1, dst: 5, ack_cnt: 0, dst_state: Dir_S
+I ==(store)==> M Create Msg :: type: GetM, src: 1, dst: 5, ack_cnt: 0, dst_state: Dir_S
+  Receive Msg :: type: GetS, src: 1, dst: 5, ack_cnt: 0, dst_state: Dir_I
+ Create Msg :: type: Data, src: 5, dst: 1, ack_cnt: 0, dst_state: Proc_IS_D, val: 3
+  Receive Msg :: type: GetS, src: 2, dst: 5, ack_cnt: 0, dst_state: Dir_I
+ Create Msg :: type: Data, src: 5, dst: 2, ack_cnt: 0, dst_state: Proc_IS_D, val: 3
+  Receive Msg :: type: GetS, src: 1, dst: 5, ack_cnt: 0, dst_state: Dir_I
+ Create Msg :: type: Data, src: 5, dst: 1, ack_cnt: 0, dst_state: Proc_IS_D, val: 3
+  Receive Msg :: type: GetM, src: 2, dst: 5, ack_cnt: 0, dst_state: Dir_I
+ Create Msg :: type: Data, src: 5, dst: 2, ack_cnt: 0, dst_state: Proc_IM_AD, val: 3
+  Receive Msg :: type: GetS, src: 1, dst: 5, ack_cnt: 0, dst_state: Dir_I
+ Create Msg :: type: Data, src: 5, dst: 1, ack_cnt: 0, dst_state: Proc_IS_D, val: 3
+  Receive Msg :: type: GetM, src: 2, dst: 5, ack_cnt: 0, dst_state: Dir_I
+ Create Msg :: type: Data, src: 5, dst: 2, ack_cnt: 0, dst_state: Proc_IM_AD, val: 3
+  Receive Msg :: type: Data, src: 5, dst: 1, ack_cnt: 0, dst_state: Proc_IM_AD, val: 3
+I ==(load)==> S Create Msg :: type: GetS, src: 2, dst: 5, ack_cnt: 0, dst_state: Dir_M
+I ==(store)==> M Create Msg :: type: GetM, src: 2, dst: 5, ack_cnt: 0, dst_state: Dir_M
+I ==(store)==> M Create Msg :: type: GetM, src: 2, dst: 5, ack_cnt: 0, dst_state: Dir_M
+  Receive Msg :: type: GetM, src: 1, dst: 5, ack_cnt: 0, dst_state: Dir_I
+ Create Msg :: type: Data, src: 5, dst: 1, ack_cnt: 0, dst_state: Proc_IM_AD, val: 3
+  Receive Msg :: type: GetM, src: 2, dst: 5, ack_cnt: 0, dst_state: Dir_I
+ Create Msg :: type: Data, src: 5, dst: 2, ack_cnt: 0, dst_state: Proc_IM_AD, val: 3
+  Receive Msg :: type: GetM, src: 1, dst: 5, ack_cnt: 0, dst_state: Dir_I
+ Create Msg :: type: Data, src: 5, dst: 1, ack_cnt: 0, dst_state: Proc_IM_AD, val: 3
+  Receive Msg :: type: GetM, src: 2, dst: 5, ack_cnt: 0, dst_state: Dir_I
+ Create Msg :: type: Data, src: 5, dst: 2, ack_cnt: 0, dst_state: Proc_IM_AD, val: 3
+  Receive Msg :: type: Data, src: 5, dst: 1, ack_cnt: 0, dst_state: Proc_IM_AD, val: 3
+I ==(load)==> S Create Msg :: type: GetS, src: 2, dst: 5, ack_cnt: 0, dst_state: Dir_M
+I ==(store)==> M Create Msg :: type: GetM, src: 2, dst: 5, ack_cnt: 0, dst_state: Dir_M
+I ==(store)==> M Create Msg :: type: GetM, src: 2, dst: 5, ack_cnt: 0, dst_state: Dir_M
+  Receive Msg :: type: GetM, src: 1, dst: 5, ack_cnt: 0, dst_state: Dir_I
+ Create Msg :: type: Data, src: 5, dst: 1, ack_cnt: 0, dst_state: Proc_IM_AD, val: 3
+  Receive Msg :: type: GetM, src: 2, dst: 5, ack_cnt: 0, dst_state: Dir_I
+ Create Msg :: type: Data, src: 5, dst: 2, ack_cnt: 0, dst_state: Proc_IM_AD, val: 3
+I ==(load)==> S Create Msg :: type: GetS, src: 2, dst: 5, ack_cnt: 0, dst_state: Dir_S
+I ==(store)==> M Create Msg :: type: GetM, src: 2, dst: 5, ack_cnt: 0, dst_state: Dir_S
+I ==(store)==> M Create Msg :: type: GetM, src: 2, dst: 5, ack_cnt: 0, dst_state: Dir_S
+S ==(store)==> M Create Msg :: type: GetM, src: 1, dst: 5, ack_cnt: 0, dst_state: Dir_S
+S ==(store)==> M Create Msg :: type: GetM, src: 1, dst: 5, ack_cnt: 0, dst_state: Dir_S
+S ==(evict)==> I Create Msg :: type: PutS, src: 1, dst: 5, ack_cnt: 0, dst_state: Dir_S
+  Receive Msg :: type: GetS, src: 2, dst: 5, ack_cnt: 0, dst_state: Dir_S
+ Create Msg :: type: Data, src: 5, dst: 2, ack_cnt: 0, dst_state: Proc_IS_D, val: 3
+  Receive Msg :: type: Data, src: 5, dst: 1, ack_cnt: 0, dst_state: Proc_IS_D, val: 3
+  Receive Msg :: type: GetM, src: 2, dst: 5, ack_cnt: 0, dst_state: Dir_S
+ Create Msg :: type: Inv, src: 5, dst: 1, ack_cnt: 0, dst_state: Proc_IS_D, fwd_to: 2
+ Create Msg :: type: Data, src: 5, dst: 2, ack_cnt: 1, dst_state: Proc_IM_AD, val: 3
+  Receive Msg :: type: Data, src: 5, dst: 1, ack_cnt: 0, dst_state: Proc_IS_D, val: 3
+  Receive Msg :: type: GetM, src: 2, dst: 5, ack_cnt: 0, dst_state: Dir_S
+ Create Msg :: type: Inv, src: 5, dst: 1, ack_cnt: 0, dst_state: Proc_IS_D, fwd_to: 2
+ Create Msg :: type: Data, src: 5, dst: 2, ack_cnt: 1, dst_state: Proc_IM_AD, val: 3
+  Receive Msg :: type: Data, src: 5, dst: 1, ack_cnt: 0, dst_state: Proc_IS_D, val: 3
+  Receive Msg :: type: GetS, src: 2, dst: 5, ack_cnt: 0, dst_state: Dir_M
+ Create Msg :: type: FwdGetS, src: 5, dst: 1, ack_cnt: 0, dst_state: Proc_IM_AD, fwd_to: 2
+  Receive Msg :: type: Data, src: 5, dst: 1, ack_cnt: 0, dst_state: Proc_IM_AD, val: 3
+  Receive Msg :: type: GetS, src: 2, dst: 5, ack_cnt: 0, dst_state: Dir_M
+ Create Msg :: type: FwdGetS, src: 5, dst: 1, ack_cnt: 0, dst_state: Proc_IM_AD, fwd_to: 2
+  Receive Msg :: type: Data, src: 5, dst: 1, ack_cnt: 0, dst_state: Proc_IM_AD, val: 3
+I ==(load)==> S Create Msg :: type: GetS, src: 2, dst: 5, ack_cnt: 0, dst_state: Dir_M
+I ==(store)==> M Create Msg :: type: GetM, src: 2, dst: 5, ack_cnt: 0, dst_state: Dir_M
+I ==(store)==> M Create Msg :: type: GetM, src: 2, dst: 5, ack_cnt: 0, dst_state: Dir_M
+M ==(evict)==> I Create Msg :: type: PutM, src: 1, dst: 5, ack_cnt: 0, dst_state: Dir_M, val: 3
+  Receive Msg :: type: GetM, src: 2, dst: 5, ack_cnt: 0, dst_state: Dir_M
+ Create Msg :: type: FwdGetM, src: 5, dst: 1, ack_cnt: 0, dst_state: Proc_IM_AD, fwd_to: 2
+  Receive Msg :: type: Data, src: 5, dst: 1, ack_cnt: 0, dst_state: Proc_IM_AD, val: 3
+  Receive Msg :: type: GetM, src: 2, dst: 5, ack_cnt: 0, dst_state: Dir_M
+ Create Msg :: type: FwdGetM, src: 5, dst: 1, ack_cnt: 0, dst_state: Proc_IM_AD, fwd_to: 2
+  Receive Msg :: type: Data, src: 5, dst: 1, ack_cnt: 0, dst_state: Proc_IM_AD, val: 3
+  Receive Msg :: type: GetM, src: 2, dst: 5, ack_cnt: 0, dst_state: Dir_M
+ Create Msg :: type: FwdGetM, src: 5, dst: 1, ack_cnt: 0, dst_state: Proc_IM_AD, fwd_to: 2
+  Receive Msg :: type: Data, src: 5, dst: 1, ack_cnt: 0, dst_state: Proc_IM_AD, val: 3
+I ==(load)==> S Create Msg :: type: GetS, src: 2, dst: 5, ack_cnt: 0, dst_state: Dir_M
+I ==(store)==> M Create Msg :: type: GetM, src: 2, dst: 5, ack_cnt: 0, dst_state: Dir_M
+I ==(store)==> M Create Msg :: type: GetM, src: 2, dst: 5, ack_cnt: 0, dst_state: Dir_M
+M ==(evict)==> I Create Msg :: type: PutM, src: 1, dst: 5, ack_cnt: 0, dst_state: Dir_M, val: 3
+  Receive Msg :: type: GetM, src: 2, dst: 5, ack_cnt: 0, dst_state: Dir_M
+ Create Msg :: type: FwdGetM, src: 5, dst: 1, ack_cnt: 0, dst_state: Proc_IM_AD, fwd_to: 2
+  Receive Msg :: type: Data, src: 5, dst: 1, ack_cnt: 0, dst_state: Proc_IM_AD, val: 3
+  Receive Msg :: type: GetS, src: 2, dst: 5, ack_cnt: 0, dst_state: Dir_S
+ Create Msg :: type: Data, src: 5, dst: 2, ack_cnt: 0, dst_state: Proc_IS_D, val: 3
+S ==(store)==> M Create Msg :: type: GetM, src: 1, dst: 5, ack_cnt: 0, dst_state: Dir_S
+S ==(store)==> M Create Msg :: type: GetM, src: 1, dst: 5, ack_cnt: 0, dst_state: Dir_S
+S ==(evict)==> I Create Msg :: type: PutS, src: 1, dst: 5, ack_cnt: 0, dst_state: Dir_S
+  Receive Msg :: type: GetM, src: 2, dst: 5, ack_cnt: 0, dst_state: Dir_S
+ Create Msg :: type: Inv, src: 5, dst: 1, ack_cnt: 0, dst_state: Proc_S, fwd_to: 2
+ Create Msg :: type: Data, src: 5, dst: 2, ack_cnt: 1, dst_state: Proc_IM_AD, val: 3
+S ==(store)==> M Create Msg :: type: GetM, src: 1, dst: 5, ack_cnt: 0, dst_state: Dir_S
+S ==(store)==> M Create Msg :: type: GetM, src: 1, dst: 5, ack_cnt: 0, dst_state: Dir_S
+S ==(evict)==> I Create Msg :: type: PutS, src: 1, dst: 5, ack_cnt: 0, dst_state: Dir_S
+  Receive Msg :: type: GetM, src: 2, dst: 5, ack_cnt: 0, dst_state: Dir_S
+ Create Msg :: type: Inv, src: 5, dst: 1, ack_cnt: 0, dst_state: Proc_S, fwd_to: 2
+ Create Msg :: type: Data, src: 5, dst: 2, ack_cnt: 1, dst_state: Proc_IM_AD, val: 3
+S ==(store)==> M Create Msg :: type: GetM, src: 1, dst: 5, ack_cnt: 0, dst_state: Dir_S
+S ==(store)==> M Create Msg :: type: GetM, src: 1, dst: 5, ack_cnt: 0, dst_state: Dir_S
+S ==(evict)==> I Create Msg :: type: PutS, src: 1, dst: 5, ack_cnt: 0, dst_state: Dir_S
+  Receive Msg :: type: GetM, src: 2, dst: 5, ack_cnt: 0, dst_state: Dir_S
+ Create Msg :: type: Data, src: 5, dst: 2, ack_cnt: 0, dst_state: Proc_SM_AD, val: 3
+I ==(load)==> S Create Msg :: type: GetS, src: 1, dst: 5, ack_cnt: 0, dst_state: Dir_S
+I ==(store)==> M Create Msg :: type: GetM, src: 1, dst: 5, ack_cnt: 0, dst_state: Dir_S
+I ==(store)==> M Create Msg :: type: GetM, src: 1, dst: 5, ack_cnt: 0, dst_state: Dir_S
+  Receive Msg :: type: GetM, src: 2, dst: 5, ack_cnt: 0, dst_state: Dir_S
+ Create Msg :: type: Data, src: 5, dst: 2, ack_cnt: 0, dst_state: Proc_SM_AD, val: 3
+I ==(load)==> S Create Msg :: type: GetS, src: 1, dst: 5, ack_cnt: 0, dst_state: Dir_S
+I ==(store)==> M Create Msg :: type: GetM, src: 1, dst: 5, ack_cnt: 0, dst_state: Dir_S
+I ==(store)==> M Create Msg :: type: GetM, src: 1, dst: 5, ack_cnt: 0, dst_state: Dir_S
+  Receive Msg :: type: PutS, src: 2, dst: 5, ack_cnt: 0, dst_state: Dir_S
+ Create Msg :: type: PutAck, src: 5, dst: 2, ack_cnt: 0, dst_state: Proc_SI_A
+I ==(load)==> S Create Msg :: type: GetS, src: 1, dst: 5, ack_cnt: 0, dst_state: Dir_S
+I ==(store)==> M Create Msg :: type: GetM, src: 1, dst: 5, ack_cnt: 0, dst_state: Dir_S
+I ==(store)==> M Create Msg :: type: GetM, src: 1, dst: 5, ack_cnt: 0, dst_state: Dir_S
+  Receive Msg :: type: Data, src: 5, dst: 1, ack_cnt: 0, dst_state: Proc_IS_D, val: 3
+  Receive Msg :: type: Data, src: 5, dst: 2, ack_cnt: 0, dst_state: Proc_IS_D, val: 3
+  Receive Msg :: type: Data, src: 5, dst: 1, ack_cnt: 1, dst_state: Proc_IM_AD, val: 3
+  Receive Msg :: type: Data, src: 5, dst: 2, ack_cnt: 0, dst_state: Proc_IS_D, val: 3
+  Receive Msg :: type: Inv, src: 5, dst: 2, ack_cnt: 0, dst_state: Proc_IS_D, fwd_to: 1
+  Receive Msg :: type: Data, src: 5, dst: 1, ack_cnt: 1, dst_state: Proc_IM_AD, val: 3
+  Receive Msg :: type: Data, src: 5, dst: 2, ack_cnt: 0, dst_state: Proc_IS_D, val: 3
+  Receive Msg :: type: Inv, src: 5, dst: 2, ack_cnt: 0, dst_state: Proc_IS_D, fwd_to: 1
+  Receive Msg :: type: Data, src: 5, dst: 2, ack_cnt: 0, dst_state: Proc_IM_AD, val: 3
+  Receive Msg :: type: FwdGetS, src: 5, dst: 2, ack_cnt: 0, dst_state: Proc_IM_AD, fwd_to: 1
+  Receive Msg :: type: GetS, src: 2, dst: 5, ack_cnt: 0, dst_state: Dir_M
+ Create Msg :: type: FwdGetS, src: 5, dst: 1, ack_cnt: 0, dst_state: Proc_M, fwd_to: 2
+M ==(evict)==> I Create Msg :: type: PutM, src: 1, dst: 5, ack_cnt: 0, dst_state: Dir_M, val: 3
+  Receive Msg :: type: Data, src: 5, dst: 2, ack_cnt: 0, dst_state: Proc_IM_AD, val: 3
+  Receive Msg :: type: FwdGetS, src: 5, dst: 2, ack_cnt: 0, dst_state: Proc_IM_AD, fwd_to: 1
+  Receive Msg :: type: GetS, src: 2, dst: 5, ack_cnt: 0, dst_state: Dir_M
+ Create Msg :: type: FwdGetS, src: 5, dst: 1, ack_cnt: 0, dst_state: Proc_M, fwd_to: 2
+M ==(evict)==> I Create Msg :: type: PutM, src: 1, dst: 5, ack_cnt: 0, dst_state: Dir_M, val: 3
+  Receive Msg :: type: GetM, src: 2, dst: 5, ack_cnt: 0, dst_state: Dir_M
+ Create Msg :: type: FwdGetM, src: 5, dst: 1, ack_cnt: 0, dst_state: Proc_M, fwd_to: 2
+M ==(evict)==> I Create Msg :: type: PutM, src: 1, dst: 5, ack_cnt: 0, dst_state: Dir_M, val: 3
+  Receive Msg :: type: GetM, src: 2, dst: 5, ack_cnt: 0, dst_state: Dir_M
+ Create Msg :: type: FwdGetM, src: 5, dst: 1, ack_cnt: 0, dst_state: Proc_M, fwd_to: 2
+M ==(evict)==> I Create Msg :: type: PutM, src: 1, dst: 5, ack_cnt: 0, dst_state: Dir_M, val: 3
+  Receive Msg :: type: PutM, src: 1, dst: 5, ack_cnt: 0, dst_state: Dir_M, val: 3
+ Create Msg :: type: PutAck, src: 5, dst: 1, ack_cnt: 0, dst_state: Proc_MI_A
+I ==(load)==> S Create Msg :: type: GetS, src: 2, dst: 5, ack_cnt: 0, dst_state: Dir_M
+I ==(store)==> M Create Msg :: type: GetM, src: 2, dst: 5, ack_cnt: 0, dst_state: Dir_M
+I ==(store)==> M Create Msg :: type: GetM, src: 2, dst: 5, ack_cnt: 0, dst_state: Dir_M
+  Receive Msg :: type: Data, src: 5, dst: 2, ack_cnt: 0, dst_state: Proc_IM_AD, val: 3
+  Receive Msg :: type: FwdGetM, src: 5, dst: 2, ack_cnt: 0, dst_state: Proc_IM_AD, fwd_to: 1
+  Receive Msg :: type: Data, src: 5, dst: 2, ack_cnt: 0, dst_state: Proc_IM_AD, val: 3
+  Receive Msg :: type: FwdGetM, src: 5, dst: 2, ack_cnt: 0, dst_state: Proc_IM_AD, fwd_to: 1
+  Receive Msg :: type: Data, src: 5, dst: 2, ack_cnt: 0, dst_state: Proc_IM_AD, val: 3
+  Receive Msg :: type: FwdGetM, src: 5, dst: 2, ack_cnt: 0, dst_state: Proc_IM_AD, fwd_to: 1
+  Receive Msg :: type: GetM, src: 2, dst: 5, ack_cnt: 0, dst_state: Dir_M
+ Create Msg :: type: FwdGetM, src: 5, dst: 1, ack_cnt: 0, dst_state: Proc_M, fwd_to: 2
+M ==(evict)==> I Create Msg :: type: PutM, src: 1, dst: 5, ack_cnt: 0, dst_state: Dir_M, val: 3
+  Receive Msg :: type: GetM, src: 2, dst: 5, ack_cnt: 0, dst_state: Dir_M
+ Create Msg :: type: FwdGetM, src: 5, dst: 1, ack_cnt: 0, dst_state: Proc_M, fwd_to: 2
+M ==(evict)==> I Create Msg :: type: PutM, src: 1, dst: 5, ack_cnt: 0, dst_state: Dir_M, val: 3
+  Receive Msg :: type: PutM, src: 1, dst: 5, ack_cnt: 0, dst_state: Dir_M, val: 3
+ Create Msg :: type: PutAck, src: 5, dst: 1, ack_cnt: 0, dst_state: Proc_MI_A
+I ==(load)==> S Create Msg :: type: GetS, src: 2, dst: 5, ack_cnt: 0, dst_state: Dir_M
+I ==(store)==> M Create Msg :: type: GetM, src: 2, dst: 5, ack_cnt: 0, dst_state: Dir_M
+I ==(store)==> M Create Msg :: type: GetM, src: 2, dst: 5, ack_cnt: 0, dst_state: Dir_M
+  Receive Msg :: type: Data, src: 5, dst: 2, ack_cnt: 0, dst_state: Proc_IM_AD, val: 3
+  Receive Msg :: type: FwdGetM, src: 5, dst: 2, ack_cnt: 0, dst_state: Proc_IM_AD, fwd_to: 1
+  Receive Msg :: type: Data, src: 5, dst: 2, ack_cnt: 0, dst_state: Proc_IS_D, val: 3
+S ==(store)==> M Create Msg :: type: GetM, src: 1, dst: 5, ack_cnt: 0, dst_state: Dir_S
+S ==(store)==> M Create Msg :: type: GetM, src: 1, dst: 5, ack_cnt: 0, dst_state: Dir_S
+S ==(evict)==> I Create Msg :: type: PutS, src: 1, dst: 5, ack_cnt: 0, dst_state: Dir_S
+  Receive Msg :: type: GetS, src: 1, dst: 5, ack_cnt: 0, dst_state: Dir_S
+ Create Msg :: type: Data, src: 5, dst: 1, ack_cnt: 0, dst_state: Proc_IS_D, val: 3
+  Receive Msg :: type: GetM, src: 2, dst: 5, ack_cnt: 0, dst_state: Dir_S
+ Create Msg :: type: Data, src: 5, dst: 2, ack_cnt: 0, dst_state: Proc_SM_AD, val: 3
+  Receive Msg :: type: GetS, src: 1, dst: 5, ack_cnt: 0, dst_state: Dir_S
+ Create Msg :: type: Data, src: 5, dst: 1, ack_cnt: 0, dst_state: Proc_IS_D, val: 3
+  Receive Msg :: type: GetM, src: 2, dst: 5, ack_cnt: 0, dst_state: Dir_S
+ Create Msg :: type: Data, src: 5, dst: 2, ack_cnt: 0, dst_state: Proc_SM_AD, val: 3
+  Receive Msg :: type: GetS, src: 1, dst: 5, ack_cnt: 0, dst_state: Dir_S
+ Create Msg :: type: Data, src: 5, dst: 1, ack_cnt: 0, dst_state: Proc_IS_D, val: 3
+  Receive Msg :: type: PutS, src: 2, dst: 5, ack_cnt: 0, dst_state: Dir_S
+ Create Msg :: type: PutAck, src: 5, dst: 2, ack_cnt: 0, dst_state: Proc_SI_A
+  Receive Msg :: type: Data, src: 5, dst: 1, ack_cnt: 1, dst_state: Proc_IM_AD, val: 3
+  Receive Msg :: type: Inv, src: 5, dst: 2, ack_cnt: 0, dst_state: Proc_S, fwd_to: 1
+ Create Msg :: type: InvAck, src: 2, dst: 1, ack_cnt: 0, dst_state: Proc_IM_AD
+ Create Msg :: type: InvAck, src: 2, dst: 5, ack_cnt: 0, dst_state: Dir_SM_A
+S ==(store)==> M Create Msg :: type: GetM, src: 2, dst: 5, ack_cnt: 0, dst_state: Dir_SM_A
+S ==(store)==> M Create Msg :: type: GetM, src: 2, dst: 5, ack_cnt: 0, dst_state: Dir_SM_A
+S ==(evict)==> I Create Msg :: type: PutS, src: 2, dst: 5, ack_cnt: 0, dst_state: Dir_SM_A
+  Receive Msg :: type: GetM, src: 1, dst: 5, ack_cnt: 0, dst_state: Dir_S
+ Create Msg :: type: Inv, src: 5, dst: 2, ack_cnt: 0, dst_state: Proc_SM_AD, fwd_to: 1
+ Create Msg :: type: Data, src: 5, dst: 1, ack_cnt: 1, dst_state: Proc_IM_AD, val: 3
+  Receive Msg :: type: GetM, src: 2, dst: 5, ack_cnt: 0, dst_state: Dir_S
+ Create Msg :: type: Data, src: 5, dst: 2, ack_cnt: 0, dst_state: Proc_SM_AD, val: 3
+  Receive Msg :: type: GetM, src: 1, dst: 5, ack_cnt: 0, dst_state: Dir_S
+ Create Msg :: type: Inv, src: 5, dst: 2, ack_cnt: 0, dst_state: Proc_SM_AD, fwd_to: 1
+ Create Msg :: type: Data, src: 5, dst: 1, ack_cnt: 1, dst_state: Proc_IM_AD, val: 3
+  Receive Msg :: type: GetM, src: 2, dst: 5, ack_cnt: 0, dst_state: Dir_S
+ Create Msg :: type: Data, src: 5, dst: 2, ack_cnt: 0, dst_state: Proc_SM_AD, val: 3
+  Receive Msg :: type: GetM, src: 1, dst: 5, ack_cnt: 0, dst_state: Dir_S
+ Create Msg :: type: Inv, src: 5, dst: 2, ack_cnt: 0, dst_state: Proc_SI_A, fwd_to: 1
+ Create Msg :: type: Data, src: 5, dst: 1, ack_cnt: 1, dst_state: Proc_IM_AD, val: 3
+  Receive Msg :: type: PutS, src: 2, dst: 5, ack_cnt: 0, dst_state: Dir_S
+ Create Msg :: type: PutAck, src: 5, dst: 2, ack_cnt: 0, dst_state: Proc_SI_A
+  Receive Msg :: type: Data, src: 5, dst: 1, ack_cnt: 1, dst_state: Proc_IM_AD, val: 3
+  Receive Msg :: type: Inv, src: 5, dst: 2, ack_cnt: 0, dst_state: Proc_S, fwd_to: 1
+ Create Msg :: type: InvAck, src: 2, dst: 1, ack_cnt: 0, dst_state: Proc_IM_AD
+ Create Msg :: type: InvAck, src: 2, dst: 5, ack_cnt: 0, dst_state: Dir_SM_A
+S ==(store)==> M Create Msg :: type: GetM, src: 2, dst: 5, ack_cnt: 0, dst_state: Dir_SM_A
+S ==(store)==> M Create Msg :: type: GetM, src: 2, dst: 5, ack_cnt: 0, dst_state: Dir_SM_A
+S ==(evict)==> I Create Msg :: type: PutS, src: 2, dst: 5, ack_cnt: 0, dst_state: Dir_SM_A
+  Receive Msg :: type: GetM, src: 1, dst: 5, ack_cnt: 0, dst_state: Dir_S
+ Create Msg :: type: Inv, src: 5, dst: 2, ack_cnt: 0, dst_state: Proc_SM_AD, fwd_to: 1
+ Create Msg :: type: Data, src: 5, dst: 1, ack_cnt: 1, dst_state: Proc_IM_AD, val: 3
+  Receive Msg :: type: GetM, src: 2, dst: 5, ack_cnt: 0, dst_state: Dir_S
+ Create Msg :: type: Data, src: 5, dst: 2, ack_cnt: 0, dst_state: Proc_SM_AD, val: 3
+  Receive Msg :: type: GetM, src: 1, dst: 5, ack_cnt: 0, dst_state: Dir_S
+ Create Msg :: type: Inv, src: 5, dst: 2, ack_cnt: 0, dst_state: Proc_SM_AD, fwd_to: 1
+ Create Msg :: type: Data, src: 5, dst: 1, ack_cnt: 1, dst_state: Proc_IM_AD, val: 3
+  Receive Msg :: type: GetM, src: 2, dst: 5, ack_cnt: 0, dst_state: Dir_S
+ Create Msg :: type: Data, src: 5, dst: 2, ack_cnt: 0, dst_state: Proc_SM_AD, val: 3
+  Receive Msg :: type: GetM, src: 1, dst: 5, ack_cnt: 0, dst_state: Dir_S
+ Create Msg :: type: Inv, src: 5, dst: 2, ack_cnt: 0, dst_state: Proc_SI_A, fwd_to: 1
+ Create Msg :: type: Data, src: 5, dst: 1, ack_cnt: 1, dst_state: Proc_IM_AD, val: 3
+  Receive Msg :: type: PutS, src: 2, dst: 5, ack_cnt: 0, dst_state: Dir_S
+ Create Msg :: type: PutAck, src: 5, dst: 2, ack_cnt: 0, dst_state: Proc_SI_A
+  Receive Msg :: type: Data, src: 5, dst: 1, ack_cnt: 0, dst_state: Proc_SM_AD, val: 3
+I ==(load)==> S Create Msg :: type: GetS, src: 2, dst: 5, ack_cnt: 0, dst_state: Dir_M
+I ==(store)==> M Create Msg :: type: GetM, src: 2, dst: 5, ack_cnt: 0, dst_state: Dir_M
+I ==(store)==> M Create Msg :: type: GetM, src: 2, dst: 5, ack_cnt: 0, dst_state: Dir_M
+  Receive Msg :: type: Data, src: 5, dst: 1, ack_cnt: 0, dst_state: Proc_SM_AD, val: 3
+I ==(load)==> S Create Msg :: type: GetS, src: 2, dst: 5, ack_cnt: 0, dst_state: Dir_M
+I ==(store)==> M Create Msg :: type: GetM, src: 2, dst: 5, ack_cnt: 0, dst_state: Dir_M
+I ==(store)==> M Create Msg :: type: GetM, src: 2, dst: 5, ack_cnt: 0, dst_state: Dir_M
+  Receive Msg :: type: PutAck, src: 5, dst: 2, ack_cnt: 0, dst_state: Proc_SI_A
+I ==(load)==> S Create Msg :: type: GetS, src: 1, dst: 5, ack_cnt: 0, dst_state: Dir_I
+I ==(store)==> M Create Msg :: type: GetM, src: 1, dst: 5, ack_cnt: 0, dst_state: Dir_I
+I ==(store)==> M Create Msg :: type: GetM, src: 1, dst: 5, ack_cnt: 0, dst_state: Dir_I
+  Receive Msg :: type: Data, src: 5, dst: 2, ack_cnt: 0, dst_state: Proc_IS_D, val: 3
+  Receive Msg :: type: Inv, src: 5, dst: 2, ack_cnt: 0, dst_state: Proc_IS_D, fwd_to: 1
+  Receive Msg :: type: Data, src: 5, dst: 1, ack_cnt: 1, dst_state: Proc_IM_AD, val: 3
+  Receive Msg :: type: Data, src: 5, dst: 2, ack_cnt: 0, dst_state: Proc_IS_D, val: 3
+  Receive Msg :: type: Data, src: 5, dst: 2, ack_cnt: 0, dst_state: Proc_IS_D, val: 3
+  Receive Msg :: type: Inv, src: 5, dst: 2, ack_cnt: 0, dst_state: Proc_IS_D, fwd_to: 1
+  Receive Msg :: type: Data, src: 5, dst: 1, ack_cnt: 1, dst_state: Proc_IM_AD, val: 3
+  Receive Msg :: type: Data, src: 5, dst: 2, ack_cnt: 0, dst_state: Proc_IS_D, val: 3
+  Receive Msg :: type: FwdGetS, src: 5, dst: 1, ack_cnt: 0, dst_state: Proc_M, fwd_to: 2
+ Create Msg :: type: FwdAck, src: 1, dst: 5, ack_cnt: 0, dst_state: Dir_MX_D, val: 3
+ Create Msg :: type: Data, src: 1, dst: 2, ack_cnt: 0, dst_state: Proc_IS_D, val: 3
+M ==(evict)==> I Create Msg :: type: PutM, src: 1, dst: 5, ack_cnt: 0, dst_state: Dir_MX_D, val: 3
+  Receive Msg :: type: Data, src: 5, dst: 2, ack_cnt: 0, dst_state: Proc_IM_AD, val: 3
+  Receive Msg :: type: GetS, src: 2, dst: 5, ack_cnt: 0, dst_state: Dir_M
+ Create Msg :: type: FwdGetS, src: 5, dst: 1, ack_cnt: 0, dst_state: Proc_MI_A, fwd_to: 2
+  Receive Msg :: type: PutM, src: 1, dst: 5, ack_cnt: 0, dst_state: Dir_M, val: 3
+ Create Msg :: type: PutAck, src: 5, dst: 1, ack_cnt: 0, dst_state: Proc_MI_A
+  Receive Msg :: type: FwdGetS, src: 5, dst: 1, ack_cnt: 0, dst_state: Proc_M, fwd_to: 2
+ Create Msg :: type: FwdAck, src: 1, dst: 5, ack_cnt: 0, dst_state: Dir_MX_D, val: 3
+ Create Msg :: type: Data, src: 1, dst: 2, ack_cnt: 0, dst_state: Proc_IS_D, val: 3
+M ==(evict)==> I Create Msg :: type: PutM, src: 1, dst: 5, ack_cnt: 0, dst_state: Dir_MX_D, val: 3
+  Receive Msg :: type: Data, src: 5, dst: 2, ack_cnt: 0, dst_state: Proc_IM_AD, val: 3
+  Receive Msg :: type: GetS, src: 2, dst: 5, ack_cnt: 0, dst_state: Dir_M
+ Create Msg :: type: FwdGetS, src: 5, dst: 1, ack_cnt: 0, dst_state: Proc_MI_A, fwd_to: 2
+  Receive Msg :: type: PutM, src: 1, dst: 5, ack_cnt: 0, dst_state: Dir_M, val: 3
+ Create Msg :: type: PutAck, src: 5, dst: 1, ack_cnt: 0, dst_state: Proc_MI_A
+  Receive Msg :: type: FwdGetM, src: 5, dst: 2, ack_cnt: 0, dst_state: Proc_M, fwd_to: 1
+ Create Msg :: type: Data, src: 2, dst: 1, ack_cnt: 0, dst_state: Proc_IM_AD, val: 3
+ Create Msg :: type: FwdAck, src: 2, dst: 5, ack_cnt: 0, dst_state: Dir_MM_A
+M ==(evict)==> I Create Msg :: type: PutM, src: 2, dst: 5, ack_cnt: 0, dst_state: Dir_MM_A, val: 3
+  Receive Msg :: type: GetM, src: 2, dst: 5, ack_cnt: 0, dst_state: Dir_M
+ Create Msg :: type: FwdGetM, src: 5, dst: 1, ack_cnt: 0, dst_state: Proc_MI_A, fwd_to: 2
+  Receive Msg :: type: PutM, src: 1, dst: 5, ack_cnt: 0, dst_state: Dir_M, val: 3
+ Create Msg :: type: PutAck, src: 5, dst: 1, ack_cnt: 0, dst_state: Proc_MI_A
+  Receive Msg :: type: FwdGetM, src: 5, dst: 2, ack_cnt: 0, dst_state: Proc_M, fwd_to: 1
+ Create Msg :: type: Data, src: 2, dst: 1, ack_cnt: 0, dst_state: Proc_IM_AD, val: 3
+ Create Msg :: type: FwdAck, src: 2, dst: 5, ack_cnt: 0, dst_state: Dir_MM_A
+M ==(evict)==> I Create Msg :: type: PutM, src: 2, dst: 5, ack_cnt: 0, dst_state: Dir_MM_A, val: 3
+  Receive Msg :: type: GetM, src: 2, dst: 5, ack_cnt: 0, dst_state: Dir_M
+ Create Msg :: type: FwdGetM, src: 5, dst: 1, ack_cnt: 0, dst_state: Proc_MI_A, fwd_to: 2
+  Receive Msg :: type: PutM, src: 1, dst: 5, ack_cnt: 0, dst_state: Dir_M, val: 3
+ Create Msg :: type: PutAck, src: 5, dst: 1, ack_cnt: 0, dst_state: Proc_MI_A
+  Receive Msg :: type: PutAck, src: 5, dst: 2, ack_cnt: 0, dst_state: Proc_MI_A
+I ==(load)==> S Create Msg :: type: GetS, src: 1, dst: 5, ack_cnt: 0, dst_state: Dir_I
+I ==(store)==> M Create Msg :: type: GetM, src: 1, dst: 5, ack_cnt: 0, dst_state: Dir_I
+I ==(store)==> M Create Msg :: type: GetM, src: 1, dst: 5, ack_cnt: 0, dst_state: Dir_I
+  Receive Msg :: type: Data, src: 5, dst: 2, ack_cnt: 0, dst_state: Proc_IM_AD, val: 3
+  Receive Msg :: type: Data, src: 5, dst: 2, ack_cnt: 0, dst_state: Proc_IM_AD, val: 3
+  Receive Msg :: type: FwdGetM, src: 5, dst: 2, ack_cnt: 0, dst_state: Proc_M, fwd_to: 1
+ Create Msg :: type: Data, src: 2, dst: 1, ack_cnt: 0, dst_state: Proc_IM_AD, val: 3
+ Create Msg :: type: FwdAck, src: 2, dst: 5, ack_cnt: 0, dst_state: Dir_MM_A
+M ==(evict)==> I Create Msg :: type: PutM, src: 2, dst: 5, ack_cnt: 0, dst_state: Dir_MM_A, val: 3
+  Receive Msg :: type: Data, src: 5, dst: 2, ack_cnt: 0, dst_state: Proc_IM_AD, val: 3
+  Receive Msg :: type: GetM, src: 2, dst: 5, ack_cnt: 0, dst_state: Dir_M
+ Create Msg :: type: FwdGetM, src: 5, dst: 1, ack_cnt: 0, dst_state: Proc_MI_A, fwd_to: 2
+  Receive Msg :: type: PutM, src: 1, dst: 5, ack_cnt: 0, dst_state: Dir_M, val: 3
+ Create Msg :: type: PutAck, src: 5, dst: 1, ack_cnt: 0, dst_state: Proc_MI_A
+  Receive Msg :: type: FwdGetM, src: 5, dst: 2, ack_cnt: 0, dst_state: Proc_M, fwd_to: 1
+ Create Msg :: type: Data, src: 2, dst: 1, ack_cnt: 0, dst_state: Proc_IM_AD, val: 3
+ Create Msg :: type: FwdAck, src: 2, dst: 5, ack_cnt: 0, dst_state: Dir_MM_A
+M ==(evict)==> I Create Msg :: type: PutM, src: 2, dst: 5, ack_cnt: 0, dst_state: Dir_MM_A, val: 3
+  Receive Msg :: type: GetM, src: 2, dst: 5, ack_cnt: 0, dst_state: Dir_M
+ Create Msg :: type: FwdGetM, src: 5, dst: 1, ack_cnt: 0, dst_state: Proc_MI_A, fwd_to: 2
+  Receive Msg :: type: PutM, src: 1, dst: 5, ack_cnt: 0, dst_state: Dir_M, val: 3
+ Create Msg :: type: PutAck, src: 5, dst: 1, ack_cnt: 0, dst_state: Proc_MI_A
+  Receive Msg :: type: Data, src: 5, dst: 2, ack_cnt: 0, dst_state: Proc_IM_AD, val: 3
+S ==(store)==> M Create Msg :: type: GetM, src: 1, dst: 5, ack_cnt: 0, dst_state: Dir_S
+S ==(store)==> M Create Msg :: type: GetM, src: 1, dst: 5, ack_cnt: 0, dst_state: Dir_S
+S ==(store)==> M Create Msg :: type: GetM, src: 2, dst: 5, ack_cnt: 0, dst_state: Dir_S
+S ==(store)==> M Create Msg :: type: GetM, src: 2, dst: 5, ack_cnt: 0, dst_state: Dir_S
+S ==(evict)==> I Create Msg :: type: PutS, src: 1, dst: 5, ack_cnt: 0, dst_state: Dir_S
+S ==(evict)==> I Create Msg :: type: PutS, src: 2, dst: 5, ack_cnt: 0, dst_state: Dir_S
+  Receive Msg :: type: GetM, src: 2, dst: 5, ack_cnt: 0, dst_state: Dir_S
+ Create Msg :: type: Inv, src: 5, dst: 1, ack_cnt: 0, dst_state: Proc_IS_D, fwd_to: 2
+ Create Msg :: type: Data, src: 5, dst: 2, ack_cnt: 1, dst_state: Proc_SM_AD, val: 3
+  Receive Msg :: type: Data, src: 5, dst: 1, ack_cnt: 0, dst_state: Proc_IS_D, val: 3
+  Receive Msg :: type: GetM, src: 2, dst: 5, ack_cnt: 0, dst_state: Dir_S
+ Create Msg :: type: Inv, src: 5, dst: 1, ack_cnt: 0, dst_state: Proc_IS_D, fwd_to: 2
+ Create Msg :: type: Data, src: 5, dst: 2, ack_cnt: 1, dst_state: Proc_SM_AD, val: 3
+  Receive Msg :: type: Data, src: 5, dst: 1, ack_cnt: 0, dst_state: Proc_IS_D, val: 3
+  Receive Msg :: type: PutS, src: 2, dst: 5, ack_cnt: 0, dst_state: Dir_S
+ Create Msg :: type: PutAck, src: 5, dst: 2, ack_cnt: 0, dst_state: Proc_SI_A
+  Receive Msg :: type: Data, src: 5, dst: 1, ack_cnt: 0, dst_state: Proc_IS_D, val: 3
+  Receive Msg :: type: GetS, src: 2, dst: 5, ack_cnt: 0, dst_state: Dir_M
+ Create Msg :: type: FwdGetS, src: 5, dst: 1, ack_cnt: 0, dst_state: Proc_SM_AD, fwd_to: 2
+  Receive Msg :: type: Data, src: 5, dst: 1, ack_cnt: 0, dst_state: Proc_SM_AD, val: 3
+  Receive Msg :: type: GetS, src: 2, dst: 5, ack_cnt: 0, dst_state: Dir_M
+ Create Msg :: type: FwdGetS, src: 5, dst: 1, ack_cnt: 0, dst_state: Proc_SM_AD, fwd_to: 2
+  Receive Msg :: type: Data, src: 5, dst: 1, ack_cnt: 0, dst_state: Proc_SM_AD, val: 3
+  Receive Msg :: type: GetS, src: 1, dst: 5, ack_cnt: 0, dst_state: Dir_I
+ Create Msg :: type: Data, src: 5, dst: 1, ack_cnt: 0, dst_state: Proc_IS_D, val: 3
+  Receive Msg :: type: PutAck, src: 5, dst: 2, ack_cnt: 0, dst_state: Proc_SI_A
+  Receive Msg :: type: Inv, src: 5, dst: 2, ack_cnt: 0, dst_state: Proc_S, fwd_to: 1
+ Create Msg :: type: InvAck, src: 2, dst: 1, ack_cnt: 0, dst_state: Proc_IM_A
+ Create Msg :: type: InvAck, src: 2, dst: 5, ack_cnt: 0, dst_state: Dir_SM_A
+S ==(store)==> M Create Msg :: type: GetM, src: 2, dst: 5, ack_cnt: 0, dst_state: Dir_SM_A
+S ==(store)==> M Create Msg :: type: GetM, src: 2, dst: 5, ack_cnt: 0, dst_state: Dir_SM_A
+S ==(evict)==> I Create Msg :: type: PutS, src: 2, dst: 5, ack_cnt: 0, dst_state: Dir_SM_A
+  Receive Msg :: type: InvAck, src: 2, dst: 5, ack_cnt: 0, dst_state: Dir_SM_A
+  Receive Msg :: type: Data, src: 5, dst: 1, ack_cnt: 1, dst_state: Proc_IM_AD, val: 3
+  Receive Msg :: type: InvAck, src: 2, dst: 1, ack_cnt: 0, dst_state: Proc_IM_AD
 
 ==========================================================================
 
@@ -1176,7 +403,7 @@ Result:
 
 State Space Explored:
 
-	377 states, 830 rules fired in 0.10s.
+	152 states, 257 rules fired in 0.10s.
 
 Analysis of State Space:
 
@@ -1184,7 +411,6 @@ Analysis of State Space:
 	If you are running with symmetry, this may be why.  Otherwise,
 	please run this program with "-pr" for the rules information.
 	The maximum size for the multiset "HomeNode.sharers" is: 2.
-	The maximum size for the multiset "Net[HomeDir]" is: 3.
+	The maximum size for the multiset "Net[HomeDir]" is: 2.
 	The maximum size for the multiset "Net[Proc_1]" is: 2.
 	The maximum size for the multiset "Net[Proc_2]" is: 2.
-	The maximum size for the multiset "Net[Proc_3]" is: 2.

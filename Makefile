@@ -55,7 +55,7 @@ CFLAGS = -Wno-write-strings -m32
 %:
 	${MURPHI_INSTALL_PATH}/src/mu $@.m;
 	${CXX} ${CFLAGS} ${OFLAGS} -o bin_$@ $@.C -I${MURPHI_INSTALL_PATH}/include -lm;
-	./bin_$@ $(ARG);
+	./bin_$@ $(ARG) | tee lastrun.log;
 
 clean:
 	rm -rf *.C

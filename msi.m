@@ -26,13 +26,13 @@
 -- Constants
 ----------------------------------------------------------------------
 const
-	ProcCount: 3;          -- number processors
+	ProcCount: 2;          -- number processors
 	ValueCount:   2;       -- number of data values.
 	numVCs:	3;
 	QMax: 2;
 	NumVCs: 3;
 	NetMax: ProcCount+1;
-	enableProcTrace: 1;
+	enableProcTrace: 0;
 	enableMsgTrace: 1;
 
 ----------------------------------------------------------------------
@@ -137,7 +137,7 @@ var
 ----------------------------------------------------------------------
 -- Procedures
 ----------------------------------------------------------------------
-Procedure EnumToStr(m: MessageType);
+Procedure MsgEnumToStr(m: MessageType);
 begin
   switch m
     case GetS: put "GetS";
@@ -156,6 +156,71 @@ begin
   end;
 end;
 
+procedure NodeEnumToStr(n: Node);
+begin
+  if IsMember(n, Proc) then
+    -- Node is a processor
+    switch Procs[n].state
+      case Proc_M: put "Proc_M";
+      case Proc_S: put "Proc_S";
+      case Proc_I: put "Proc_I";
+      case Proc_IS_D: put "Proc_IS_D";
+      case Proc_IM_A: put "Proc_IM_A";
+      case Proc_IM_AD: put "Proc_IM_AD";
+      case Proc_II_A: put "Proc_II_A";
+      case Proc_SM_A: put "Proc_SM_A";
+      case Proc_SM_AD: put "Proc_SM_AD";
+      case Proc_SI_A: put "Proc_SI_A";
+      case Proc_MI_A: put "Proc_MI_A";
+    else
+      put "Unknown ProcState";
+    end;
+    else
+    -- Node is the HomeNode
+    switch HomeNode.state
+      case Dir_M: put "Dir_M";
+      case Dir_S: put "Dir_S";
+      case Dir_I: put "Dir_I";
+      case Dir_MX_D: put "Dir_MX_D";
+      case Dir_MM_A: put "Dir_MM_A";
+      case Dir_SM_A: put "Dir_SM_A";
+    else
+      put "Unknown HomeState";
+    end;
+  end;
+end;
+
+Procedure msgTrace(mtype:MessageType;
+				 dst:			Node;
+				 src:			Node;
+				 vc:			channel_t;
+				 val:			Value;
+				 fwd_to:  Node;
+         ack_cnt: AckCount;
+         );
+  if enableMsgTrace=1 then
+		put "Msg :: type: ";
+		MsgEnumToStr(mtype);
+		put ", src: ";
+		put src;
+		put ", dst: ";
+		put dst;
+		put ", ack_cnt: ";
+		put ack_cnt;
+    put ", dst_state: ";
+    NodeEnumToStr(dst);
+		if(!isundefined(fwd_to)) then
+			put ", fwd_to: ";
+			put fwd_to;
+		endif;
+		if(!isundefined(val)) then
+			put ", val: ";
+			put val;
+		endif;
+		put "\n";
+	endif;
+End;
+
 
 Procedure Send(mtype:MessageType;
 				 dst:			Node;
@@ -169,25 +234,8 @@ var msg:Message;
 var 
 Begin
 	Assert (MultiSetCount(i:Net[dst], true) < NetMax) "Too many messages";
-	if enableMsgTrace=1 then
-		put "Msg :: type: ";
-		EnumToStr(mtype);
-		put ", src: ";
-		put src;
-		put ", dst: ";
-		put dst;
-		put ", ack_cnt: ";
-		put ack_cnt;
-		if(!isundefined(fwd_to)) then
-			put ", fwd_to: ";
-			put fwd_to;
-		endif;
-		if(!isundefined(val)) then
-			put ", val: ";
-			put val;
-		endif;
-		put "\n";
-	endif;
+  put " Create ";
+	msgTrace(mtype, dst, src, vc, val, fwd_to, ack_cnt);
 	msg.mtype := mtype;
 	msg.src   := src;
 	msg.vc    := vc;
@@ -446,7 +494,6 @@ Begin
       msg_processed := false;
     case InvAck:
 			-- After all inv-acks received, reset 
-      assert HomeNode.ack_cnt > 0 "Error at Dir_SM_A: HomeNode.ack_cnt == 0.";
       HomeNode.ack_cnt := HomeNode.ack_cnt - 1;
       if HomeNode.ack_cnt = 0 then
         HomeNode.state := Dir_M;
@@ -490,6 +537,7 @@ Begin
       assert msg.ack_cnt = 0 "Error at Proc_IS_D";
       pstate := Proc_S;
       pval := msg.val;
+      pcnt := pcnt + msg.ack_cnt;
     else
       ErrorUnhandledMsg(msg, p);
     endswitch;
@@ -579,7 +627,7 @@ Begin
         endif;
       endif;
     case InvAck:
-      -- assert (pcnt = 0) "error at Proc_SM_AD, ack_cnt == 0.";
+      assert (pcnt = 0) "error at Proc_SM_AD, ack_cnt == 0.";
       pcnt := pcnt - 1;
     else
       ErrorUnhandledMsg(msg, p);
@@ -679,6 +727,7 @@ ruleset n: Proc Do
     rule "M ==(evict)==> I"
       p.state = Proc_M
     ==>
+      put "M ==(evict)==> I";
       Send(PutM, HomeDir, n, RequestChannel, p.val, UNDEFINED, 0);
       p.state := Proc_MI_A;
     endrule;
@@ -686,6 +735,7 @@ ruleset n: Proc Do
     rule "S ==(evict)==> I"
       p.state = Proc_S
     ==>
+      put "S ==(evict)==> I";
       Send(PutS, HomeDir, n, RequestChannel, UNDEFINED, UNDEFINED, 0);
       p.state := Proc_SI_A;
     endrule;
@@ -694,6 +744,7 @@ ruleset n: Proc Do
       rule "S ==(store)==> M"
         p.state = Proc_S
       ==>
+        put "S ==(store)==> M";
         p.val := v;      
         Send(GetM, HomeDir, n, RequestChannel, UNDEFINED, UNDEFINED, 0);
         p.state := Proc_SM_AD;
@@ -704,6 +755,7 @@ ruleset n: Proc Do
       rule "I ==(store)==> M"
         p.state = Proc_I
       ==>
+        put "I ==(store)==> M";
         p.val := v;      
         Send(GetM, HomeDir, n, RequestChannel, UNDEFINED, UNDEFINED, 0);
         p.state := Proc_IM_AD;
@@ -713,6 +765,7 @@ ruleset n: Proc Do
     rule "I ==(load)==> S"
       p.state = Proc_I 
     ==>
+      put "I ==(load)==> S";
       Send(GetS, HomeDir, n, RequestChannel, UNDEFINED, UNDEFINED, 0);
       p.state := Proc_IS_D;
     endrule;
@@ -731,7 +784,8 @@ ruleset n:Node do
 		rule "receive-net"
 			(isundefined(box[msg.vc].mtype))
 		==>
-
+      put "  Receive ";
+      msgTrace(msg.mtype, n, msg.src, msg.vc, msg.val, msg.fwd_to, msg.ack_cnt);
 			if IsMember(n, Home)
 			then
 				HomeReceive(msg);
