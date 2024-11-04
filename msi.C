@@ -11,7 +11,7 @@
 #define MURPHI_VERSION "Murphi Release 3.1"
 #define MURPHI_DATE "Jan 29 1999"
 #define PROTOCOL_NAME "msi"
-#define BITS_IN_WORLD 2176
+#define BITS_IN_WORLD 1720
 #define ALIGN
 
 /********************
@@ -249,14 +249,14 @@ class mu_1_VCType: public mu__byte
 /*** end of subrange decl ***/
 mu_1_VCType mu_1_VCType_undefined_var;
 
-class mu_1_counter_t: public mu__long
+class mu_1_counter_t: public mu__byte
 {
  public:
-  inline int operator=(int val) { return mu__long::operator=(val); };
-  inline int operator=(const mu_1_counter_t& val) { return mu__long::operator=((int) val); };
-  mu_1_counter_t (char *name, int os): mu__long(0, 99998, 17, name, os) {};
-  mu_1_counter_t (void): mu__long(0, 99998, 17) {};
-  mu_1_counter_t (int val): mu__long(0, 99998, 17, "Parameter or function result.", 0)
+  inline int operator=(int val) { return mu__byte::operator=(val); };
+  inline int operator=(const mu_1_counter_t& val) { return mu__byte::operator=((int) val); };
+  mu_1_counter_t (char *name, int os): mu__byte(0, 1, 2, name, os) {};
+  mu_1_counter_t (void): mu__byte(0, 1, 2) {};
+  mu_1_counter_t (int val): mu__byte(0, 1, 2, "Parameter or function result.", 0)
   {
     operator=(val);
   };
@@ -559,10 +559,10 @@ void mu_1_Message::set_self(char *n, int os)
   mu_mtype.set_self_2(name, ".mtype", os + 0 );
   mu_src.set_self_2(name, ".src", os + 8 );
   mu_mid.set_self_2(name, ".mid", os + 16 );
-  mu_vc.set_self_2(name, ".vc", os + 48 );
-  mu_val.set_self_2(name, ".val", os + 56 );
-  mu_fwd_to.set_self_2(name, ".fwd_to", os + 64 );
-  mu_ack_cnt.set_self_2(name, ".ack_cnt", os + 72 );
+  mu_vc.set_self_2(name, ".vc", os + 24 );
+  mu_val.set_self_2(name, ".val", os + 32 );
+  mu_fwd_to.set_self_2(name, ".fwd_to", os + 40 );
+  mu_ack_cnt.set_self_2(name, ".ack_cnt", os + 48 );
 }
 
 mu_1_Message::~mu_1_Message()
@@ -1477,8 +1477,8 @@ void mu_1__type_4::set_self( char *n, int os)
   int i,k;
   name = n;
   for(i = 0; i < 3; i++)
-    array[i].set_self(tsprintf("%s{%d}", n,i), i * 104 + os);
-  k = os + i * 104;
+    array[i].set_self(tsprintf("%s{%d}", n,i), i * 80 + os);
+  k = os + i * 80;
   for(i = 0; i < 3; i++)
     valid[i].set_self("", i * 8 + k);
 };
@@ -1592,9 +1592,9 @@ void mu_1__type_5::set_self( char *n, int os)
   {
     int i=0;
     name = n;
-array[i].set_self_ar(n,"HomeDir", i * 336 + os);i++;
-array[i].set_self_ar(n,"Proc_1", i * 336 + os);i++;
-array[i].set_self_ar(n,"Proc_2", i * 336 + os);i++;
+array[i].set_self_ar(n,"HomeDir", i * 264 + os);i++;
+array[i].set_self_ar(n,"Proc_1", i * 264 + os);i++;
+array[i].set_self_ar(n,"Proc_2", i * 264 + os);i++;
 }
 mu_1__type_5::~mu_1__type_5()
 {
@@ -1716,9 +1716,9 @@ friend int Compare(mu_1__type_6& a, mu_1__type_6& b)
     int i=0;
     name = n;
 
-array[i].set_self_ar(n,"RequestChannel", i * 104 + os);i++;
-array[i].set_self_ar(n,"ResponseChannel", i * 104 + os);i++;
-array[i].set_self_ar(n,"ForwardChannel", i * 104 + os);i++;
+array[i].set_self_ar(n,"RequestChannel", i * 80 + os);i++;
+array[i].set_self_ar(n,"ResponseChannel", i * 80 + os);i++;
+array[i].set_self_ar(n,"ForwardChannel", i * 80 + os);i++;
   }
 mu_1__type_6::~mu_1__type_6()
 {
@@ -1830,9 +1830,9 @@ void mu_1__type_7::set_self( char *n, int os)
   {
     int i=0;
     name = n;
-array[i].set_self_ar(n,"HomeDir", i * 312 + os);i++;
-array[i].set_self_ar(n,"Proc_1", i * 312 + os);i++;
-array[i].set_self_ar(n,"Proc_2", i * 312 + os);i++;
+array[i].set_self_ar(n,"HomeDir", i * 240 + os);i++;
+array[i].set_self_ar(n,"Proc_1", i * 240 + os);i++;
+array[i].set_self_ar(n,"Proc_2", i * 240 + os);i++;
 }
 mu_1__type_7::~mu_1__type_7()
 {
@@ -1874,7 +1874,7 @@ const int mu_NumVCs = 3;
 const int mu_NetMax = 3;
 const int mu_enableProcTrace = 0;
 const int mu_enableMsgTrace = 0;
-const int mu_maxMsgs = 99999;
+const int mu_maxMsgs = 2;
 const int mu_Proc_1 = 1;
 const int mu_Proc_2 = 2;
 const int mu_Value_1 = 3;
@@ -1921,16 +1921,16 @@ mu_1__type_3 mu_Procs("Procs",88);
 mu_1__type_5 mu_Net("Net",184);
 
 /*** Variable declaration ***/
-mu_1__type_7 mu_InBox("InBox",1192);
+mu_1__type_7 mu_InBox("InBox",976);
 
 /*** Variable declaration ***/
-mu_0_boolean mu_msg_processed("msg_processed",2128);
+mu_0_boolean mu_msg_processed("msg_processed",1696);
 
 /*** Variable declaration ***/
-mu_1_counter_t mu_running_msgid("running_msgid",2136);
+mu_1_counter_t mu_running_msgid("running_msgid",1704);
 
 /*** Variable declaration ***/
-mu_1_Value mu_LastWrite("LastWrite",2168);
+mu_1_Value mu_LastWrite("LastWrite",1712);
 
 void mu_MsgEnumToStr(const mu_1_MessageType& mu_m)
 {
@@ -2108,6 +2108,10 @@ if (mu_running_msgid.isundefined())
   mu_msg.mu_mid.undefine();
 else
   mu_msg.mu_mid = mu_running_msgid;
+if ( (mu_running_msgid) == (1) )
+{
+mu_running_msgid = 0;
+}
 mu_running_msgid = (mu_running_msgid) + (1);
 mu_msgTrace ( mu_msg.mu_mid, mu_mtype, mu_dst, mu_src, mu_vc, mu_val, mu_fwd_to, mu_ack_cnt );
 if (mu_mtype.isundefined())

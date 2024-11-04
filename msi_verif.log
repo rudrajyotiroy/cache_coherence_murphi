@@ -29,13 +29,13 @@ Algorithm:
 
 Memory usage:
 
-	* The size of each state is 2176 bits (rounded up to 272 bytes).
+	* The size of each state is 1720 bits (rounded up to 216 bytes).
 	* The memory allocated for the hash table and state queue is
 	  8 Mbytes.
 	  With two words of overhead per state, the maximum size of
-	  the state space is 28949 states.
+	  the state space is 36299 states.
 	   * Use option "-k" or "-m" to increase this, if necessary.
-	* Capacity in queue for breadth-first search: 2894 states.
+	* Capacity in queue for breadth-first search: 3629 states.
 	   * Change the constant gPercentActiveStates in mu_prolog.inc
 	     to increase this, if necessary.
 
@@ -44,24 +44,24 @@ Warning: No trace will not be printed in the case of protocol errors!
 
 Progress Report:
 
-	1000 states explored in 0.10s, with 1448 rules fired and 451 states in the queue.
-	2000 states explored in 0.10s, with 3319 rules fired and 770 states in the queue.
-	3000 states explored in 0.10s, with 5311 rules fired and 1060 states in the queue.
-	4000 states explored in 0.10s, with 7492 rules fired and 1205 states in the queue.
-	5000 states explored in 0.10s, with 9692 rules fired and 1269 states in the queue.
-	6000 states explored in 0.10s, with 11974 rules fired and 1356 states in the queue.
-	7000 states explored in 0.10s, with 13680 rules fired and 1745 states in the queue.
-	8000 states explored in 0.10s, with 15742 rules fired and 1943 states in the queue.
-	9000 states explored in 0.11s, with 17964 rules fired and 2099 states in the queue.
-	10000 states explored in 0.12s, with 20059 rules fired and 2223 states in the queue.
-	11000 states explored in 0.13s, with 22225 rules fired and 2402 states in the queue.
-	12000 states explored in 0.15s, with 24640 rules fired and 2446 states in the queue.
-	13000 states explored in 0.16s, with 26757 rules fired and 2619 states in the queue.
-	14000 states explored in 0.18s, with 28857 rules fired and 2756 states in the queue.
-2894 2894
-Error:
+	1000 states explored in 0.10s, with 2102 rules fired and 272 states in the queue.
 
-	Internal Error: Too many active states.
+==========================================================================
 
+Status:
 
+	No error found.
 
+State Space Explored:
+
+	1512 states, 3941 rules fired in 0.10s.
+
+Analysis of State Space:
+
+	There are rules that are never fired.
+	If you are running with symmetry, this may be why.  Otherwise,
+	please run this program with "-pr" for the rules information.
+	The maximum size for the multiset "HomeNode.sharers" is: 2.
+	The maximum size for the multiset "Net[HomeDir]" is: 3.
+	The maximum size for the multiset "Net[Proc_1]" is: 2.
+	The maximum size for the multiset "Net[Proc_2]" is: 3.

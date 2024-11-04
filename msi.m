@@ -34,7 +34,7 @@ const
 	NetMax: ProcCount+1;
 	enableProcTrace: 0;
 	enableMsgTrace: 0;
-  maxMsgs: 99999;
+  maxMsgs: enableMsgTrace*100 + 2;
 
 ----------------------------------------------------------------------
 -- Types
@@ -247,6 +247,9 @@ Begin
     put " Create ";
   endif;
   msg.mid   := running_msgid;
+  if(running_msgid = (maxMsgs-1)) then
+    running_msgid := 0;
+  end;
   running_msgid :=  running_msgid + 1;
 	msgTrace(msg.mid, mtype, dst, src, vc, val, fwd_to, ack_cnt);
 	msg.mtype := mtype;
@@ -733,7 +736,7 @@ End;
 -- Rules
 ----------------------------------------------------------------------
 
--- Processor actions (affecting coherency)
+-- Processor actions (affecting coherency) - spontaneous state transitions
 ruleset n: Proc Do
   alias p: Procs[n] Do
 
