@@ -20,18 +20,18 @@
 ---- Guaruntee Freshness for atleast 3 processors. Loads and stores issued by one processor are seen by that processor in program order.
 
 -- Waypoint Specific:
----- 4-hop MSI protocol, coarse-vector representation
+---- 4-hop MSI protocol, coarse-vector representation (Page 180(158) of book)
 
 ----------------------------------------------------------------------
 -- Constants
 ----------------------------------------------------------------------
 const
-	ProcCount: 2;          -- number processors
+	ProcCount: 3;          -- number processors
 	ValueCount:   2;       -- number of data values.
 	numVCs:	3;
 	QMax: 2;
 	NumVCs: 3;
-	NetMax: ProcCount+1;
+	NetMax: ProcCount+10;
 	enableProcTrace: 0;
 	enableMsgTrace: 0;
   maxMsgs: enableMsgTrace*100 + 2;
@@ -384,7 +384,7 @@ Begin
 		case GetM:
 			-- Send data to Req, send Inv to Sharers, clear Sharers, set Owner to Req/M
       if IsSharer(msg.src) then
-				-- If req is only sharer, directly jump to M, else wait for ack from all sharers to invalidate
+				-- If req is only sharer, directly jump to M, else wait in SM_A for ack from all sharers to invalidate
         if sharerCount = 1 then
           HomeNode.state := Dir_M;
         else
@@ -572,6 +572,7 @@ Begin
         else
           assert (pcnt <= 0) "error at Proc_IM_AD, ack_cnt > 0.";
           pcnt :=  pcnt + msg.ack_cnt;
+          assert (pcnt >= 0) "error at Proc_IM_AD, ack_cnt < 0.";
           if pcnt = 0 then
             pstate := Proc_M;
             LastWrite := pval;
@@ -635,6 +636,7 @@ Begin
       else
         assert (pcnt <= 0) "error at Proc_SM_AD, ack_cnt > 0.";
         pcnt :=  pcnt + msg.ack_cnt;
+        assert (pcnt >= 0) "error at Proc_SM_AD, ack_cnt < 0.";
         if pcnt = 0 then
           pstate := Proc_M;
           LastWrite := pval;
@@ -643,7 +645,7 @@ Begin
         endif;
       endif;
     case InvAck:
-      assert (pcnt = 0) "error at Proc_SM_AD, ack_cnt == 0.";
+      -- assert (pcnt = 0) "error at Proc_SM_AD, ack_cnt == 0."; -- Can go negative
       pcnt := pcnt - 1;
     else
       ErrorUnhandledMsg(msg, p);
