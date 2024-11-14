@@ -2448,26 +2448,11 @@ case mu_PutM:
 mu_msg_processed = mu_false;
 break;
 case mu_FwdAck:
-if ( (mu_sharerCount) == (0) )
-{
-mu_HomeNode.mu_state = mu_Dir_I;
-}
-else
-{
 mu_HomeNode.mu_state = mu_Dir_S;
-}
 mu_HomeNode.mu_val = mu_msg.mu_val;
 break;
 case mu_Data:
-if ( (mu_sharerCount) == (0) )
-{
-mu_HomeNode.mu_state = mu_Dir_I;
-}
-else
-{
-mu_HomeNode.mu_state = mu_Dir_S;
-}
-mu_HomeNode.mu_val = mu_msg.mu_val;
+mu_msg_processed = mu_false;
 break;
 default:
 mu_ErrorUnhandledMsg ( mu_msg, (int)mu_HomeDir );
@@ -2493,6 +2478,7 @@ mu_msg_processed = mu_false;
 break;
 case mu_FwdAck:
 mu_HomeNode.mu_state = mu_Dir_M;
+mu_HomeNode.mu_val = mu_msg.mu_val;
 break;
 default:
 mu_ErrorUnhandledMsg ( mu_msg, (int)mu_HomeDir );
@@ -2568,7 +2554,7 @@ case mu_Inv:
 mu_msg_processed = mu_false;
 break;
 case mu_Data:
-if ( !((mu_msg.mu_ack_cnt) == (0)) ) Error.Error("Assertion failed: Error at Proc_IS_D");
+if ( !((mu_msg.mu_ack_cnt) == (0)) ) Error.Error("Assertion failed: Error at Proc_IS_D, ack_cnt must be 0 since no modify request");
 mu_pstate = mu_Proc_S;
 mu_pval = mu_msg.mu_val;
 mu_pcnt = (mu_pcnt) + (mu_msg.mu_ack_cnt);
@@ -2589,13 +2575,6 @@ break;
 case mu_Data:
 if ( (mu_msg.mu_src) == (mu_HomeDir) )
 {
-if ( (mu_msg.mu_ack_cnt) == (0) )
-{
-mu_pstate = mu_Proc_M;
-mu_LastWrite = mu_pval;
-}
-else
-{
 if ( !((mu_pcnt) <= (0)) ) Error.Error("Assertion failed: error at Proc_IM_AD, ack_cnt > 0.");
 mu_pcnt = (mu_pcnt) + (mu_msg.mu_ack_cnt);
 if ( !((mu_pcnt) >= (0)) ) Error.Error("Assertion failed: error at Proc_IM_AD, ack_cnt < 0.");
@@ -2607,7 +2586,6 @@ mu_LastWrite = mu_pval;
 else
 {
 mu_pstate = mu_Proc_IM_A;
-}
 }
 }
 else

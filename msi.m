@@ -20,7 +20,7 @@
 ---- Guaruntee Freshness for atleast 3 processors. Loads and stores issued by one processor are seen by that processor in program order.
 
 -- Waypoint Specific:
----- 4-hop MSI protocol, coarse-vector representation (Page 180(158) of book)
+---- 3-hop MSI protocol, coarse-vector representation (Page 180(158) of book)
 
 ----------------------------------------------------------------------
 -- Constants
@@ -461,19 +461,11 @@ Begin
     case PutM:
       msg_processed := false;
     case FwdAck:
-      if sharerCount = 0 then
-        HomeNode.state := Dir_I;
-      else
-        HomeNode.state := Dir_S;
-      endif;
+      -- FwdAck+Data indicates that the FwdGetS has reached the target node
+      HomeNode.state := Dir_S;
       HomeNode.val := msg.val;
     case Data:
-      if sharerCount = 0 then
-        HomeNode.state := Dir_I;
-      else
-        HomeNode.state := Dir_S;
-      endif;
-      HomeNode.val := msg.val;
+      msg_processed := false;
     else
       ErrorUnhandledMsg(msg, HomeDir);
     endswitch;
@@ -491,7 +483,9 @@ Begin
     case Data:
       msg_processed := false;
     case FwdAck:
+      -- FwdAck+Data indicates that the FwdGetS has reached the target node
       HomeNode.state := Dir_M;
+      HomeNode.val := msg.val;
     else
       ErrorUnhandledMsg(msg, HomeDir);
     endswitch;
@@ -543,6 +537,7 @@ Begin
 
 	switch pstate
   case Proc_I:
+      -- Should not get external messages in this state
       ErrorUnhandledMsg(msg, p);
 
   case Proc_IS_D:
@@ -550,7 +545,8 @@ Begin
     case Inv:
       msg_processed := false;
     case Data:
-      assert msg.ack_cnt = 0 "Error at Proc_IS_D";
+      -- Update val, Move to S, increment ack_cnt
+      assert msg.ack_cnt = 0 "Error at Proc_IS_D, ack_cnt must be 0 since no modify request";
       pstate := Proc_S;
       pval := msg.val;
       pcnt := pcnt + msg.ack_cnt;
@@ -566,26 +562,24 @@ Begin
       msg_processed := false;
     case Data:
       if msg.src = HomeDir then -- data is from directory controller
-        if msg.ack_cnt = 0 then
+        assert (pcnt <= 0) "error at Proc_IM_AD, ack_cnt > 0."; -- Can be negative upto msg.ack_cnt
+        pcnt :=  pcnt + msg.ack_cnt;
+        assert (pcnt >= 0) "error at Proc_IM_AD, ack_cnt < 0."; 
+        if pcnt = 0 then
+          -- No sharers left to ack, move to Proc_M
           pstate := Proc_M;
           LastWrite := pval;
         else
-          assert (pcnt <= 0) "error at Proc_IM_AD, ack_cnt > 0.";
-          pcnt :=  pcnt + msg.ack_cnt;
-          assert (pcnt >= 0) "error at Proc_IM_AD, ack_cnt < 0.";
-          if pcnt = 0 then
-            pstate := Proc_M;
-            LastWrite := pval;
-          else
-            pstate := Proc_IM_A;
-          endif;
+          -- Wait for ack in IM_A
+          pstate := Proc_IM_A;
         endif;
       else -- data is from previous owner
-        -- pcnt := 0;
+        -- update value and move to M
         pstate := Proc_M;
         LastWrite := pval;
       endif;
     case InvAck:
+      -- decrement pending InvAck count (if all received, it will be resolved on getting data)
       pcnt := pcnt - 1;
     else
       ErrorUnhandledMsg(msg, p);
@@ -598,6 +592,7 @@ Begin
     case FwdGetM:
       msg_processed := false;
     case InvAck:
+      -- decrement pending InvAck count, data might have been received already
       pcnt := pcnt - 1;
       if pcnt = 0 then
         pstate := Proc_M;
@@ -610,6 +605,7 @@ Begin
   case Proc_S:
     switch msg.mtype
     case Inv:
+      -- Send InvAck to req (and homedir)/I
       pstate := Proc_I;
       Send(InvAck, msg.fwd_to, p, ResponseChannel, UNDEFINED, UNDEFINED, 0);
       Send(InvAck, HomeDir, p, ResponseChannel, UNDEFINED, UNDEFINED, 0);
@@ -625,6 +621,7 @@ Begin
     case FwdGetM:
       msg_processed := false;
     case Inv:
+      -- Send InvAck to req (and homedir)/IM_AD
       pstate := Proc_IM_AD;
       Send(InvAck, msg.fwd_to, p, ResponseChannel, UNDEFINED, UNDEFINED, 0);
       Send(InvAck, HomeDir, p, ResponseChannel, UNDEFINED, UNDEFINED, 0);
@@ -638,9 +635,11 @@ Begin
         pcnt :=  pcnt + msg.ack_cnt;
         assert (pcnt >= 0) "error at Proc_SM_AD, ack_cnt < 0.";
         if pcnt = 0 then
+          -- All acks were already received
           pstate := Proc_M;
-          LastWrite := pval;
+          LastWrite := pval; --update lastwrite event
         else
+          -- Acks remaining
           pstate := Proc_SM_A;
         endif;
       endif;
@@ -658,6 +657,7 @@ Begin
     case FwdGetM:
       msg_processed := false;
     case InvAck:
+      -- Move to M/update lastwrite
       pcnt := pcnt - 1;
       if pcnt = 0 then
         pstate := Proc_M;
@@ -670,10 +670,12 @@ Begin
   case Proc_M:
     switch msg.mtype
     case FwdGetS:
+      -- Send data to req and FwdAck to home, downgrade to S
       pstate := Proc_S;
       Send(FwdAck, HomeDir,  p, ResponseChannel, pval, UNDEFINED, 0);
       Send(Data, msg.fwd_to, p, ResponseChannel, pval, UNDEFINED, 0);
     case FwdGetM:
+      -- Send data to req and FwdAck to home, downgrade to I
       pstate := Proc_I;
       Send(Data, msg.fwd_to, p, ResponseChannel, pval, UNDEFINED, 0);
       Send(FwdAck, HomeDir,  p, ResponseChannel, UNDEFINED, UNDEFINED, 0);
@@ -685,14 +687,17 @@ Begin
   case Proc_MI_A:
     switch msg.mtype
     case FwdGetS:
+      -- Send data to req and FwdAck to home, downgrade to SI_A
       pstate := Proc_SI_A;
       Send(FwdAck, HomeDir,  p, ResponseChannel, pval, UNDEFINED, 0);
       Send(Data, msg.fwd_to, p, ResponseChannel, pval, UNDEFINED, 0);
     case FwdGetM:
+      -- Send data to req and FwdAck to home, downgrade to MI_A
       pstate := Proc_II_A;
       Send(Data, msg.fwd_to, p, ResponseChannel, pval, UNDEFINED, 0);
       Send(FwdAck, HomeDir,  p, ResponseChannel, UNDEFINED, UNDEFINED, 0);
     case PutAck:
+      -- Move to I
       pstate := Proc_I;
       undefine pval;
     else
@@ -702,10 +707,12 @@ Begin
   case Proc_SI_A:
     switch msg.mtype
     case Inv:
+      -- Move to II_A, send InvAck to Home and req
       pstate := Proc_II_A;
       Send(InvAck, msg.fwd_to,  p, ResponseChannel, UNDEFINED, UNDEFINED, 0);
       Send(InvAck, HomeDir, p, ResponseChannel, UNDEFINED, UNDEFINED, 0);
     case PutAck:
+      -- Move to I
       pstate := Proc_I;
       undefine pval;
     else
@@ -715,6 +722,7 @@ Begin
   case Proc_II_A:
     switch msg.mtype
     case PutAck:
+      -- Move to I
       pstate := Proc_I;
       undefine pval;
     else

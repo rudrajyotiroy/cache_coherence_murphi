@@ -55,27 +55,27 @@ CFLAGS = -Wno-write-strings -m32
 msi_opt_verif:
 	${MURPHI_INSTALL_PATH}/src/mu msi_opt.m;
 	${CXX} ${CFLAGS} ${OFLAGS} -o bin_msi_opt msi_opt.C -I${MURPHI_INSTALL_PATH}/include -lm;
-	./bin_msi_opt -k 99999 | tee msi_opt_verif.log;
+	./bin_msi_opt -k 999999 | tee msi_opt_verif.log;
 
 msi_opt_sim:
 	${MURPHI_INSTALL_PATH}/src/mu msi_opt.m;
 	${CXX} ${CFLAGS} ${OFLAGS} -o bin_msi_opt msi_opt.C -I${MURPHI_INSTALL_PATH}/include -lm;
-	./bin_msi_opt -k 99999 -s | tee msi_opt_sim.log;
+	./bin_msi_opt -k 999999 -s | tee msi_opt_sim.log;
 
 msi_verif:
 	${MURPHI_INSTALL_PATH}/src/mu msi.m;
 	${CXX} ${CFLAGS} ${OFLAGS} -o bin_msi msi.C -I${MURPHI_INSTALL_PATH}/include -lm;
-	./bin_msi -k 99999 | tee msi_verif.log;
+	./bin_msi -k 999999 | tee msi_verif.log;
 
 msi_verif_violet:
 	${MURPHI_INSTALL_PATH}/src/mu msi.m;
 	${CXX} ${CFLAGS} ${OFLAGS} -o bin_msi msi.C -I${MURPHI_INSTALL_PATH}/include -lm;
-	./bin_msi -tv -k 99999;
+	./bin_msi -tv -k 999999;
 
 msi_sim:
 	${MURPHI_INSTALL_PATH}/src/mu msi.m;
 	${CXX} ${CFLAGS} ${OFLAGS} -o bin_msi msi.C -I${MURPHI_INSTALL_PATH}/include -lm;
-	./bin_msi -s -k 99999 | tee msi_sim.log;
+	./bin_msi -s -k 999999 | tee msi_sim.log;
 
 clean:
 	rm -rf *.C
