@@ -42,84 +42,23 @@ Memory usage:
 Warning: No trace will not be printed in the case of protocol errors!
          Check the options if you want to have error traces.
 
-Progress Report:
-
-	1000 states explored in 0.43s, with 2047 rules fired and 505 states in the queue.
-	2000 states explored in 0.47s, with 4151 rules fired and 1005 states in the queue.
-	3000 states explored in 0.51s, with 6472 rules fired and 1484 states in the queue.
-	4000 states explored in 0.55s, with 8656 rules fired and 1970 states in the queue.
-	5000 states explored in 0.60s, with 11026 rules fired and 2403 states in the queue.
-	6000 states explored in 0.66s, with 14246 rules fired and 2612 states in the queue.
-	7000 states explored in 0.73s, with 17492 rules fired and 2734 states in the queue.
-	8000 states explored in 0.78s, with 20236 rules fired and 3133 states in the queue.
-	9000 states explored in 0.85s, with 23639 rules fired and 3225 states in the queue.
-	10000 states explored in 0.92s, with 27142 rules fired and 3292 states in the queue.
-	11000 states explored in 0.98s, with 29862 rules fired and 3616 states in the queue.
-	12000 states explored in 1.03s, with 33040 rules fired and 3978 states in the queue.
-	13000 states explored in 1.09s, with 36283 rules fired and 4017 states in the queue.
-	14000 states explored in 1.16s, with 39895 rules fired and 3710 states in the queue.
-	15000 states explored in 1.22s, with 43017 rules fired and 3965 states in the queue.
-	16000 states explored in 1.29s, with 47037 rules fired and 4166 states in the queue.
-	17000 states explored in 1.37s, with 51099 rules fired and 3930 states in the queue.
-	18000 states explored in 1.42s, with 53928 rules fired and 4049 states in the queue.
-	19000 states explored in 1.48s, with 57110 rules fired and 4377 states in the queue.
-	20000 states explored in 1.56s, with 61556 rules fired and 4415 states in the queue.
-	21000 states explored in 1.64s, with 65829 rules fired and 4297 states in the queue.
-	22000 states explored in 1.69s, with 68673 rules fired and 4684 states in the queue.
-	23000 states explored in 1.75s, with 71726 rules fired and 4846 states in the queue.
-	24000 states explored in 1.81s, with 75164 rules fired and 5139 states in the queue.
-	25000 states explored in 1.90s, with 80047 rules fired and 5062 states in the queue.
-	26000 states explored in 1.97s, with 83879 rules fired and 5127 states in the queue.
-	27000 states explored in 2.03s, with 87138 rules fired and 5428 states in the queue.
-	28000 states explored in 2.09s, with 90415 rules fired and 5546 states in the queue.
-	29000 states explored in 2.15s, with 93429 rules fired and 5913 states in the queue.
-	30000 states explored in 2.24s, with 98413 rules fired and 5816 states in the queue.
-	31000 states explored in 2.34s, with 103747 rules fired and 5393 states in the queue.
-	32000 states explored in 2.40s, with 107410 rules fired and 5509 states in the queue.
-	33000 states explored in 2.47s, with 110928 rules fired and 5745 states in the queue.
-	34000 states explored in 2.54s, with 114557 rules fired and 5703 states in the queue.
-	35000 states explored in 2.61s, with 118448 rules fired and 5976 states in the queue.
-	36000 states explored in 2.70s, with 123631 rules fired and 5739 states in the queue.
-	37000 states explored in 2.77s, with 127250 rules fired and 5769 states in the queue.
-	38000 states explored in 2.84s, with 131015 rules fired and 5944 states in the queue.
-	39000 states explored in 2.92s, with 135672 rules fired and 5545 states in the queue.
-	40000 states explored in 3.02s, with 140750 rules fired and 5234 states in the queue.
-	41000 states explored in 3.13s, with 146840 rules fired and 4741 states in the queue.
-	42000 states explored in 3.20s, with 150952 rules fired and 4625 states in the queue.
-	43000 states explored in 3.28s, with 155414 rules fired and 4516 states in the queue.
-	44000 states explored in 3.35s, with 158921 rules fired and 4510 states in the queue.
-	45000 states explored in 3.47s, with 165570 rules fired and 3692 states in the queue.
-	46000 states explored in 3.54s, with 169343 rules fired and 3807 states in the queue.
-	47000 states explored in 3.61s, with 173263 rules fired and 3748 states in the queue.
-	48000 states explored in 3.67s, with 176547 rules fired and 3845 states in the queue.
-	49000 states explored in 3.73s, with 180337 rules fired and 3819 states in the queue.
-	50000 states explored in 3.82s, with 185158 rules fired and 3698 states in the queue.
-	51000 states explored in 3.88s, with 188382 rules fired and 3792 states in the queue.
-	52000 states explored in 3.95s, with 192318 rules fired and 3762 states in the queue.
-	53000 states explored in 4.02s, with 195875 rules fired and 3796 states in the queue.
-	54000 states explored in 4.12s, with 201736 rules fired and 3220 states in the queue.
-	55000 states explored in 4.21s, with 206662 rules fired and 2837 states in the queue.
-	56000 states explored in 4.30s, with 211443 rules fired and 2463 states in the queue.
-	57000 states explored in 4.39s, with 216323 rules fired and 2040 states in the queue.
-	58000 states explored in 4.51s, with 222095 rules fired and 1120 states in the queue.
-
 ==========================================================================
 
-Status:
+Result:
 
-	No error found.
+	Invariant "values in memory matches val of last write, when shared or invalid" failed.
 
 State Space Explored:
 
-	58481 states, 226645 rules fired in 4.60s.
+	318 states, 683 rules fired in 0.40s.
 
 Analysis of State Space:
 
 	There are rules that are never fired.
 	If you are running with symmetry, this may be why.  Otherwise,
 	please run this program with "-pr" for the rules information.
-	The maximum size for the multiset "HomeNode.sharers" is: 3.
-	The maximum size for the multiset "Net[HomeDir]" is: 5.
-	The maximum size for the multiset "Net[Proc_1]" is: 3.
-	The maximum size for the multiset "Net[Proc_2]" is: 4.
-	The maximum size for the multiset "Net[Proc_3]" is: 4.
+	The maximum size for the multiset "HomeNode.sharers" is: 1.
+	The maximum size for the multiset "Net[HomeDir]" is: 3.
+	The maximum size for the multiset "Net[Proc_1]" is: 1.
+	The maximum size for the multiset "Net[Proc_2]" is: 1.
+	The maximum size for the multiset "Net[Proc_3]" is: 2.

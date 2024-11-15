@@ -34,3 +34,7 @@ Proc 1 receives msg 55: causes it to become negative
 
 **Solution**
 
+Valid case, modify the constraint check
+
+----  MSI Protocol Done ----
+
