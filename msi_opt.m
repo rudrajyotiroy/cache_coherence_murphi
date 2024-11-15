@@ -26,13 +26,13 @@
 -- Constants
 ----------------------------------------------------------------------
 const
-	ProcCount: 3;          -- number processors
+	ProcCount: 5;          -- number processors
 	ValueCount:   2;       -- number of data values.
 	numVCs:	3;
 	QMax: 2;
 	NumVCs: 3;
 	NetMax: ProcCount+10;
-	enableProcTrace: 0;
+	enableProcTrace: 1;
 	enableMsgTrace: 0;
   maxMsgs: enableMsgTrace*100 + 2;
 
@@ -123,6 +123,8 @@ type
                   };
       val: Value;
 			ack_cnt: AckCount;
+      nextProc: Proc;
+      prevProc: Proc;
     End;
 
 
@@ -322,24 +324,6 @@ Begin
 	for p : Proc do
     if IsSharer(p) & p != rqst then
       Send(Inv, p, HomeDir, ForwardChannel, UNDEFINED, rqst, 0);
-    endif;
-  endfor;
-End;
-
--- fwd_to would be self number
-Procedure SendCruiseMissileInv(msg:Message);
-Begin
-  for dest : Proc do
-    -- Proc_I check is basically to eliminate duplicates in symmetric system
-    -- In real life, if state is Proc_I then just ignore
-    if (dest != msg.src) & (Procs[dest].state != Proc_I) then
-      if (dest = msg.fwd_to) then
-        Send(InvAck, HomeDir, dest, ResponseChannel, UNDEFINED, UNDEFINED, 0);
-      else
-        Procs[dest].state := Proc_I;
-        undefine Procs[dest].val;
-        Send(Inv, dest, dest, ForwardChannel, UNDEFINED, msg.fwd_to, 0);
-      endif;
     endif;
   endfor;
 End;
@@ -555,7 +539,7 @@ Begin
   case Proc_I:
       switch msg.mtype
       case Inv:
-        SendCruiseMissileInv(msg);
+        ErrorUnhandledMsg(msg, p);
       else
         -- Should not get external messages in this state
         ErrorUnhandledMsg(msg, p);
@@ -911,6 +895,33 @@ startstate
     Procs[i].state := Proc_I;
 		Procs[i].ack_cnt := 0;
     undefine Procs[i].val;
+    undefine Procs[i].nextProc;
+    undefine Procs[i].prevProc;
+  endfor;
+
+  for i: Proc do
+    if isundefined(Procs[i].nextProc) then
+      -- Chain forward to unvisited nodes
+      for j: Proc do
+        if isundefined(Procs[j].prevProc) & isundefined(Procs[j].nextProc) & isundefined(Procs[i].nextProc) & (i != j) then
+          Procs[i].nextProc := j;
+          Procs[j].prevProc := i;
+          if enableProcTrace = 1 then
+            put "Proc : "; put i; put ", nextproc : "; put j; put "\n";
+          endif;
+        endif;
+      endfor;
+      -- Loop over if no unvisited nodes
+      for j: Proc do
+        if isundefined(Procs[j].prevProc) & isundefined(Procs[i].nextProc) & (i != j) then
+          Procs[i].nextProc := j;
+          Procs[j].prevProc := i;
+          if enableProcTrace = 1 then
+            put "Proc : "; put i; put ", nextproc : "; put j; put "\n";
+          endif;
+        endif;
+      endfor;
+    endif;
   endfor;
 
   -- network initialization
