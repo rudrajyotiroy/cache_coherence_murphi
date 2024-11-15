@@ -27,7 +27,7 @@
 ----------------------------------------------------------------------
 const
 	ProcCount: 3;          -- number processors
-	ValueCount:   3;       -- number of data values.
+	ValueCount:   2;       -- number of data values.
 	numVCs:	3;
 	QMax: 2;
 	NumVCs: 3;
@@ -59,7 +59,6 @@ type
 											GetM,
 											PutS,
 											PutM,
-                      PutMS,
 											-- Response channel
 											Data,
 											InvAck,
@@ -137,7 +136,7 @@ var
 	InBox: array [Node] of array [channel_t] of Message; -- If a message is not processed, it is placed in InBox, blocking that virtual channel
 	msg_processed: boolean;
   running_msgid: counter_t;
-	LastWrite: Value; -- Used to confirm that writes are not lost; this variable would not exist in real hardware; update when a processor modifies a data
+	LastWrite: Value; -- Used to confirm that writes are not lost; this variable would not exist in real hardware
 
 ----------------------------------------------------------------------
 -- Procedures
@@ -148,7 +147,6 @@ begin
     case GetS: put "GetS";
     case GetM: put "GetM";
     case PutS: put "PutS";
-    case PutMS: put "PutMS";
     case PutM: put "PutM";
     case Data: put "Data";
     case InvAck: put "InvAck";
@@ -448,12 +446,6 @@ Begin
         HomeNode.state := Dir_I;
       endif;
       Send(PutAck, msg.src, HomeDir, ResponseChannel, UNDEFINED, UNDEFINED, 0);
-    case PutMS:
-      -- No Ack, just invalidate owner and add to sharer
-      assert (msg.src = HomeNode.owner) "error at Dir_I: Non-Owner Self Downgraded";
-      HomeNode.state := Dir_S;
-      AddToSharersList(msg.src);
-      undefine HomeNode.owner;
     else
       ErrorUnhandledMsg(msg, HomeDir);
     endswitch;
@@ -467,8 +459,6 @@ Begin
     case PutS:
       msg_processed := false;
     case PutM:
-      msg_processed := false;
-    case PutMS:
       msg_processed := false;
     case FwdAck:
       -- FwdAck+Data indicates that the FwdGetS has reached the target node
@@ -489,8 +479,6 @@ Begin
     case PutS:
       msg_processed := false;
     case PutM:
-      msg_processed := false;
-    case PutMS:
       msg_processed := false;
     case Data:
       msg_processed := false;
@@ -616,16 +604,6 @@ Begin
 
   case Proc_S:
     switch msg.mtype
-    case FwdGetS:
-      -- Only for self-downgrade case
-      Send(FwdAck, HomeDir,  p, ResponseChannel, pval, UNDEFINED, 0);
-      Send(Data, msg.fwd_to, p, ResponseChannel, pval, UNDEFINED, 0);
-    case FwdGetM:
-      -- Send data to req and FwdAck to home, downgrade to I
-      pstate := Proc_I;
-      Send(Data, msg.fwd_to, p, ResponseChannel, pval, UNDEFINED, 0);
-      Send(FwdAck, HomeDir,  p, ResponseChannel, UNDEFINED, UNDEFINED, 0);
-      undefine pval;
     case Inv:
       -- Send InvAck to req (and homedir)/I
       pstate := Proc_I;
@@ -771,17 +749,6 @@ End;
 -- Processor actions (affecting coherency) - spontaneous state transitions
 ruleset n: Proc Do
   alias p: Procs[n] Do
-
-    -- Spontaneous Self-Downgrade
-    rule "M ==(self-downgrade)==> S"
-      p.state = Proc_M
-    ==>
-      p.state := Proc_S;
-      if(enableMsgTrace=1) then
-        put "M ==(self-downgrade)==> S";
-      endif;
-      Send(PutMS, HomeDir, n, RequestChannel, p.val, UNDEFINED, 0);
-    endrule;
 
     rule "M ==(evict)==> I"
       p.state = Proc_M
@@ -956,33 +923,7 @@ invariant "val is undefined while invalid"
 		->
 			IsUndefined(Procs[n].val)
 	end;
-	
--- Here are some invariants that are helpful for validating shared state.
 
-invariant "modified implies empty sharers list"
-	HomeNode.state = Dir_M
-		->
-			MultiSetCount(i:HomeNode.sharers, true) = 0;
-
-invariant "Invalid implies empty sharer list"
-	HomeNode.state = Dir_I
-		->
-			MultiSetCount(i:HomeNode.sharers, true) = 0;
-
-invariant "values in memory matches val of last write, when shared or invalid"
-	Forall n : Proc Do	
-		 HomeNode.state = Dir_S | HomeNode.state = Dir_I
-		->
-			HomeNode.val = LastWrite
-	end;
-
-invariant "values in shared state match memory"
-	Forall n : Proc Do	
-		 HomeNode.state = Dir_S & Procs[n].state = Proc_S
-		->
-			HomeNode.val = Procs[n].val
-	end;
-	
 -- invariant "Proc ackcounts are negative"
 -- 	Forall n : Proc Do	
 -- 		 !(Procs[n].state = Proc_I)
@@ -994,3 +935,31 @@ invariant "values in shared state match memory"
 -- 	!(HomeNode.state = Dir_I)
 -- 		->
 -- 	!(HomeNode.ack_cnt < 0)
+	
+/*	
+-- Here are some invariants that are helpful for validating shared state.
+
+invariant "modified implies empty sharers list"
+	HomeNode.state = H_Modified
+		->
+			MultiSetCount(i:HomeNode.sharers, true) = 0;
+
+invariant "Invalid implies empty sharer list"
+	HomeNode.state = H_Invalid
+		->
+			MultiSetCount(i:HomeNode.sharers, true) = 0;
+
+invariant "values in memory matches val of last write, when shared or invalid"
+	Forall n : Proc Do	
+		 HomeNode.state = H_Shared | HomeNode.state = H_Invalid
+		->
+			HomeNode.val = LastWrite
+	end;
+
+invariant "values in shared state match memory"
+	Forall n : Proc Do	
+		 HomeNode.state = H_Shared & Procs[n].state = P_Shared
+		->
+			HomeNode.val = Procs[n].val
+	end;
+*/	
