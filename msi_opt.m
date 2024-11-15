@@ -20,7 +20,7 @@
 ---- Guaruntee Freshness for atleast 3 processors. Loads and stores issued by one processor are seen by that processor in program order.
 
 -- Waypoint Specific:
----- 3-hop MSI protocol, coarse-vector representation (Page 180(158) of book)
+---- 3-hop MSI protocol, cruise missile invalidation
 
 ----------------------------------------------------------------------
 -- Constants
@@ -326,7 +326,23 @@ Begin
   endfor;
 End;
 
-
+-- fwd_to would be self number
+Procedure SendCruiseMissileInv(msg:Message);
+Begin
+  for dest : Proc do
+    -- Proc_I check is basically to eliminate duplicates in symmetric system
+    -- In real life, if state is Proc_I then just ignore
+    if (dest != msg.src) & (Procs[dest].state != Proc_I) then
+      if (dest = msg.fwd_to) then
+        Send(InvAck, HomeDir, dest, ResponseChannel, UNDEFINED, UNDEFINED, 0);
+      else
+        Procs[dest].state := Proc_I;
+        undefine Procs[dest].val;
+        Send(Inv, dest, dest, ForwardChannel, UNDEFINED, msg.fwd_to, 0);
+      endif;
+    endif;
+  endfor;
+End;
 
 Procedure HomeReceive(msg:Message);
 var sharerCount:0..ProcCount;  -- for counting sharers
@@ -537,8 +553,13 @@ Begin
 
 	switch pstate
   case Proc_I:
-      -- Should not get external messages in this state
-      ErrorUnhandledMsg(msg, p);
+      switch msg.mtype
+      case Inv:
+        SendCruiseMissileInv(msg);
+      else
+        -- Should not get external messages in this state
+        ErrorUnhandledMsg(msg, p);
+      endswitch;
 
   case Proc_IS_D:
     switch msg.mtype
@@ -924,6 +945,32 @@ invariant "val is undefined while invalid"
 			IsUndefined(Procs[n].val)
 	end;
 
+-- Here are some invariants that are helpful for validating shared state.
+
+invariant "modified implies empty sharers list"
+	HomeNode.state = Dir_M
+		->
+			MultiSetCount(i:HomeNode.sharers, true) = 0;
+
+invariant "Invalid implies empty sharer list"
+	HomeNode.state = Dir_I
+		->
+			MultiSetCount(i:HomeNode.sharers, true) = 0;
+
+invariant "values in memory matches val of last write, when shared or invalid"
+	Forall n : Proc Do	
+		 HomeNode.state = Dir_S | HomeNode.state = Dir_I
+		->
+			HomeNode.val = LastWrite
+	end;
+
+invariant "values in shared state match memory"
+	Forall n : Proc Do	
+		 HomeNode.state = Dir_S & Procs[n].state = Proc_S
+		->
+			HomeNode.val = Procs[n].val
+	end;
+	
 -- invariant "Proc ackcounts are negative"
 -- 	Forall n : Proc Do	
 -- 		 !(Procs[n].state = Proc_I)
@@ -935,31 +982,3 @@ invariant "val is undefined while invalid"
 -- 	!(HomeNode.state = Dir_I)
 -- 		->
 -- 	!(HomeNode.ack_cnt < 0)
-	
-/*	
--- Here are some invariants that are helpful for validating shared state.
-
-invariant "modified implies empty sharers list"
-	HomeNode.state = H_Modified
-		->
-			MultiSetCount(i:HomeNode.sharers, true) = 0;
-
-invariant "Invalid implies empty sharer list"
-	HomeNode.state = H_Invalid
-		->
-			MultiSetCount(i:HomeNode.sharers, true) = 0;
-
-invariant "values in memory matches val of last write, when shared or invalid"
-	Forall n : Proc Do	
-		 HomeNode.state = H_Shared | HomeNode.state = H_Invalid
-		->
-			HomeNode.val = LastWrite
-	end;
-
-invariant "values in shared state match memory"
-	Forall n : Proc Do	
-		 HomeNode.state = H_Shared & Procs[n].state = P_Shared
-		->
-			HomeNode.val = Procs[n].val
-	end;
-*/	
