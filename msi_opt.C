@@ -254,9 +254,9 @@ class mu_1_counter_t: public mu__byte
  public:
   inline int operator=(int val) { return mu__byte::operator=(val); };
   inline int operator=(const mu_1_counter_t& val) { return mu__byte::operator=((int) val); };
-  mu_1_counter_t (char *name, int os): mu__byte(0, 1, 2, name, os) {};
-  mu_1_counter_t (void): mu__byte(0, 1, 2) {};
-  mu_1_counter_t (int val): mu__byte(0, 1, 2, "Parameter or function result.", 0)
+  mu_1_counter_t (char *name, int os): mu__byte(0, 101, 7, name, os) {};
+  mu_1_counter_t (void): mu__byte(0, 101, 7) {};
+  mu_1_counter_t (int val): mu__byte(0, 101, 7, "Parameter or function result.", 0)
   {
     operator=(val);
   };
@@ -1024,7 +1024,7 @@ class mu_1__type_2: public mu__byte
   };
 };
 
-char *mu_1__type_2::values[] = {"Proc_M","Proc_S","Proc_I","Proc_IS_D","Proc_IM_A","Proc_IM_AD","Proc_II_A","Proc_SM_A","Proc_SM_AD","Proc_SI_A","Proc_MI_A",NULL };
+char *mu_1__type_2::values[] = {"Proc_M","Proc_S","Proc_I","Proc_IS_D","Proc_IM_A","Proc_IM_D","Proc_II_A","Proc_SM_A","Proc_SM_D","Proc_SI_A","Proc_MI_A",NULL };
 
 /*** end of enum declaration ***/
 mu_1__type_2 mu_1__type_2_undefined_var;
@@ -1912,8 +1912,8 @@ const int mu_QMax = 2;
 const int mu_NumVCs = 3;
 const int mu_NetMax = 15;
 const int mu_enableProcTrace = 1;
-const int mu_enableMsgTrace = 0;
-const int mu_maxMsgs = 2;
+const int mu_enableMsgTrace = 1;
+const int mu_maxMsgs = 102;
 const int mu_Proc_1 = 1;
 const int mu_Proc_2 = 2;
 const int mu_Proc_3 = 3;
@@ -1947,10 +1947,10 @@ const int mu_Proc_S = 30;
 const int mu_Proc_I = 31;
 const int mu_Proc_IS_D = 32;
 const int mu_Proc_IM_A = 33;
-const int mu_Proc_IM_AD = 34;
+const int mu_Proc_IM_D = 34;
 const int mu_Proc_II_A = 35;
 const int mu_Proc_SM_A = 36;
-const int mu_Proc_SM_AD = 37;
+const int mu_Proc_SM_D = 37;
 const int mu_Proc_SI_A = 38;
 const int mu_Proc_MI_A = 39;
 /*** Variable declaration ***/
@@ -2037,8 +2037,8 @@ break;
 case mu_Proc_IM_A:
 cout << "Proc_IM_A";
 break;
-case mu_Proc_IM_AD:
-cout << "Proc_IM_AD";
+case mu_Proc_IM_D:
+cout << "Proc_IM_D";
 break;
 case mu_Proc_II_A:
 cout << "Proc_II_A";
@@ -2046,8 +2046,8 @@ break;
 case mu_Proc_SM_A:
 cout << "Proc_SM_A";
 break;
-case mu_Proc_SM_AD:
-cout << "Proc_SM_AD";
+case mu_Proc_SM_D:
+cout << "Proc_SM_D";
 break;
 case mu_Proc_SI_A:
 cout << "Proc_SI_A";
@@ -2091,7 +2091,7 @@ break;
 
 void mu_msgTrace(const mu_1_counter_t& mu_mid, const mu_1_MessageType& mu_mtype, const mu_1_Node& mu_dst, const mu_1_Node& mu_src, const mu_1_channel_t& mu_vc, const mu_1_Value& mu_val, const mu_1_Node& mu_fwd_to, const mu_1_AckCount& mu_ack_cnt)
 {
-if ( 0 )
+if ( 1 )
 {
 cout << "Msg ";
 cout << ( mu_mid );
@@ -2142,7 +2142,7 @@ mu_1_Message mu_msg("msg",0);
   }
 /*** end multisetcount 0 declaration ***/
 if ( !((mu__intexpr9) < (mu_NetMax)) ) Error.Error("Assertion failed: Too many messages");
-if ( 0 )
+if ( 1 )
 {
 cout << " Create ";
 }
@@ -2150,7 +2150,7 @@ if (mu_running_msgid.isundefined())
   mu_msg.mu_mid.undefine();
 else
   mu_msg.mu_mid = mu_running_msgid;
-if ( (mu_running_msgid) == (1) )
+if ( (mu_running_msgid) == (101) )
 {
 mu_running_msgid = 0;
 }
@@ -2401,19 +2401,12 @@ mu_HomeNode.mu_state = mu_Dir_M;
 else
 {
 mu_HomeNode.mu_state = mu_Dir_SM_A;
-mu_HomeNode.mu_ack_cnt = (mu_sharerCount) - (1);
-mu_SendInvReqToSharers ( mu_msg.mu_src );
 }
 mu_Send ( mu_Data, mu_msg.mu_src, (int)mu_HomeDir, mu_ResponseChannel, mu_HomeNode.mu_val, mu_1_Node_undefined_var, (mu_sharerCount) - (1) );
 }
 else
 {
 mu_HomeNode.mu_state = mu_Dir_SM_A;
-if (mu_sharerCount.isundefined())
-  mu_HomeNode.mu_ack_cnt.undefine();
-else
-  mu_HomeNode.mu_ack_cnt = mu_sharerCount;
-mu_SendInvReqToSharers ( mu_msg.mu_src );
 mu_Send ( mu_Data, mu_msg.mu_src, (int)mu_HomeDir, mu_ResponseChannel, mu_HomeNode.mu_val, mu_1_Node_undefined_var, (int)mu_sharerCount );
 }
 mu_HomeNode.mu_sharers.undefine();
@@ -2541,11 +2534,7 @@ case mu_Data:
 mu_msg_processed = mu_false;
 break;
 case mu_InvAck:
-mu_HomeNode.mu_ack_cnt = (mu_HomeNode.mu_ack_cnt) - (1);
-if ( (mu_HomeNode.mu_ack_cnt) == (0) )
-{
 mu_HomeNode.mu_state = mu_Dir_M;
-}
 break;
 default:
 mu_ErrorUnhandledMsg ( mu_msg, (int)mu_HomeDir );
@@ -2565,6 +2554,8 @@ mu_msg_processed = mu_true;
   mu_1_Value& mu_pval = mu_Procs[mu_p].mu_val;
 {
   mu_1_AckCount& mu_pcnt = mu_Procs[mu_p].mu_ack_cnt;
+{
+  mu_1_Proc& mu_pnxt = mu_Procs[mu_p].mu_nextProc;
 if ( 1 )
 {
 cout << "Receiving ";
@@ -2586,7 +2577,7 @@ switch ((int) mu_pstate) {
 case mu_Proc_I:
 switch ((int) mu_msg.mu_mtype) {
 case mu_Inv:
-mu_ErrorUnhandledMsg ( mu_msg, (int)mu_p );
+mu_Send ( mu_Inv, (int)mu_pnxt, (int)mu_p, mu_ForwardChannel, mu_1_Value_undefined_var, mu_1_Node_undefined_var, mu_msg.mu_ack_cnt );
 break;
 default:
 mu_ErrorUnhandledMsg ( mu_msg, (int)mu_p );
@@ -2596,21 +2587,23 @@ break;
 case mu_Proc_IS_D:
 switch ((int) mu_msg.mu_mtype) {
 case mu_Inv:
-mu_msg_processed = mu_false;
+mu_Send ( mu_Inv, (int)mu_pnxt, (int)mu_p, mu_ForwardChannel, mu_1_Value_undefined_var, mu_1_Node_undefined_var, mu_msg.mu_ack_cnt );
 break;
 case mu_Data:
 if ( !((mu_msg.mu_ack_cnt) == (0)) ) Error.Error("Assertion failed: Error at Proc_IS_D, ack_cnt must be 0 since no modify request");
 mu_pstate = mu_Proc_S;
 mu_pval = mu_msg.mu_val;
-mu_pcnt = (mu_pcnt) + (mu_msg.mu_ack_cnt);
 break;
 default:
 mu_ErrorUnhandledMsg ( mu_msg, (int)mu_p );
 break;
 }
 break;
-case mu_Proc_IM_AD:
+case mu_Proc_IM_D:
 switch ((int) mu_msg.mu_mtype) {
+case mu_Inv:
+mu_Send ( mu_Inv, (int)mu_pnxt, (int)mu_p, mu_ForwardChannel, mu_1_Value_undefined_var, mu_1_Node_undefined_var, mu_msg.mu_ack_cnt );
+break;
 case mu_FwdGetS:
 mu_msg_processed = mu_false;
 break;
@@ -2620,9 +2613,7 @@ break;
 case mu_Data:
 if ( (mu_msg.mu_src) == (mu_HomeDir) )
 {
-if ( !((mu_pcnt) <= (0)) ) Error.Error("Assertion failed: error at Proc_IM_AD, ack_cnt > 0.");
-mu_pcnt = (mu_pcnt) + (mu_msg.mu_ack_cnt);
-if ( !((mu_pcnt) >= (0)) ) Error.Error("Assertion failed: error at Proc_IM_AD, ack_cnt < 0.");
+if ( !((mu_pcnt) == (0)) ) Error.Error("Assertion failed: error at Proc_IM_D, ack_cnt should be 0 for CMI");
 if ( (mu_pcnt) == (0) )
 {
 mu_pstate = mu_Proc_M;
@@ -2631,6 +2622,7 @@ mu_LastWrite = mu_pval;
 else
 {
 mu_pstate = mu_Proc_IM_A;
+mu_Send ( mu_Inv, (int)mu_pnxt, (int)mu_p, mu_ForwardChannel, mu_1_Value_undefined_var, mu_1_Node_undefined_var, mu_msg.mu_ack_cnt );
 }
 }
 else
@@ -2638,9 +2630,6 @@ else
 mu_pstate = mu_Proc_M;
 mu_LastWrite = mu_pval;
 }
-break;
-case mu_InvAck:
-mu_pcnt = (mu_pcnt) - (1);
 break;
 default:
 mu_ErrorUnhandledMsg ( mu_msg, (int)mu_p );
@@ -2655,13 +2644,11 @@ break;
 case mu_FwdGetM:
 mu_msg_processed = mu_false;
 break;
-case mu_InvAck:
-mu_pcnt = (mu_pcnt) - (1);
-if ( (mu_pcnt) == (0) )
-{
+case mu_Inv:
+if ( !((mu_msg.mu_ack_cnt) == (0)) ) Error.Error("Assertion failed: error at Proc_SM_A, returning cruise missile should have ack_cnt 0");
 mu_pstate = mu_Proc_M;
 mu_LastWrite = mu_pval;
-}
+mu_Send ( mu_InvAck, (int)mu_HomeDir, (int)mu_p, mu_ResponseChannel, mu_1_Value_undefined_var, mu_1_Node_undefined_var, 0 );
 break;
 default:
 mu_ErrorUnhandledMsg ( mu_msg, (int)mu_p );
@@ -2672,8 +2659,7 @@ case mu_Proc_S:
 switch ((int) mu_msg.mu_mtype) {
 case mu_Inv:
 mu_pstate = mu_Proc_I;
-mu_Send ( mu_InvAck, mu_msg.mu_fwd_to, (int)mu_p, mu_ResponseChannel, mu_1_Value_undefined_var, mu_1_Node_undefined_var, 0 );
-mu_Send ( mu_InvAck, (int)mu_HomeDir, (int)mu_p, mu_ResponseChannel, mu_1_Value_undefined_var, mu_1_Node_undefined_var, 0 );
+mu_Send ( mu_Inv, (int)mu_pnxt, (int)mu_p, mu_ForwardChannel, mu_1_Value_undefined_var, mu_1_Node_undefined_var, (mu_msg.mu_ack_cnt) - (1) );
 mu_pval.undefine();
 break;
 default:
@@ -2681,7 +2667,7 @@ mu_ErrorUnhandledMsg ( mu_msg, (int)mu_p );
 break;
 }
 break;
-case mu_Proc_SM_AD:
+case mu_Proc_SM_D:
 switch ((int) mu_msg.mu_mtype) {
 case mu_FwdGetS:
 mu_msg_processed = mu_false;
@@ -2690,12 +2676,11 @@ case mu_FwdGetM:
 mu_msg_processed = mu_false;
 break;
 case mu_Inv:
-mu_pstate = mu_Proc_IM_AD;
-mu_Send ( mu_InvAck, mu_msg.mu_fwd_to, (int)mu_p, mu_ResponseChannel, mu_1_Value_undefined_var, mu_1_Node_undefined_var, 0 );
-mu_Send ( mu_InvAck, (int)mu_HomeDir, (int)mu_p, mu_ResponseChannel, mu_1_Value_undefined_var, mu_1_Node_undefined_var, 0 );
+mu_pstate = mu_Proc_IM_D;
+mu_Send ( mu_Inv, (int)mu_pnxt, (int)mu_p, mu_ForwardChannel, mu_1_Value_undefined_var, mu_1_Node_undefined_var, (mu_msg.mu_ack_cnt) - (1) );
 break;
 case mu_Data:
-if ( !((mu_msg.mu_src) == (mu_HomeDir)) ) Error.Error("Assertion failed: error at Proc_SM_AD, Data not from dir.");
+if ( !((mu_msg.mu_src) == (mu_HomeDir)) ) Error.Error("Assertion failed: error at Proc_SM_D, Data not from dir.");
 if ( (mu_msg.mu_ack_cnt) == (0) )
 {
 mu_pstate = mu_Proc_M;
@@ -2703,22 +2688,10 @@ mu_LastWrite = mu_pval;
 }
 else
 {
-if ( !((mu_pcnt) <= (0)) ) Error.Error("Assertion failed: error at Proc_SM_AD, ack_cnt > 0.");
-mu_pcnt = (mu_pcnt) + (mu_msg.mu_ack_cnt);
-if ( !((mu_pcnt) >= (0)) ) Error.Error("Assertion failed: error at Proc_SM_AD, ack_cnt < 0.");
-if ( (mu_pcnt) == (0) )
-{
-mu_pstate = mu_Proc_M;
-mu_LastWrite = mu_pval;
-}
-else
-{
+if ( !((mu_pcnt) == (0)) ) Error.Error("Assertion failed: error at Proc_SM_D, ack_cnt should be 0 for CMI.");
+mu_Send ( mu_Inv, (int)mu_pnxt, (int)mu_p, mu_ForwardChannel, mu_1_Value_undefined_var, mu_1_Node_undefined_var, mu_msg.mu_ack_cnt );
 mu_pstate = mu_Proc_SM_A;
 }
-}
-break;
-case mu_InvAck:
-mu_pcnt = (mu_pcnt) - (1);
 break;
 default:
 mu_ErrorUnhandledMsg ( mu_msg, (int)mu_p );
@@ -2733,13 +2706,11 @@ break;
 case mu_FwdGetM:
 mu_msg_processed = mu_false;
 break;
-case mu_InvAck:
-mu_pcnt = (mu_pcnt) - (1);
-if ( (mu_pcnt) == (0) )
-{
+case mu_Inv:
+if ( !((mu_msg.mu_ack_cnt) == (0)) ) Error.Error("Assertion failed: error at Proc_SM_A, returning cruise missile should have ack_cnt 0");
 mu_pstate = mu_Proc_M;
 mu_LastWrite = mu_pval;
-}
+mu_Send ( mu_InvAck, (int)mu_HomeDir, (int)mu_p, mu_ResponseChannel, mu_1_Value_undefined_var, mu_1_Node_undefined_var, 0 );
 break;
 default:
 mu_ErrorUnhandledMsg ( mu_msg, (int)mu_p );
@@ -2748,6 +2719,9 @@ break;
 break;
 case mu_Proc_M:
 switch ((int) mu_msg.mu_mtype) {
+case mu_Inv:
+mu_Send ( mu_Inv, (int)mu_pnxt, (int)mu_p, mu_ForwardChannel, mu_1_Value_undefined_var, mu_1_Node_undefined_var, mu_msg.mu_ack_cnt );
+break;
 case mu_FwdGetS:
 mu_pstate = mu_Proc_S;
 mu_Send ( mu_FwdAck, (int)mu_HomeDir, (int)mu_p, mu_ResponseChannel, mu_pval, mu_1_Node_undefined_var, 0 );
@@ -2766,6 +2740,9 @@ break;
 break;
 case mu_Proc_MI_A:
 switch ((int) mu_msg.mu_mtype) {
+case mu_Inv:
+mu_Send ( mu_Inv, (int)mu_pnxt, (int)mu_p, mu_ForwardChannel, mu_1_Value_undefined_var, mu_1_Node_undefined_var, mu_msg.mu_ack_cnt );
+break;
 case mu_FwdGetS:
 mu_pstate = mu_Proc_SI_A;
 mu_Send ( mu_FwdAck, (int)mu_HomeDir, (int)mu_p, mu_ResponseChannel, mu_pval, mu_1_Node_undefined_var, 0 );
@@ -2789,8 +2766,7 @@ case mu_Proc_SI_A:
 switch ((int) mu_msg.mu_mtype) {
 case mu_Inv:
 mu_pstate = mu_Proc_II_A;
-mu_Send ( mu_InvAck, mu_msg.mu_fwd_to, (int)mu_p, mu_ResponseChannel, mu_1_Value_undefined_var, mu_1_Node_undefined_var, 0 );
-mu_Send ( mu_InvAck, (int)mu_HomeDir, (int)mu_p, mu_ResponseChannel, mu_1_Value_undefined_var, mu_1_Node_undefined_var, 0 );
+mu_Send ( mu_Inv, (int)mu_pnxt, (int)mu_p, mu_ForwardChannel, mu_1_Value_undefined_var, mu_1_Node_undefined_var, (mu_msg.mu_ack_cnt) - (1) );
 break;
 case mu_PutAck:
 mu_pstate = mu_Proc_I;
@@ -2803,6 +2779,9 @@ break;
 break;
 case mu_Proc_II_A:
 switch ((int) mu_msg.mu_mtype) {
+case mu_Inv:
+mu_Send ( mu_Inv, (int)mu_pnxt, (int)mu_p, mu_ForwardChannel, mu_1_Value_undefined_var, mu_1_Node_undefined_var, mu_msg.mu_ack_cnt );
+break;
 case mu_PutAck:
 mu_pstate = mu_Proc_I;
 mu_pval.undefine();
@@ -2815,6 +2794,7 @@ break;
 default:
 mu_ErrorUnhandledState (  );
 break;
+}
 }
 }
 }
@@ -3085,7 +3065,7 @@ public:
   mu_1__type_4& mu_chan = mu_Net[mu_n];
   mu_1_Message& mu_msg = mu_chan[mu_midx];
   mu_1__type_6& mu_box = mu_InBox[mu_n];
-if ( 0 )
+if ( 1 )
 {
 cout << "  Receive ";
 }
@@ -3166,7 +3146,7 @@ public:
     r = r / 5;
   mu_1_ProcState& mu_p = mu_Procs[mu_n];
 mu_p.mu_state = mu_Proc_IS_D;
-if ( 0 )
+if ( 1 )
 {
 cout << "I ==(load)==> S";
 }
@@ -3247,8 +3227,8 @@ public:
     mu_n.value((r % 5) + 1);
     r = r / 5;
   mu_1_ProcState& mu_p = mu_Procs[mu_n];
-mu_p.mu_state = mu_Proc_IM_AD;
-if ( 0 )
+mu_p.mu_state = mu_Proc_IM_D;
+if ( 1 )
 {
 cout << "I ==(store)==> M";
 }
@@ -3330,8 +3310,8 @@ public:
     mu_n.value((r % 5) + 1);
     r = r / 5;
   mu_1_ProcState& mu_p = mu_Procs[mu_n];
-mu_p.mu_state = mu_Proc_SM_AD;
-if ( 0 )
+mu_p.mu_state = mu_Proc_SM_D;
+if ( 1 )
 {
 cout << "S ==(store)==> M";
 }
@@ -3400,7 +3380,7 @@ public:
     r = r / 5;
   mu_1_ProcState& mu_p = mu_Procs[mu_n];
 mu_p.mu_state = mu_Proc_SI_A;
-if ( 0 )
+if ( 1 )
 {
 cout << "S ==(evict)==> I";
 }
@@ -3468,7 +3448,7 @@ public:
     r = r / 5;
   mu_1_ProcState& mu_p = mu_Procs[mu_n];
 mu_p.mu_state = mu_Proc_MI_A;
-if ( 0 )
+if ( 1 )
 {
 cout << "M ==(evict)==> I";
 }

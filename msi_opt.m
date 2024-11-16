@@ -33,7 +33,7 @@ const
 	NumVCs: 3;
 	NetMax: ProcCount+10;
 	enableProcTrace: 1;
-	enableMsgTrace: 0;
+	enableMsgTrace: 1;
   maxMsgs: enableMsgTrace*100 + 2;
 
 ----------------------------------------------------------------------
@@ -114,10 +114,10 @@ type
                     -- Transition states
                     Proc_IS_D,
                     Proc_IM_A,
-                    Proc_IM_AD,
+                    Proc_IM_D,
                     Proc_II_A,
                     Proc_SM_A,
-                    Proc_SM_AD,
+                    Proc_SM_D,
                     Proc_SI_A,
                     Proc_MI_A
                   };
@@ -172,10 +172,10 @@ begin
       case Proc_I: put "Proc_I";
       case Proc_IS_D: put "Proc_IS_D";
       case Proc_IM_A: put "Proc_IM_A";
-      case Proc_IM_AD: put "Proc_IM_AD";
+      case Proc_IM_D: put "Proc_IM_D";
       case Proc_II_A: put "Proc_II_A";
       case Proc_SM_A: put "Proc_SM_A";
-      case Proc_SM_AD: put "Proc_SM_AD";
+      case Proc_SM_D: put "Proc_SM_D";
       case Proc_SI_A: put "Proc_SI_A";
       case Proc_MI_A: put "Proc_MI_A";
     else
@@ -389,15 +389,11 @@ Begin
           HomeNode.state := Dir_M;
         else
           HomeNode.state := Dir_SM_A;
-          HomeNode.ack_cnt := sharerCount - 1; -- Current node will not invalidate
-          SendInvReqToSharers(msg.src);
         endif;
         Send(Data, msg.src, HomeDir, ResponseChannel, HomeNode.val, UNDEFINED, sharerCount - 1);
       else
 				-- if req is not a current sharer
         HomeNode.state := Dir_SM_A;
-        HomeNode.ack_cnt := sharerCount; -- current node will also invalidate
-        SendInvReqToSharers(msg.src);
         Send(Data, msg.src, HomeDir, ResponseChannel, HomeNode.val, UNDEFINED, sharerCount);
       endif;
       undefine HomeNode.sharers;
@@ -503,11 +499,7 @@ Begin
     case Data:
       msg_processed := false;
     case InvAck:
-			-- After all inv-acks received, reset 
-      HomeNode.ack_cnt := HomeNode.ack_cnt - 1;
-      if HomeNode.ack_cnt = 0 then
-        HomeNode.state := Dir_M;
-      endif;
+      HomeNode.state := Dir_M;
     else
       ErrorUnhandledMsg(msg, HomeDir);
     endswitch;
@@ -525,6 +517,7 @@ Begin
 	alias pstate:Procs[p].state do
 	alias pval:Procs[p].val do
 	alias pcnt:Procs[p].ack_cnt do
+  alias pnxt:Procs[p].nextProc do
 
 	if(enableProcTrace=1) then
  		put "Receiving "; put msg.mtype; put " from "; put msg.src; put " on "; put msg.vc; 
@@ -539,7 +532,7 @@ Begin
   case Proc_I:
       switch msg.mtype
       case Inv:
-        ErrorUnhandledMsg(msg, p);
+        Send(Inv, pnxt, p, ForwardChannel, UNDEFINED, UNDEFINED, msg.ack_cnt); -- Just forward ahead
       else
         -- Should not get external messages in this state
         ErrorUnhandledMsg(msg, p);
@@ -548,28 +541,33 @@ Begin
   case Proc_IS_D:
     switch msg.mtype
     case Inv:
-      msg_processed := false;
+      --CHECK Grey area. Maybe you got permission, maybe you didn't, assume you didn't
+      Send(Inv, pnxt, p, ForwardChannel, UNDEFINED, UNDEFINED,  msg.ack_cnt); -- Just forward ahead
+      -- msg_processed := false;
     case Data:
       -- Update val, Move to S, increment ack_cnt
       assert msg.ack_cnt = 0 "Error at Proc_IS_D, ack_cnt must be 0 since no modify request";
       pstate := Proc_S;
       pval := msg.val;
-      pcnt := pcnt + msg.ack_cnt;
+      -- pcnt := pcnt + msg.ack_cnt; --REMOVE
     else
       ErrorUnhandledMsg(msg, p);
     endswitch;
 
-  case Proc_IM_AD:
+  case Proc_IM_D:
     switch msg.mtype
+    case Inv:
+        -- Surely you didn't get permission so okay
+        Send(Inv, pnxt, p, ForwardChannel, UNDEFINED, UNDEFINED, msg.ack_cnt); -- Just forward ahead
     case FwdGetS:
       msg_processed := false;
     case FwdGetM:
       msg_processed := false;
     case Data:
       if msg.src = HomeDir then -- data is from directory controller
-        assert (pcnt <= 0) "error at Proc_IM_AD, ack_cnt > 0."; -- Can be negative upto msg.ack_cnt
-        pcnt :=  pcnt + msg.ack_cnt;
-        assert (pcnt >= 0) "error at Proc_IM_AD, ack_cnt < 0."; 
+        assert (pcnt = 0) "error at Proc_IM_D, ack_cnt should be 0 for CMI"; -- Can be negative upto msg.ack_cnt
+        -- pcnt :=  msg.ack_cnt; --KEEP
+        -- assert (pcnt > 0) "error at Proc_IM_D, ack_cnt <= 0."; 
         if pcnt = 0 then
           -- No sharers left to ack, move to Proc_M
           pstate := Proc_M;
@@ -577,15 +575,14 @@ Begin
         else
           -- Wait for ack in IM_A
           pstate := Proc_IM_A;
+          -- Start the CMI chain
+          Send(Inv, pnxt, p, ForwardChannel, UNDEFINED, UNDEFINED, msg.ack_cnt);
         endif;
       else -- data is from previous owner
         -- update value and move to M
         pstate := Proc_M;
         LastWrite := pval;
       endif;
-    case InvAck:
-      -- decrement pending InvAck count (if all received, it will be resolved on getting data)
-      pcnt := pcnt - 1;
     else
       ErrorUnhandledMsg(msg, p);
     endswitch;
@@ -596,13 +593,13 @@ Begin
       msg_processed := false;
     case FwdGetM:
       msg_processed := false;
-    case InvAck:
-      -- decrement pending InvAck count, data might have been received already
-      pcnt := pcnt - 1;
-      if pcnt = 0 then
-        pstate := Proc_M;
-        LastWrite := pval;
-      endif;
+    case Inv:
+      -- If receiving Inv in IM_A, for sure this node is the one who started the chain, time to finish
+      -- Move to M/update lastwrite, send InvAck back to directory
+      assert (msg.ack_cnt = 0) "error at Proc_SM_A, returning cruise missile should have ack_cnt 0";
+      pstate := Proc_M;
+      LastWrite := pval;
+      Send(InvAck, HomeDir, p, ResponseChannel, UNDEFINED, UNDEFINED, 0);
     else
       ErrorUnhandledMsg(msg, p);
     endswitch;
@@ -610,47 +607,37 @@ Begin
   case Proc_S:
     switch msg.mtype
     case Inv:
-      -- Send InvAck to req (and homedir)/I
+      -- Forward Inv with ack by reducing count
       pstate := Proc_I;
-      Send(InvAck, msg.fwd_to, p, ResponseChannel, UNDEFINED, UNDEFINED, 0);
-      Send(InvAck, HomeDir, p, ResponseChannel, UNDEFINED, UNDEFINED, 0);
+      Send(Inv, pnxt, p, ForwardChannel, UNDEFINED, UNDEFINED, msg.ack_cnt-1);
       undefine pval;
     else
       ErrorUnhandledMsg(msg, p);
     endswitch;
 
-  case Proc_SM_AD:
+  case Proc_SM_D:
     switch msg.mtype
     case FwdGetS:
       msg_processed := false;
     case FwdGetM:
       msg_processed := false;
     case Inv:
-      -- Send InvAck to req (and homedir)/IM_AD
-      pstate := Proc_IM_AD;
-      Send(InvAck, msg.fwd_to, p, ResponseChannel, UNDEFINED, UNDEFINED, 0);
-      Send(InvAck, HomeDir, p, ResponseChannel, UNDEFINED, UNDEFINED, 0);
+      -- Forward Inv with ack by reducing count
+      pstate := Proc_IM_D;
+      Send(Inv, pnxt, p, ForwardChannel, UNDEFINED, UNDEFINED, msg.ack_cnt-1);
     case Data:
-      assert (msg.src = HomeDir) "error at Proc_SM_AD, Data not from dir.";
+      assert (msg.src = HomeDir) "error at Proc_SM_D, Data not from dir.";
       if msg.ack_cnt = 0 then
         pstate := Proc_M;
         LastWrite := pval;
       else
-        assert (pcnt <= 0) "error at Proc_SM_AD, ack_cnt > 0.";
-        pcnt :=  pcnt + msg.ack_cnt;
-        assert (pcnt >= 0) "error at Proc_SM_AD, ack_cnt < 0.";
-        if pcnt = 0 then
-          -- All acks were already received
-          pstate := Proc_M;
-          LastWrite := pval; --update lastwrite event
-        else
-          -- Acks remaining
-          pstate := Proc_SM_A;
-        endif;
+        assert (pcnt = 0) "error at Proc_SM_D, ack_cnt should be 0 for CMI.";
+        -- pcnt :=  msg.ack_cnt;
+        -- assert (pcnt > 0) "error at Proc_SM_D, ack_cnt <= 0.";
+        -- Start the CMI chain
+        Send(Inv, pnxt, p, ForwardChannel, UNDEFINED, UNDEFINED, msg.ack_cnt);
+        pstate := Proc_SM_A;
       endif;
-    case InvAck:
-      -- assert (pcnt = 0) "error at Proc_SM_AD, ack_cnt == 0."; -- Can go negative
-      pcnt := pcnt - 1;
     else
       ErrorUnhandledMsg(msg, p);
     endswitch;
@@ -661,19 +648,21 @@ Begin
       msg_processed := false;
     case FwdGetM:
       msg_processed := false;
-    case InvAck:
-      -- Move to M/update lastwrite
-      pcnt := pcnt - 1;
-      if pcnt = 0 then
-        pstate := Proc_M;
-        LastWrite := pval;
-      endif;
+    case Inv:
+      -- If receiving Inv in SM_A, for sure this node is the one who started the chain, time to finish
+      -- Move to M/update lastwrite, send InvAck back to directory
+      assert (msg.ack_cnt = 0) "error at Proc_SM_A, returning cruise missile should have ack_cnt 0";
+      pstate := Proc_M;
+      LastWrite := pval;
+      Send(InvAck, HomeDir, p, ResponseChannel, UNDEFINED, UNDEFINED, 0);
     else
       ErrorUnhandledMsg(msg, p);
     endswitch;
 
   case Proc_M:
     switch msg.mtype
+    case Inv:
+      Send(Inv, pnxt, p, ForwardChannel, UNDEFINED, UNDEFINED, msg.ack_cnt);
     case FwdGetS:
       -- Send data to req and FwdAck to home, downgrade to S
       pstate := Proc_S;
@@ -691,6 +680,8 @@ Begin
 
   case Proc_MI_A:
     switch msg.mtype
+    case Inv:
+      Send(Inv, pnxt, p, ForwardChannel, UNDEFINED, UNDEFINED, msg.ack_cnt);
     case FwdGetS:
       -- Send data to req and FwdAck to home, downgrade to SI_A
       pstate := Proc_SI_A;
@@ -714,8 +705,7 @@ Begin
     case Inv:
       -- Move to II_A, send InvAck to Home and req
       pstate := Proc_II_A;
-      Send(InvAck, msg.fwd_to,  p, ResponseChannel, UNDEFINED, UNDEFINED, 0);
-      Send(InvAck, HomeDir, p, ResponseChannel, UNDEFINED, UNDEFINED, 0);
+      Send(Inv, pnxt, p, ForwardChannel, UNDEFINED, UNDEFINED, msg.ack_cnt-1);
     case PutAck:
       -- Move to I
       pstate := Proc_I;
@@ -726,6 +716,8 @@ Begin
 
   case Proc_II_A:
     switch msg.mtype
+    case Inv:
+      Send(Inv, pnxt, p, ForwardChannel, UNDEFINED, UNDEFINED, msg.ack_cnt);
     case PutAck:
       -- Move to I
       pstate := Proc_I;
@@ -745,6 +737,7 @@ Begin
 	endalias;
 	endalias;
 	endalias;
+  endalias;
 End;
 
 ----------------------------------------------------------------------
@@ -779,7 +772,7 @@ ruleset n: Proc Do
       rule "S ==(store)==> M"
         p.state = Proc_S
       ==>
-        p.state := Proc_SM_AD;
+        p.state := Proc_SM_D;
         if(enableMsgTrace=1) then
           put "S ==(store)==> M";
         endif;
@@ -792,7 +785,7 @@ ruleset n: Proc Do
       rule "I ==(store)==> M"
         p.state = Proc_I
       ==>
-        p.state := Proc_IM_AD;
+        p.state := Proc_IM_D;
         if(enableMsgTrace=1) then
           put "I ==(store)==> M";
         endif;
