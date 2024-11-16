@@ -28,35 +28,63 @@ Start Simulation :
 
 Proc : 1, nextproc : 2
 Proc : 2, nextproc : 3
-Proc : 3, nextproc : 4
-Proc : 4, nextproc : 5
-Proc : 5, nextproc : 1
-I ==(store)==> M Create Msg 0:: type: GetM, src: 5, dst: 8, ack_cnt: 0, src_state: Proc_IM_D, dst_state: Dir_I
-I ==(store)==> M Create Msg 1:: type: GetM, src: 4, dst: 8, ack_cnt: 0, src_state: Proc_IM_D, dst_state: Dir_I
-I ==(load)==> S Create Msg 2:: type: GetS, src: 3, dst: 8, ack_cnt: 0, src_state: Proc_IS_D, dst_state: Dir_I
-I ==(load)==> S Create Msg 3:: type: GetS, src: 1, dst: 8, ack_cnt: 0, src_state: Proc_IS_D, dst_state: Dir_I
-  Receive Msg 3:: type: GetS, src: 1, dst: 8, ack_cnt: 0, src_state: Proc_IS_D, dst_state: Dir_I
-Receiving GetS from processor Proc_1 on RequestChannel at home -- HomeNode.state:Dir_I
- Create Msg 4:: type: Data, src: 8, dst: 1, ack_cnt: 0, src_state: Dir_S, dst_state: Proc_IS_D, val: 7
-  Receive Msg 0:: type: GetM, src: 5, dst: 8, ack_cnt: 0, src_state: Proc_IM_D, dst_state: Dir_S
-Receiving GetM from processor Proc_5 on RequestChannel at home -- HomeNode.state:Dir_S
- Create Msg 5:: type: Data, src: 8, dst: 5, ack_cnt: 1, src_state: Dir_SM_A, dst_state: Proc_IM_D, val: 7
-I ==(load)==> S Create Msg 6:: type: GetS, src: 2, dst: 8, ack_cnt: 0, src_state: Proc_IS_D, dst_state: Dir_SM_A
-  Receive Msg 2:: type: GetS, src: 3, dst: 8, ack_cnt: 0, src_state: Proc_IS_D, dst_state: Dir_SM_A
-Receiving GetS from processor Proc_3 on RequestChannel at home -- HomeNode.state:Dir_SM_A
-Receiving GetS from processor Proc_3 on RequestChannel at home -- HomeNode.state:Dir_SM_A
-  Receive Msg 4:: type: Data, src: 8, dst: 1, ack_cnt: 0, src_state: Dir_SM_A, dst_state: Proc_IS_D, val: 7
+Proc : 3, nextproc : 1
+I ==(store)==> M Create Msg 0:: type: GetM, src: 1, dst: 7, ack_cnt: 0, src_state: Proc_IM_D, dst_state: Dir_I
+  Receive Msg 0:: type: GetM, src: 1, dst: 7, ack_cnt: 0, src_state: Proc_IM_D, dst_state: Dir_I
+Receiving GetM from processor Proc_1 on RequestChannel at home -- HomeNode.state:Dir_I
+ Create Msg 1:: type: Data, src: 7, dst: 1, ack_cnt: 0, src_state: Dir_M, dst_state: Proc_IM_D, val: 6
+I ==(load)==> S Create Msg 2:: type: GetS, src: 2, dst: 7, ack_cnt: 0, src_state: Proc_IS_D, dst_state: Dir_M
+I ==(store)==> M Create Msg 3:: type: GetM, src: 3, dst: 7, ack_cnt: 0, src_state: Proc_IM_D, dst_state: Dir_M
+  Receive Msg 3:: type: GetM, src: 3, dst: 7, ack_cnt: 0, src_state: Proc_IM_D, dst_state: Dir_M
+Receiving GetM from processor Proc_3 on RequestChannel at home -- HomeNode.state:Dir_M
+ Create Msg 4:: type: FwdGetM, src: 7, dst: 1, ack_cnt: 0, src_state: Dir_MM_A, dst_state: Proc_IM_D, fwd_to: 3
+  Receive Msg 4:: type: FwdGetM, src: 7, dst: 1, ack_cnt: 0, src_state: Dir_MM_A, dst_state: Proc_IM_D, fwd_to: 3
+Receiving FwdGetM from HomeDir on ForwardChannel at proc 1
+Receiving FwdGetM from HomeDir on ForwardChannel at proc 1
+  Receive Msg 1:: type: Data, src: 7, dst: 1, ack_cnt: 0, src_state: Dir_MM_A, dst_state: Proc_IM_D, val: 6
 Receiving Data from HomeDir on ResponseChannel at proc 1
-S ==(store)==> M Create Msg 7:: type: GetM, src: 1, dst: 8, ack_cnt: 0, src_state: Proc_SM_D, dst_state: Dir_SM_A
-  Receive Msg 5:: type: Data, src: 8, dst: 5, ack_cnt: 1, src_state: Dir_SM_A, dst_state: Proc_IM_D, val: 7
-Receiving Data from HomeDir on ResponseChannel at proc 5
-Receiving GetS from processor Proc_3 on RequestChannel at home -- HomeNode.state:Dir_SM_A
-M ==(evict)==> I Create Msg 8:: type: PutM, src: 5, dst: 8, ack_cnt: 0, src_state: Proc_MI_A, dst_state: Dir_SM_A, val: 7
-Receiving GetS from processor Proc_3 on RequestChannel at home -- HomeNode.state:Dir_SM_A
+Receiving FwdGetM from HomeDir on ForwardChannel at proc 1
+ Create Msg 5:: type: Data, src: 1, dst: 3, ack_cnt: 0, src_state: Proc_I, dst_state: Proc_IM_D, val: 4
+ Create Msg 6:: type: FwdAck, src: 1, dst: 7, ack_cnt: 0, src_state: Proc_I, dst_state: Dir_MM_A
+  Receive Msg 2:: type: GetS, src: 2, dst: 7, ack_cnt: 0, src_state: Proc_IS_D, dst_state: Dir_MM_A
+Receiving GetS from processor Proc_2 on RequestChannel at home -- HomeNode.state:Dir_MM_A
+I ==(store)==> M Create Msg 7:: type: GetM, src: 1, dst: 7, ack_cnt: 0, src_state: Proc_IM_D, dst_state: Dir_MM_A
+  Receive Msg 5:: type: Data, src: 1, dst: 3, ack_cnt: 0, src_state: Proc_IM_D, dst_state: Proc_IM_D, val: 4
+Receiving Data from Proc_1 on ResponseChannel at proc 3
+M ==(evict)==> I Create Msg 8:: type: PutM, src: 3, dst: 7, ack_cnt: 0, src_state: Proc_MI_A, dst_state: Dir_MM_A, val: 5
+  Receive Msg 6:: type: FwdAck, src: 1, dst: 7, ack_cnt: 0, src_state: Proc_IM_D, dst_state: Dir_MM_A
+Receiving FwdAck from processor Proc_1 on ResponseChannel at home -- HomeNode.state:Dir_MM_A
+Receiving GetS from processor Proc_2 on RequestChannel at home -- HomeNode.state:Dir_M
+ Create Msg 9:: type: FwdGetS, src: 7, dst: 3, ack_cnt: 0, src_state: Dir_MX_D, dst_state: Proc_MI_A, fwd_to: 2
+  Receive Msg 8:: type: PutM, src: 3, dst: 7, ack_cnt: 0, src_state: Proc_MI_A, dst_state: Dir_MX_D, val: 5
+Receiving PutM from processor Proc_3 on RequestChannel at home -- HomeNode.state:Dir_MX_D
+  Receive Msg 9:: type: FwdGetS, src: 7, dst: 3, ack_cnt: 0, src_state: Dir_MX_D, dst_state: Proc_MI_A, fwd_to: 2
+Receiving FwdGetS from HomeDir on ForwardChannel at proc 3
+ Create Msg 10:: type: FwdAck, src: 3, dst: 7, ack_cnt: 0, src_state: Proc_SI_A, dst_state: Dir_MX_D, val: 5
+ Create Msg 11:: type: Data, src: 3, dst: 2, ack_cnt: 0, src_state: Proc_SI_A, dst_state: Proc_IS_D, val: 5
+  Receive Msg 10:: type: FwdAck, src: 3, dst: 7, ack_cnt: 0, src_state: Proc_SI_A, dst_state: Dir_MX_D, val: 5
+Receiving FwdAck from processor Proc_3 on ResponseChannel at home -- HomeNode.state:Dir_MX_D
+  Receive Msg 11:: type: Data, src: 3, dst: 2, ack_cnt: 0, src_state: Proc_SI_A, dst_state: Proc_IS_D, val: 5
+Receiving Data from Proc_3 on ResponseChannel at proc 2
+S ==(evict)==> I Create Msg 12:: type: PutS, src: 2, dst: 7, ack_cnt: 0, src_state: Proc_SI_A, dst_state: Dir_S
+Receiving PutM from processor Proc_3 on RequestChannel at home -- HomeNode.state:Dir_S
+ Create Msg 13:: type: PutAck, src: 7, dst: 3, ack_cnt: 0, src_state: Dir_S, dst_state: Proc_SI_A
+  Receive Msg 13:: type: PutAck, src: 7, dst: 3, ack_cnt: 0, src_state: Dir_S, dst_state: Proc_SI_A
+Receiving PutAck from HomeDir on ResponseChannel at proc 3
+  Receive Msg 7:: type: GetM, src: 1, dst: 7, ack_cnt: 0, src_state: Proc_IM_D, dst_state: Dir_S
+Receiving GetM from processor Proc_1 on RequestChannel at home -- HomeNode.state:Dir_S
+ Create Msg 14:: type: Data, src: 7, dst: 1, ack_cnt: 1, src_state: Dir_SM_A, dst_state: Proc_IM_D, val: 5
+  Receive Msg 14:: type: Data, src: 7, dst: 1, ack_cnt: 1, src_state: Dir_SM_A, dst_state: Proc_IM_D, val: 5
+Receiving Data from HomeDir on ResponseChannel at proc 1
+M ==(evict)==> I Create Msg 15:: type: PutM, src: 1, dst: 7, ack_cnt: 0, src_state: Proc_MI_A, dst_state: Dir_SM_A, val: 4
+I ==(store)==> M Create Msg 16:: type: GetM, src: 3, dst: 7, ack_cnt: 0, src_state: Proc_IM_D, dst_state: Dir_SM_A
+  Receive Msg 15:: type: PutM, src: 1, dst: 7, ack_cnt: 0, src_state: Proc_MI_A, dst_state: Dir_SM_A, val: 4
+Receiving PutM from processor Proc_1 on RequestChannel at home -- HomeNode.state:Dir_SM_A
+Receiving PutM from processor Proc_1 on RequestChannel at home -- HomeNode.state:Dir_SM_A
 
 Status:
 
-	13 rules fired in simulation in 0.10s.
+	26 rules fired in simulation in 0.10s.
 
 Error:
 

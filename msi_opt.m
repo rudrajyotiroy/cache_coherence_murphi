@@ -26,8 +26,8 @@
 -- Constants
 ----------------------------------------------------------------------
 const
-	ProcCount: 5;          -- number processors
-	ValueCount:   2;       -- number of data values.
+	ProcCount: 3;          -- number processors
+	ValueCount:   3;       -- number of data values.
 	numVCs:	3;
 	QMax: 2;
 	NumVCs: 3;
@@ -576,6 +576,9 @@ Begin
           -- Wait for ack in IM_A
           pstate := Proc_IM_A;
           -- Start the CMI chain
+          if enableMsgTrace = 1 then
+            put "Starting cruise missile chain from "; put p;
+          endif;
           Send(Inv, pnxt, p, ForwardChannel, UNDEFINED, UNDEFINED, msg.ack_cnt);
         endif;
       else -- data is from previous owner
@@ -635,6 +638,9 @@ Begin
         -- pcnt :=  msg.ack_cnt;
         -- assert (pcnt > 0) "error at Proc_SM_D, ack_cnt <= 0.";
         -- Start the CMI chain
+        if enableMsgTrace = 1 then
+          put "Starting cruise missile chain from "; put p;
+        endif;
         Send(Inv, pnxt, p, ForwardChannel, UNDEFINED, UNDEFINED, msg.ack_cnt);
         pstate := Proc_SM_A;
       endif;
