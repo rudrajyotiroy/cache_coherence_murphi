@@ -57,6 +57,11 @@ msi_opt_verif:
 	${CXX} ${CFLAGS} ${OFLAGS} -o bin_msi_opt msi_opt.C -I${MURPHI_INSTALL_PATH}/include -lm;
 	./bin_msi_opt -k 999999 | tee msi_opt_verif.log;
 
+msi_opt_violet:
+	${MURPHI_INSTALL_PATH}/src/mu msi_opt.m;
+	${CXX} ${CFLAGS} ${OFLAGS} -o bin_msi_opt msi_opt.C -I${MURPHI_INSTALL_PATH}/include -lm;
+	./bin_msi_opt -tv -k 999999 | tee msi_opt_verif.log;
+
 msi_opt_sim:
 	${MURPHI_INSTALL_PATH}/src/mu msi_opt.m;
 	${CXX} ${CFLAGS} ${OFLAGS} -o bin_msi_opt msi_opt.C -I${MURPHI_INSTALL_PATH}/include -lm;
