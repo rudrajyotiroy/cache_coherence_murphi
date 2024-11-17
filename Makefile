@@ -60,7 +60,8 @@ msi_opt_verif:
 msi_opt_violet:
 	${MURPHI_INSTALL_PATH}/src/mu msi_opt.m;
 	${CXX} ${CFLAGS} ${OFLAGS} -o bin_msi_opt msi_opt.C -I${MURPHI_INSTALL_PATH}/include -lm;
-	./bin_msi_opt -tv -k 999999 | tee msi_opt_verif.log;
+	./bin_msi_opt -tv -k 999999 > msi_violet.log;
+	python3 murphi_vizualize.py;
 
 msi_opt_sim:
 	${MURPHI_INSTALL_PATH}/src/mu msi_opt.m;
@@ -80,7 +81,8 @@ msi_verif:
 msi_verif_violet:
 	${MURPHI_INSTALL_PATH}/src/mu msi.m;
 	${CXX} ${CFLAGS} ${OFLAGS} -o bin_msi msi.C -I${MURPHI_INSTALL_PATH}/include -lm;
-	./bin_msi -tv -k 999999;
+	./bin_msi -tv -k 999999 > msi_violet.log;
+	python3 murphi_vizualize.py;
 
 msi_sim:
 	${MURPHI_INSTALL_PATH}/src/mu msi.m;

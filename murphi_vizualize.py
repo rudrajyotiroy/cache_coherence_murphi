@@ -37,13 +37,21 @@ class CacheCoherenceVisualizer:
             print(f"Error: {e}")
 
     def parse_log(self, log):
-        pattern = r"(Create|Receive|Clear) Msg (\d+):: type: (\w+), src: (\d+), dst: (\d+), .*?src_state: (\w+), dst_state: (\w+), sharers: (.*);"
+        pattern = r"(Create|Receive|Clear) Msg (\d+):: type: (\w+), src: (\d+), dst: (\d+), channel: (\d+), .*?src_state: (\w+), dst_state: (\w+), sharers: (.*);"
         matches = re.finditer(pattern, log)
 
         for match in matches:
-            action, msg_id, msg_type, src, dst, src_state, dst_state, sharer = match.groups()
+            action, msg_id, msg_type, src, dst, chan, src_state, dst_state, sharer = match.groups()
             src, dst = int(src), int(dst)
             msg_id = int(msg_id)
+            if chan == "8":
+                chan = "request"
+            elif chan == "9":
+                chan = "response"
+            elif chan == "10":
+                chan = "forward"
+            else:
+                print("Illegitimate channel info")
 
             # Print the log entry
             print(f"Log Entry: {match.group(0)}")
@@ -53,15 +61,15 @@ class CacheCoherenceVisualizer:
                 dst_state = dst_state + ":" + sharer
 
             if action == "Create":
-                self.create_message(msg_id, msg_type, src, dst, src_state, dst_state)
+                self.create_message(msg_id, msg_type, src, dst, chan, src_state, dst_state)
             elif action == "Receive":
-                self.receive_message(msg_id, msg_type, src, dst, src_state, dst_state)
+                self.receive_message(msg_id, msg_type, src, dst, chan, src_state, dst_state)
             elif action == "Clear":
-                self.clear_message(msg_id, msg_type, src, dst, src_state, dst_state)
+                self.clear_message(msg_id, msg_type, src, dst, chan, src_state, dst_state)
         self.current_index = -1  # Track current snapshot
 
-    def create_message(self, msg_id, msg_type, src, dst, src_state, dst_state):
-        channel = self.get_channel(msg_type)
+    def create_message(self, msg_id, msg_type, src, dst, channel, src_state, dst_state):
+        # channel = self.get_channel(msg_type)
         # Add message to the outgoing list of the source node
         self.nodes[src][channel]["outgoing"].append({"id": msg_id, "type": msg_type, "dst": dst})
         # Update source and destination states
@@ -70,8 +78,8 @@ class CacheCoherenceVisualizer:
         # Take a snapshot
         self.take_snapshot(f"Create Msg {msg_id}: {msg_type} from {src} to {dst}")
 
-    def receive_message(self, msg_id, msg_type, src, dst, src_state, dst_state):
-        channel = self.get_channel(msg_type)
+    def receive_message(self, msg_id, msg_type, src, dst, channel, src_state, dst_state):
+        # channel = self.get_channel(msg_type)
         # Remove the corresponding message from the source's outgoing list
         outgoing = self.nodes[src][channel]["outgoing"]
         message = next((m for m in outgoing if m["id"] == msg_id), None)
@@ -85,8 +93,8 @@ class CacheCoherenceVisualizer:
         # Take a snapshot
         self.take_snapshot(f"Receive Msg {msg_id}: {msg_type} from {src} to {dst}")
 
-    def clear_message(self, msg_id, msg_type, src, dst, src_state, dst_state):
-        channel = self.get_channel(msg_type)
+    def clear_message(self, msg_id, msg_type, src, dst, channel, src_state, dst_state):
+        # channel = self.get_channel(msg_type)
         # Remove the corresponding message from the destination's incoming list
         outgoing = self.nodes[dst][channel]["incoming"]
         message = next((m for m in outgoing if m["id"] == msg_id), None)
@@ -98,15 +106,16 @@ class CacheCoherenceVisualizer:
         # Take a snapshot
         self.take_snapshot(f"Clear Msg {msg_id}: {msg_type} from {src} to {dst}")
 
-    def get_channel(self, msg_type):
-        if msg_type in {"GetS", "GetM", "PutS", "PutM"}:
-            return "request"
-        elif msg_type in {"Data", "NACK", "PutAck", "InvAck", "FwdAck"}:
-            return "response"
-        elif msg_type in {"Inv", "FwdGetS", "FwdGetM"}:
-            return "forward"
-        else:
-            raise ValueError("Invalid message type")
+    # Adapted to auto-decode instead since message types are changing
+    # def get_channel(self, msg_type):
+    #     if msg_type in {"GetM", "PutS", "PutM"}:
+    #         return "request"
+    #     elif msg_type in {"Data", "NACK", "PutAck", "InvAck", "FwdAck"}:
+    #         return "response"
+    #     elif msg_type in {"GetS", "Inv", "FwdGetS", "FwdGetM"}:
+    #         return "forward"
+    #     else:
+    #         raise ValueError("Invalid message type")
 
     def take_snapshot(self, header):
         snapshot = {

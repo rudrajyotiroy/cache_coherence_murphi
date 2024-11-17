@@ -382,7 +382,7 @@ class mu_1_MessageType: public mu__byte
   };
 };
 
-char *mu_1_MessageType::values[] = {"GetS","GetM","PutS","PutM","Data","DNAck","InvAck","PutAck","FwdAck","Inv","FwdGetS","FwdGetM",NULL };
+char *mu_1_MessageType::values[] = {"GetM","PutS","PutM","Data","DNAck","InvAck","PutAck","FwdAck","GetS","Inv","FwdGetS","FwdGetM",NULL };
 
 /*** end of enum declaration ***/
 mu_1_MessageType mu_1_MessageType_undefined_var;
@@ -1918,15 +1918,15 @@ const int mu_HomeDir = 7;
 const int mu_RequestChannel = 8;
 const int mu_ResponseChannel = 9;
 const int mu_ForwardChannel = 10;
-const int mu_GetS = 11;
-const int mu_GetM = 12;
-const int mu_PutS = 13;
-const int mu_PutM = 14;
-const int mu_Data = 15;
-const int mu_DNAck = 16;
-const int mu_InvAck = 17;
-const int mu_PutAck = 18;
-const int mu_FwdAck = 19;
+const int mu_GetM = 11;
+const int mu_PutS = 12;
+const int mu_PutM = 13;
+const int mu_Data = 14;
+const int mu_DNAck = 15;
+const int mu_InvAck = 16;
+const int mu_PutAck = 17;
+const int mu_FwdAck = 18;
+const int mu_GetS = 19;
 const int mu_Inv = 20;
 const int mu_FwdGetS = 21;
 const int mu_FwdGetM = 22;
@@ -2119,6 +2119,8 @@ cout << ", src: ";
 cout << ( mu_src );
 cout << ", dst: ";
 cout << ( mu_dst );
+cout << ", channel: ";
+cout << ( mu_vc );
 cout << ", ack_cnt: ";
 cout << ( mu_ack_cnt );
 cout << ", src_state: ";
@@ -2404,6 +2406,7 @@ if ( mu_IsSharer( mu_msg.mu_src ) )
 if ( (mu_sharerCount) == (1) )
 {
 mu_HomeNode.mu_state = mu_Dir_M;
+mu_HomeNode.mu_sharers.undefine();
 }
 else
 {
@@ -2416,7 +2419,6 @@ else
 mu_HomeNode.mu_state = mu_Dir_SM_A;
 mu_Send ( mu_Data, mu_msg.mu_src, (int)mu_HomeDir, mu_ResponseChannel, mu_HomeNode.mu_val, mu_1_Node_undefined_var, (int)mu_sharerCount );
 }
-mu_HomeNode.mu_sharers.undefine();
 mu_HomeNode.mu_owner = mu_msg.mu_src;
 break;
 case mu_PutS:
@@ -2541,7 +2543,15 @@ case mu_Data:
 mu_msg_processed = mu_false;
 break;
 case mu_InvAck:
+if ( (mu_HomeNode.mu_owner) == (mu_msg.mu_src) )
+{
+mu_HomeNode.mu_sharers.undefine();
 mu_HomeNode.mu_state = mu_Dir_M;
+}
+else
+{
+if ( !((mu_msg.mu_src) != (mu_HomeNode.mu_owner)) ) Error.Error("Assertion failed: error at Dir_SM_A: Non-owner sent InvAck");
+}
 break;
 default:
 mu_ErrorUnhandledMsg ( mu_msg, (int)mu_HomeDir );
@@ -2660,7 +2670,7 @@ case mu_FwdGetM:
 mu_msg_processed = mu_false;
 break;
 case mu_Inv:
-if ( !((mu_msg.mu_ack_cnt) == (0)) ) Error.Error("Assertion failed: error at Proc_SM_A, returning cruise missile should have ack_cnt 0");
+if ( !((mu_msg.mu_ack_cnt) < (1)) ) Error.Error("Assertion failed: error at Proc_IM_A, returning cruise missile should have ack_cnt 0 or less (for SI_A states)");
 mu_pstate = mu_Proc_M;
 mu_LastWrite = mu_pval;
 mu_Send ( mu_InvAck, (int)mu_HomeDir, (int)mu_p, mu_ResponseChannel, mu_1_Value_undefined_var, mu_1_Node_undefined_var, 0 );
@@ -2727,7 +2737,7 @@ case mu_FwdGetM:
 mu_msg_processed = mu_false;
 break;
 case mu_Inv:
-if ( !((mu_msg.mu_ack_cnt) == (0)) ) Error.Error("Assertion failed: error at Proc_SM_A, returning cruise missile should have ack_cnt 0");
+if ( !((mu_msg.mu_ack_cnt) < (1)) ) Error.Error("Assertion failed: error at Proc_SM_A, returning cruise missile should have ack_cnt 0 or less (for SI_A states)");
 mu_pstate = mu_Proc_M;
 mu_LastWrite = mu_pval;
 mu_Send ( mu_InvAck, (int)mu_HomeDir, (int)mu_p, mu_ResponseChannel, mu_1_Value_undefined_var, mu_1_Node_undefined_var, 0 );
@@ -3000,8 +3010,11 @@ mu_ProcReceive ( mu_InBox[mu_n][mu_vc], (int)mu_n );
 }
 if ( mu_msg_processed )
 {
+if ( 1 )
+{
 cout << "  Clear ";
 mu_msgTrace ( mu_InBox[mu_n][mu_vc].mu_mid, mu_InBox[mu_n][mu_vc].mu_mtype, mu_n, mu_InBox[mu_n][mu_vc].mu_src, mu_vc, mu_InBox[mu_n][mu_vc].mu_val, mu_InBox[mu_n][mu_vc].mu_fwd_to, mu_InBox[mu_n][mu_vc].mu_ack_cnt );
+}
 mu_InBox[mu_n][mu_vc].undefine();
 }
   };
@@ -3106,8 +3119,11 @@ mu_box[mu_msg.mu_vc] = mu_msg;
 }
 else
 {
+if ( 1 )
+{
 cout << "  Clear ";
 mu_msgTrace ( mu_msg.mu_mid, mu_msg.mu_mtype, mu_n, mu_msg.mu_src, mu_msg.mu_vc, mu_msg.mu_val, mu_msg.mu_fwd_to, mu_msg.mu_ack_cnt );
+}
 }
 mu_chan.multisetremove(mu_midx);
   };
@@ -3177,7 +3193,7 @@ if ( 1 )
 {
 cout << "I ==(load)==> S";
 }
-mu_Send ( mu_GetS, (int)mu_HomeDir, (int)mu_n, mu_RequestChannel, mu_1_Value_undefined_var, mu_1_Node_undefined_var, 0 );
+mu_Send ( mu_GetS, (int)mu_HomeDir, (int)mu_n, mu_ForwardChannel, mu_1_Value_undefined_var, mu_1_Node_undefined_var, 0 );
   };
 
   bool UnFair()

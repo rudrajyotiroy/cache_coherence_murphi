@@ -56,7 +56,6 @@ type
 
 	MessageType: enum {
 											-- Request channel
-											GetS,
 											GetM,
 											PutS,
 											PutM,
@@ -67,6 +66,7 @@ type
 											PutAck,
 											FwdAck,
 											-- Forward channel
+                      GetS,
 											Inv,
 											FwdGetS,
 											FwdGetM
@@ -222,6 +222,8 @@ Procedure msgTrace(mid:counter_t;
 		put src;
 		put ", dst: ";
 		put dst;
+    put ", channel: ";
+		put vc;
 		put ", ack_cnt: ";
 		put ack_cnt;
     put ", src_state: ";
@@ -397,6 +399,7 @@ Begin
 				-- If req is only sharer, directly jump to M, else wait in SM_A for ack from all sharers to invalidate
         if sharerCount = 1 then
           HomeNode.state := Dir_M;
+          undefine HomeNode.sharers;
         else
           HomeNode.state := Dir_SM_A;
         endif;
@@ -406,8 +409,8 @@ Begin
         HomeNode.state := Dir_SM_A;
         Send(Data, msg.src, HomeDir, ResponseChannel, HomeNode.val, UNDEFINED, sharerCount);
       endif;
-      undefine HomeNode.sharers;
-			HomeNode.owner := msg.src;
+      -- Undefine sharers later while exiting
+			HomeNode.owner := msg.src; -- Owner will be the new processor who requested data
 		case PutS:
 			-- Remove Req from Sharers, sent Put-Ack to Req
 			Send(PutAck, msg.src, HomeDir, ResponseChannel, UNDEFINED, UNDEFINED, 0); 
@@ -500,7 +503,7 @@ Begin
     switch msg.mtype
     case GetS:
       -- msg_processed := false;
-      -- Send NACK to indicate that CMI in process
+      -- This is coming through Forward Channel now lessgo
       Send(DNAck, msg.src, HomeDir, ResponseChannel, HomeNode.val, UNDEFINED, 0);
     case GetM:
       msg_processed := false;
@@ -511,7 +514,21 @@ Begin
     case Data:
       msg_processed := false;
     case InvAck:
-      HomeNode.state := Dir_M;
+      if HomeNode.owner = msg.src then
+        undefine HomeNode.sharers;
+        HomeNode.state := Dir_M;
+      else
+        assert (msg.src != HomeNode.owner) "error at Dir_SM_A: Non-owner sent InvAck";
+        -- -- Non-owner sent InvAck means it is in IS_D
+        -- if IsSharer(msg.src) then
+        --   -- This means I have already sent the data to it, it will go to S then I upon getting data
+        -- else
+        --   -- This means I have not sent the data to it, I have to NACK
+        --   Send(DNAck, msg.src, HomeDir, ResponseChannel, HomeNode.val, UNDEFINED, 0);
+        --   -- Need to discard exactly one getS
+
+        -- endif;
+      endif;
     else
       ErrorUnhandledMsg(msg, HomeDir);
     endswitch;
@@ -613,7 +630,8 @@ Begin
     case Inv:
       -- If receiving Inv in IM_A, for sure this node is the one who started the chain, time to finish
       -- Move to M/update lastwrite, send InvAck back to directory
-      assert (msg.ack_cnt = 0) "error at Proc_SM_A, returning cruise missile should have ack_cnt 0";
+      -- put msg.ack_cnt;
+      assert (msg.ack_cnt < 1) "error at Proc_IM_A, returning cruise missile should have ack_cnt 0 or less (for SI_A states)";
       pstate := Proc_M;
       LastWrite := pval;
       Send(InvAck, HomeDir, p, ResponseChannel, UNDEFINED, UNDEFINED, 0);
@@ -671,7 +689,8 @@ Begin
     case Inv:
       -- If receiving Inv in SM_A, for sure this node is the one who started the chain, time to finish
       -- Move to M/update lastwrite, send InvAck back to directory
-      assert (msg.ack_cnt = 0) "error at Proc_SM_A, returning cruise missile should have ack_cnt 0";
+      -- put msg.ack_cnt;
+      assert (msg.ack_cnt < 1) "error at Proc_SM_A, returning cruise missile should have ack_cnt 0 or less (for SI_A states)";
       pstate := Proc_M;
       LastWrite := pval;
       Send(InvAck, HomeDir, p, ResponseChannel, UNDEFINED, UNDEFINED, 0);
@@ -821,7 +840,7 @@ ruleset n: Proc Do
       if(enableMsgTrace=1) then
         put "I ==(load)==> S";
       endif;
-      Send(GetS, HomeDir, n, RequestChannel, UNDEFINED, UNDEFINED, 0);
+      Send(GetS, HomeDir, n, ForwardChannel, UNDEFINED, UNDEFINED, 0);
     endrule;
 
   endalias;
@@ -854,8 +873,10 @@ ruleset n:Node do
 				-- The node refused the message, stick it in the InBox to block the VC.
 				box[msg.vc] := msg;
       else
-        put "  Clear ";
-        msgTrace(msg.mid, msg.mtype, n, msg.src, msg.vc, msg.val, msg.fwd_to, msg.ack_cnt);
+        if enableMsgTrace=1 then
+          put "  Clear ";
+          msgTrace(msg.mid, msg.mtype, n, msg.src, msg.vc, msg.val, msg.fwd_to, msg.ack_cnt);
+        endif;
 			endif;
 		
 			MultiSetRemove(midx, chan);
@@ -882,8 +903,10 @@ ruleset n:Node do
 			if msg_processed
 			then
 				-- Message has been handled, forget it
-        put "  Clear ";
-        msgTrace(InBox[n][vc].mid, InBox[n][vc].mtype, n, InBox[n][vc].src, vc, InBox[n][vc].val, InBox[n][vc].fwd_to, InBox[n][vc].ack_cnt);
+        if enableMsgTrace=1 then
+          put "  Clear ";
+          msgTrace(InBox[n][vc].mid, InBox[n][vc].mtype, n, InBox[n][vc].src, vc, InBox[n][vc].val, InBox[n][vc].fwd_to, InBox[n][vc].ack_cnt);
+        endif;
 				undefine InBox[n][vc];
 			endif;
 		

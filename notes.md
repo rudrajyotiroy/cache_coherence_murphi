@@ -61,3 +61,9 @@ Wrong pcnt action - solved
 
 GetM is blocking request-port in SM_A. So cannot Nack to GetS.
 Without Nack Proc_2 cannot move from IS_D
+By passing GetS through Fwd Channel this is solved. Analysis?
+
+AckCount is still wrong
+SI_A is decrementing ackcount irrespective of whether it was already invalidated
+PutAck has not reached
+Solution : Modify assertion to allow negative values of ack_cnt
