@@ -999,6 +999,11 @@ invariant "val is undefined while invalid"
 
 -- Here are some invariants that are helpful for validating shared state.
 
+invariant "shared implies non-empty sharers list"
+	HomeNode.state = Dir_S
+		->
+			MultiSetCount(i:HomeNode.sharers, true) > 0;
+
 invariant "modified implies empty sharers list"
 	HomeNode.state = Dir_M
 		->
