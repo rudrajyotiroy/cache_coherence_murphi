@@ -66,6 +66,7 @@ msi_opt_sim:
 	${MURPHI_INSTALL_PATH}/src/mu msi_opt.m;
 	${CXX} ${CFLAGS} ${OFLAGS} -o bin_msi_opt msi_opt.C -I${MURPHI_INSTALL_PATH}/include -lm;
 	./bin_msi_opt -k 999999 -s | tee msi_opt_sim.log;
+	python3 murphi_vizualize.py;
 
 msi_verif:
 	${MURPHI_INSTALL_PATH}/src/mu msi.m;

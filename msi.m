@@ -861,6 +861,8 @@ ruleset n:Node do
 			if msg_processed
 			then
 				-- Message has been handled, forget it
+        put "  Clear ";
+        msgTrace(msg.mid, msg.mtype, n, msg.src, msg.vc, msg.val, msg.fwd_to, msg.ack_cnt);
 				undefine InBox[n][vc];
 			endif;
 		
