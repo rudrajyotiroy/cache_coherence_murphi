@@ -37,7 +37,6 @@ class CacheCoherenceVisualizer:
             print(f"Error: {e}")
 
     def parse_log(self, log):
-        print("Parsing log")
         pattern = r"(Create|Receive|Clear) Msg (\d+):: type: (\w+), src: (\d+), dst: (\d+), .*?src_state: (\w+), dst_state: (\w+), sharers: (.*);"
         matches = re.finditer(pattern, log)
 
@@ -137,7 +136,7 @@ class CacheCoherenceVisualizer:
         
     def set_horizon(self, val):
         if val:
-            val = max(val, len(self.snapshots))
+            val = min(val, len(self.snapshots))
             self.current_index = len(self.snapshots) - 1 - val
         else:
             self.current_index = -1
@@ -294,6 +293,13 @@ visualizer = CacheCoherenceVisualizer()
 visualizer.parse_log_file('msi_opt_sim.log')
 # visualizer.previous()  # Navigate to previous snapshot
 # visualizer.next()      # Navigate to next snapshot
-visualizer.set_horizon(10)
+visualizer.set_horizon(5)
 while(visualizer.next()==0):
     pass
+
+with open('msi_opt_sim.log') as f:
+    last = None
+    for line in (line for line in f if line.rstrip('\n')):
+        last = line
+
+    print("Last Line: " + last)
