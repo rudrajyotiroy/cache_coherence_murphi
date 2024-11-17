@@ -55,4 +55,6 @@ Receiving GetM from processor Proc_1 on RequestChannel at home -- HomeNode.state
 M ==(evict)==> I Create Msg 6:: type: PutM, src: 3, dst: 7, ack_cnt: 0, src_state: Proc_MI_A, dst_state: Dir_SM_A, val: 6
 Receiving GetM from processor Proc_1 on RequestChannel at home -- HomeNode.state:Dir_SM_A
 
-
+Dir_S had sent Data to Proc_3 with SharerCount 1 (Proc_1)
+Dir_SM_A is waiting for response from Proc_3 (IM_D)
+Wrong pcnt action - solved

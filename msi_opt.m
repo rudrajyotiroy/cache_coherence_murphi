@@ -575,7 +575,7 @@ Begin
         assert (pcnt = 0) "error at Proc_IM_D, ack_cnt should be 0 for CMI"; -- Can be negative upto msg.ack_cnt
         -- pcnt :=  msg.ack_cnt; --KEEP
         -- assert (pcnt > 0) "error at Proc_IM_D, ack_cnt <= 0."; 
-        if pcnt = 0 then
+        if msg.ack_cnt = 0 then
           -- No sharers left to ack, move to Proc_M
           pstate := Proc_M;
           LastWrite := pval;
@@ -872,6 +872,8 @@ ruleset n:Node do
 			if msg_processed
 			then
 				-- Message has been handled, forget it
+        put "  Clear ";
+        msgTrace(InBox[n][vc].mid, InBox[n][vc].mtype, n, InBox[n][vc].src, vc, InBox[n][vc].val, InBox[n][vc].fwd_to, InBox[n][vc].ack_cnt);
 				undefine InBox[n][vc];
 			endif;
 		

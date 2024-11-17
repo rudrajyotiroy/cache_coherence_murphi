@@ -26,24 +26,128 @@ Algorithm:
 	Simulation.
 Start Simulation :
 
-I ==(load)==> S Create Msg 0:: type: GetS, src: 1, dst: 7, ack_cnt: 0, src_state: Proc_IS_D, dst_state: Dir_I
-I ==(load)==> S Create Msg 1:: type: GetS, src: 2, dst: 7, ack_cnt: 0, src_state: Proc_IS_D, dst_state: Dir_I
+I ==(store)==> M Create Msg 0:: type: GetM, src: 1, dst: 7, ack_cnt: 0, src_state: Proc_IM_D, dst_state: Dir_I
+I ==(store)==> M Create Msg 1:: type: GetM, src: 2, dst: 7, ack_cnt: 0, src_state: Proc_IM_D, dst_state: Dir_I
 I ==(store)==> M Create Msg 2:: type: GetM, src: 3, dst: 7, ack_cnt: 0, src_state: Proc_IM_D, dst_state: Dir_I
-  Receive Msg 0:: type: GetS, src: 1, dst: 7, ack_cnt: 0, src_state: Proc_IS_D, dst_state: Dir_I
- Create Msg 3:: type: Data, src: 7, dst: 1, ack_cnt: 0, src_state: Dir_S, dst_state: Proc_IS_D, val: 6
-  Receive Msg 2:: type: GetM, src: 3, dst: 7, ack_cnt: 0, src_state: Proc_IM_D, dst_state: Dir_S
- Create Msg 4:: type: Data, src: 7, dst: 3, ack_cnt: 1, src_state: Dir_SM_A, dst_state: Proc_IM_D, val: 6
-  Receive Msg 3:: type: Data, src: 7, dst: 1, ack_cnt: 0, src_state: Dir_SM_A, dst_state: Proc_IS_D, val: 6
-S ==(evict)==> I Create Msg 5:: type: PutS, src: 1, dst: 7, ack_cnt: 0, src_state: Proc_SI_A, dst_state: Dir_SM_A
-  Receive Msg 4:: type: Data, src: 7, dst: 3, ack_cnt: 1, src_state: Dir_SM_A, dst_state: Proc_IM_D, val: 6
-  Receive Msg 5:: type: PutS, src: 1, dst: 7, ack_cnt: 0, src_state: Proc_SI_A, dst_state: Dir_SM_A
-M ==(evict)==> I Create Msg 6:: type: PutM, src: 3, dst: 7, ack_cnt: 0, src_state: Proc_MI_A, dst_state: Dir_SM_A, val: 5
+  Receive Msg 0:: type: GetM, src: 1, dst: 7, ack_cnt: 0, src_state: Proc_IM_D, dst_state: Dir_I
+ Create Msg 3:: type: Data, src: 7, dst: 1, ack_cnt: 0, src_state: Dir_M, dst_state: Proc_IM_D, val: 6
+  Receive Msg 1:: type: GetM, src: 2, dst: 7, ack_cnt: 0, src_state: Proc_IM_D, dst_state: Dir_M
+ Create Msg 4:: type: FwdGetM, src: 7, dst: 1, ack_cnt: 0, src_state: Dir_MM_A, dst_state: Proc_IM_D, fwd_to: 2
+  Receive Msg 3:: type: Data, src: 7, dst: 1, ack_cnt: 0, src_state: Dir_MM_A, dst_state: Proc_IM_D, val: 6
+  Receive Msg 4:: type: FwdGetM, src: 7, dst: 1, ack_cnt: 0, src_state: Dir_MM_A, dst_state: Proc_M, fwd_to: 2
+ Create Msg 5:: type: Data, src: 1, dst: 2, ack_cnt: 0, src_state: Proc_I, dst_state: Proc_IM_D, val: 5
+ Create Msg 6:: type: FwdAck, src: 1, dst: 7, ack_cnt: 0, src_state: Proc_I, dst_state: Dir_MM_A
+I ==(store)==> M Create Msg 7:: type: GetM, src: 1, dst: 7, ack_cnt: 0, src_state: Proc_IM_D, dst_state: Dir_MM_A
+  Receive Msg 7:: type: GetM, src: 1, dst: 7, ack_cnt: 0, src_state: Proc_IM_D, dst_state: Dir_MM_A
+  Receive Msg 5:: type: Data, src: 1, dst: 2, ack_cnt: 0, src_state: Proc_IM_D, dst_state: Proc_IM_D, val: 5
+  Receive Msg 6:: type: FwdAck, src: 1, dst: 7, ack_cnt: 0, src_state: Proc_IM_D, dst_state: Dir_MM_A
+ Create Msg 8:: type: FwdGetM, src: 7, dst: 2, ack_cnt: 0, src_state: Dir_MM_A, dst_state: Proc_M, fwd_to: 1
+  Clear Msg 7:: type: GetM, src: 1, dst: 7, ack_cnt: 0, src_state: Proc_IM_D, dst_state: Dir_MM_A
+  Receive Msg 2:: type: GetM, src: 3, dst: 7, ack_cnt: 0, src_state: Proc_IM_D, dst_state: Dir_MM_A
+  Receive Msg 8:: type: FwdGetM, src: 7, dst: 2, ack_cnt: 0, src_state: Dir_MM_A, dst_state: Proc_M, fwd_to: 1
+ Create Msg 9:: type: Data, src: 2, dst: 1, ack_cnt: 0, src_state: Proc_I, dst_state: Proc_IM_D, val: 4
+ Create Msg 10:: type: FwdAck, src: 2, dst: 7, ack_cnt: 0, src_state: Proc_I, dst_state: Dir_MM_A
+I ==(store)==> M Create Msg 11:: type: GetM, src: 2, dst: 7, ack_cnt: 0, src_state: Proc_IM_D, dst_state: Dir_MM_A
+  Receive Msg 9:: type: Data, src: 2, dst: 1, ack_cnt: 0, src_state: Proc_IM_D, dst_state: Proc_IM_D, val: 4
+M ==(evict)==> I Create Msg 12:: type: PutM, src: 1, dst: 7, ack_cnt: 0, src_state: Proc_MI_A, dst_state: Dir_MM_A, val: 5
+  Receive Msg 10:: type: FwdAck, src: 2, dst: 7, ack_cnt: 0, src_state: Proc_IM_D, dst_state: Dir_MM_A
+ Create Msg 13:: type: FwdGetM, src: 7, dst: 1, ack_cnt: 0, src_state: Dir_MM_A, dst_state: Proc_MI_A, fwd_to: 3
+  Clear Msg 2:: type: GetM, src: 3, dst: 7, ack_cnt: 0, src_state: Proc_IM_D, dst_state: Dir_MM_A
+  Receive Msg 12:: type: PutM, src: 1, dst: 7, ack_cnt: 0, src_state: Proc_MI_A, dst_state: Dir_MM_A, val: 5
+  Receive Msg 13:: type: FwdGetM, src: 7, dst: 1, ack_cnt: 0, src_state: Dir_MM_A, dst_state: Proc_MI_A, fwd_to: 3
+ Create Msg 14:: type: Data, src: 1, dst: 3, ack_cnt: 0, src_state: Proc_II_A, dst_state: Proc_IM_D, val: 5
+ Create Msg 15:: type: FwdAck, src: 1, dst: 7, ack_cnt: 0, src_state: Proc_II_A, dst_state: Dir_MM_A
+  Receive Msg 15:: type: FwdAck, src: 1, dst: 7, ack_cnt: 0, src_state: Proc_II_A, dst_state: Dir_MM_A
+ Create Msg 16:: type: PutAck, src: 7, dst: 1, ack_cnt: 0, src_state: Dir_M, dst_state: Proc_II_A
+  Clear Msg 12:: type: PutM, src: 1, dst: 7, ack_cnt: 0, src_state: Proc_II_A, dst_state: Dir_M, val: 5
+  Receive Msg 16:: type: PutAck, src: 7, dst: 1, ack_cnt: 0, src_state: Dir_M, dst_state: Proc_II_A
+I ==(load)==> S Create Msg 17:: type: GetS, src: 1, dst: 7, ack_cnt: 0, src_state: Proc_IS_D, dst_state: Dir_M
+  Receive Msg 17:: type: GetS, src: 1, dst: 7, ack_cnt: 0, src_state: Proc_IS_D, dst_state: Dir_M
+ Create Msg 18:: type: FwdGetS, src: 7, dst: 3, ack_cnt: 0, src_state: Dir_MX_D, dst_state: Proc_IM_D, fwd_to: 1
+  Receive Msg 18:: type: FwdGetS, src: 7, dst: 3, ack_cnt: 0, src_state: Dir_MX_D, dst_state: Proc_IM_D, fwd_to: 1
+  Receive Msg 14:: type: Data, src: 1, dst: 3, ack_cnt: 0, src_state: Proc_IS_D, dst_state: Proc_IM_D, val: 5
+ Create Msg 19:: type: FwdAck, src: 3, dst: 7, ack_cnt: 0, src_state: Proc_S, dst_state: Dir_MX_D, val: 4
+ Create Msg 20:: type: Data, src: 3, dst: 1, ack_cnt: 0, src_state: Proc_S, dst_state: Proc_IS_D, val: 4
+  Clear Msg 18:: type: FwdGetS, src: 7, dst: 3, ack_cnt: 0, src_state: Dir_MX_D, dst_state: Proc_S, fwd_to: 1
+S ==(store)==> M Create Msg 21:: type: GetM, src: 3, dst: 7, ack_cnt: 0, src_state: Proc_SM_D, dst_state: Dir_MX_D
+  Receive Msg 11:: type: GetM, src: 2, dst: 7, ack_cnt: 0, src_state: Proc_IM_D, dst_state: Dir_MX_D
+  Receive Msg 20:: type: Data, src: 3, dst: 1, ack_cnt: 0, src_state: Proc_SM_D, dst_state: Proc_IS_D, val: 4
+S ==(store)==> M Create Msg 22:: type: GetM, src: 1, dst: 7, ack_cnt: 0, src_state: Proc_SM_D, dst_state: Dir_MX_D
+  Receive Msg 19:: type: FwdAck, src: 3, dst: 7, ack_cnt: 0, src_state: Proc_SM_D, dst_state: Dir_MX_D, val: 4
+ Create Msg 23:: type: Data, src: 7, dst: 2, ack_cnt: 2, src_state: Dir_SM_A, dst_state: Proc_IM_D, val: 4
+  Clear Msg 11:: type: GetM, src: 2, dst: 7, ack_cnt: 0, src_state: Proc_IM_D, dst_state: Dir_SM_A
+  Receive Msg 22:: type: GetM, src: 1, dst: 7, ack_cnt: 0, src_state: Proc_SM_D, dst_state: Dir_SM_A
+  Receive Msg 23:: type: Data, src: 7, dst: 2, ack_cnt: 2, src_state: Dir_SM_A, dst_state: Proc_IM_D, val: 4
+Starting cruise missile chain from 2 Create Msg 24:: type: Inv, src: 2, dst: 3, ack_cnt: 2, src_state: Proc_IM_A, dst_state: Proc_SM_D
+  Receive Msg 24:: type: Inv, src: 2, dst: 3, ack_cnt: 2, src_state: Proc_IM_A, dst_state: Proc_SM_D
+ Create Msg 25:: type: Inv, src: 3, dst: 1, ack_cnt: 1, src_state: Proc_IM_D, dst_state: Proc_SM_D
+  Receive Msg 25:: type: Inv, src: 3, dst: 1, ack_cnt: 1, src_state: Proc_IM_D, dst_state: Proc_SM_D
+ Create Msg 26:: type: Inv, src: 1, dst: 2, ack_cnt: 0, src_state: Proc_IM_D, dst_state: Proc_IM_A
+  Receive Msg 26:: type: Inv, src: 1, dst: 2, ack_cnt: 0, src_state: Proc_IM_D, dst_state: Proc_IM_A
+ Create Msg 27:: type: InvAck, src: 2, dst: 7, ack_cnt: 0, src_state: Proc_M, dst_state: Dir_SM_A
+  Receive Msg 27:: type: InvAck, src: 2, dst: 7, ack_cnt: 0, src_state: Proc_M, dst_state: Dir_SM_A
+ Create Msg 28:: type: FwdGetM, src: 7, dst: 2, ack_cnt: 0, src_state: Dir_MM_A, dst_state: Proc_M, fwd_to: 1
+  Clear Msg 22:: type: GetM, src: 1, dst: 7, ack_cnt: 0, src_state: Proc_IM_D, dst_state: Dir_MM_A
+M ==(evict)==> I Create Msg 29:: type: PutM, src: 2, dst: 7, ack_cnt: 0, src_state: Proc_MI_A, dst_state: Dir_MM_A, val: 6
+  Receive Msg 28:: type: FwdGetM, src: 7, dst: 2, ack_cnt: 0, src_state: Dir_MM_A, dst_state: Proc_MI_A, fwd_to: 1
+ Create Msg 30:: type: Data, src: 2, dst: 1, ack_cnt: 0, src_state: Proc_II_A, dst_state: Proc_IM_D, val: 6
+ Create Msg 31:: type: FwdAck, src: 2, dst: 7, ack_cnt: 0, src_state: Proc_II_A, dst_state: Dir_MM_A
+  Receive Msg 30:: type: Data, src: 2, dst: 1, ack_cnt: 0, src_state: Proc_II_A, dst_state: Proc_IM_D, val: 6
+  Receive Msg 31:: type: FwdAck, src: 2, dst: 7, ack_cnt: 0, src_state: Proc_II_A, dst_state: Dir_MM_A
+  Receive Msg 21:: type: GetM, src: 3, dst: 7, ack_cnt: 0, src_state: Proc_IM_D, dst_state: Dir_M
+ Create Msg 32:: type: FwdGetM, src: 7, dst: 1, ack_cnt: 0, src_state: Dir_MM_A, dst_state: Proc_M, fwd_to: 3
+M ==(evict)==> I Create Msg 33:: type: PutM, src: 1, dst: 7, ack_cnt: 0, src_state: Proc_MI_A, dst_state: Dir_MM_A, val: 5
+  Receive Msg 29:: type: PutM, src: 2, dst: 7, ack_cnt: 0, src_state: Proc_II_A, dst_state: Dir_MM_A, val: 6
+  Receive Msg 32:: type: FwdGetM, src: 7, dst: 1, ack_cnt: 0, src_state: Dir_MM_A, dst_state: Proc_MI_A, fwd_to: 3
+ Create Msg 34:: type: Data, src: 1, dst: 3, ack_cnt: 0, src_state: Proc_II_A, dst_state: Proc_IM_D, val: 5
+ Create Msg 35:: type: FwdAck, src: 1, dst: 7, ack_cnt: 0, src_state: Proc_II_A, dst_state: Dir_MM_A
+  Receive Msg 34:: type: Data, src: 1, dst: 3, ack_cnt: 0, src_state: Proc_II_A, dst_state: Proc_IM_D, val: 5
+  Receive Msg 35:: type: FwdAck, src: 1, dst: 7, ack_cnt: 0, src_state: Proc_II_A, dst_state: Dir_MM_A
+M ==(evict)==> I Create Msg 36:: type: PutM, src: 3, dst: 7, ack_cnt: 0, src_state: Proc_MI_A, dst_state: Dir_M, val: 5
+ Create Msg 37:: type: PutAck, src: 7, dst: 2, ack_cnt: 0, src_state: Dir_M, dst_state: Proc_II_A
+  Clear Msg 29:: type: PutM, src: 2, dst: 7, ack_cnt: 0, src_state: Proc_II_A, dst_state: Dir_M, val: 6
+  Receive Msg 36:: type: PutM, src: 3, dst: 7, ack_cnt: 0, src_state: Proc_MI_A, dst_state: Dir_M, val: 5
+ Create Msg 38:: type: PutAck, src: 7, dst: 3, ack_cnt: 0, src_state: Dir_I, dst_state: Proc_MI_A
+  Receive Msg 33:: type: PutM, src: 1, dst: 7, ack_cnt: 0, src_state: Proc_II_A, dst_state: Dir_I, val: 5
+ Create Msg 39:: type: PutAck, src: 7, dst: 1, ack_cnt: 0, src_state: Dir_I, dst_state: Proc_II_A
+  Receive Msg 39:: type: PutAck, src: 7, dst: 1, ack_cnt: 0, src_state: Dir_I, dst_state: Proc_II_A
+I ==(load)==> S Create Msg 40:: type: GetS, src: 1, dst: 7, ack_cnt: 0, src_state: Proc_IS_D, dst_state: Dir_I
+  Receive Msg 38:: type: PutAck, src: 7, dst: 3, ack_cnt: 0, src_state: Dir_I, dst_state: Proc_MI_A
+I ==(store)==> M Create Msg 41:: type: GetM, src: 3, dst: 7, ack_cnt: 0, src_state: Proc_IM_D, dst_state: Dir_I
+  Receive Msg 41:: type: GetM, src: 3, dst: 7, ack_cnt: 0, src_state: Proc_IM_D, dst_state: Dir_I
+ Create Msg 42:: type: Data, src: 7, dst: 3, ack_cnt: 0, src_state: Dir_M, dst_state: Proc_IM_D, val: 5
+  Receive Msg 37:: type: PutAck, src: 7, dst: 2, ack_cnt: 0, src_state: Dir_M, dst_state: Proc_II_A
+  Receive Msg 42:: type: Data, src: 7, dst: 3, ack_cnt: 0, src_state: Dir_M, dst_state: Proc_IM_D, val: 5
+I ==(store)==> M Create Msg 43:: type: GetM, src: 2, dst: 7, ack_cnt: 0, src_state: Proc_IM_D, dst_state: Dir_M
+M ==(evict)==> I Create Msg 44:: type: PutM, src: 3, dst: 7, ack_cnt: 0, src_state: Proc_MI_A, dst_state: Dir_M, val: 4
+  Receive Msg 40:: type: GetS, src: 1, dst: 7, ack_cnt: 0, src_state: Proc_IS_D, dst_state: Dir_M
+ Create Msg 45:: type: FwdGetS, src: 7, dst: 3, ack_cnt: 0, src_state: Dir_MX_D, dst_state: Proc_MI_A, fwd_to: 1
+  Receive Msg 44:: type: PutM, src: 3, dst: 7, ack_cnt: 0, src_state: Proc_MI_A, dst_state: Dir_MX_D, val: 4
+  Receive Msg 45:: type: FwdGetS, src: 7, dst: 3, ack_cnt: 0, src_state: Dir_MX_D, dst_state: Proc_MI_A, fwd_to: 1
+ Create Msg 46:: type: FwdAck, src: 3, dst: 7, ack_cnt: 0, src_state: Proc_SI_A, dst_state: Dir_MX_D, val: 4
+ Create Msg 47:: type: Data, src: 3, dst: 1, ack_cnt: 0, src_state: Proc_SI_A, dst_state: Proc_IS_D, val: 4
+  Receive Msg 47:: type: Data, src: 3, dst: 1, ack_cnt: 0, src_state: Proc_SI_A, dst_state: Proc_IS_D, val: 4
+S ==(evict)==> I Create Msg 48:: type: PutS, src: 1, dst: 7, ack_cnt: 0, src_state: Proc_SI_A, dst_state: Dir_MX_D
+  Receive Msg 46:: type: FwdAck, src: 3, dst: 7, ack_cnt: 0, src_state: Proc_SI_A, dst_state: Dir_MX_D, val: 4
+ Create Msg 49:: type: PutAck, src: 7, dst: 3, ack_cnt: 0, src_state: Dir_S, dst_state: Proc_SI_A
+  Clear Msg 44:: type: PutM, src: 3, dst: 7, ack_cnt: 0, src_state: Proc_SI_A, dst_state: Dir_S, val: 4
+  Receive Msg 43:: type: GetM, src: 2, dst: 7, ack_cnt: 0, src_state: Proc_IM_D, dst_state: Dir_S
+ Create Msg 50:: type: Data, src: 7, dst: 2, ack_cnt: 1, src_state: Dir_SM_A, dst_state: Proc_IM_D, val: 4
+  Receive Msg 50:: type: Data, src: 7, dst: 2, ack_cnt: 1, src_state: Dir_SM_A, dst_state: Proc_IM_D, val: 4
+Starting cruise missile chain from 2 Create Msg 51:: type: Inv, src: 2, dst: 3, ack_cnt: 1, src_state: Proc_IM_A, dst_state: Proc_SI_A
+  Receive Msg 51:: type: Inv, src: 2, dst: 3, ack_cnt: 1, src_state: Proc_IM_A, dst_state: Proc_SI_A
+ Create Msg 52:: type: Inv, src: 3, dst: 1, ack_cnt: 0, src_state: Proc_II_A, dst_state: Proc_SI_A
+  Receive Msg 48:: type: PutS, src: 1, dst: 7, ack_cnt: 0, src_state: Proc_SI_A, dst_state: Dir_SM_A
+  Receive Msg 52:: type: Inv, src: 3, dst: 1, ack_cnt: 0, src_state: Proc_II_A, dst_state: Proc_SI_A
+ Create Msg 53:: type: Inv, src: 1, dst: 2, ack_cnt: -1, src_state: Proc_II_A, dst_state: Proc_IM_A
+  Receive Msg 49:: type: PutAck, src: 7, dst: 3, ack_cnt: 0, src_state: Dir_SM_A, dst_state: Proc_II_A
+  Receive Msg 53:: type: Inv, src: 1, dst: 2, ack_cnt: -1, src_state: Proc_II_A, dst_state: Proc_IM_A
 
 Status:
 
-	10 rules fired in simulation in 0.10s.
+	84 rules fired in simulation in 0.10s.
 
 Error:
 
-	Deadlocked state found.
+	Assertion failed: error at Proc_SM_A, returning cruise missile should have ack_cnt 0
 

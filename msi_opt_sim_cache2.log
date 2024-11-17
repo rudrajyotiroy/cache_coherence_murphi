@@ -1,0 +1,50 @@
+This program should be regarded as a DEBUGGING aid, not as a 
+certifier of correctness.
+Call with the -l flag or read the license file for terms
+and conditions of use.
+Run this program with "-h" for the list of options.
+
+Bugs, questions, and comments should be directed to
+"murphi@verify.stanford.edu".
+
+Murphi compiler last modified date: Jan 29 1999
+Include files   last modified date: Jan 29 1999
+==========================================================================
+
+==========================================================================
+Murphi Release 3.1
+Finite-state Concurrent System Verifier.
+
+Copyright (C) 1992 - 1999 by the Board of Trustees of
+Leland Stanford Junior University.
+
+==========================================================================
+
+Protocol: msi_opt
+
+Algorithm:
+	Simulation.
+Start Simulation :
+
+I ==(load)==> S Create Msg 0:: type: GetS, src: 3, dst: 7, ack_cnt: 0, src_state: Proc_IS_D, dst_state: Dir_I
+I ==(load)==> S Create Msg 1:: type: GetS, src: 2, dst: 7, ack_cnt: 0, src_state: Proc_IS_D, dst_state: Dir_I
+  Receive Msg 0:: type: GetS, src: 3, dst: 7, ack_cnt: 0, src_state: Proc_IS_D, dst_state: Dir_I
+ Create Msg 2:: type: Data, src: 7, dst: 3, ack_cnt: 0, src_state: Dir_S, dst_state: Proc_IS_D, val: 6
+I ==(store)==> M Create Msg 3:: type: GetM, src: 1, dst: 7, ack_cnt: 0, src_state: Proc_IM_D, dst_state: Dir_S
+  Receive Msg 3:: type: GetM, src: 1, dst: 7, ack_cnt: 0, src_state: Proc_IM_D, dst_state: Dir_S
+ Create Msg 4:: type: Data, src: 7, dst: 1, ack_cnt: 1, src_state: Dir_SM_A, dst_state: Proc_IM_D, val: 6
+  Receive Msg 4:: type: Data, src: 7, dst: 1, ack_cnt: 1, src_state: Dir_SM_A, dst_state: Proc_IM_D, val: 6
+Starting cruise missile chain from 1 Create Msg 5:: type: Inv, src: 1, dst: 2, ack_cnt: 1, src_state: Proc_IM_A, dst_state: Proc_IS_D
+  Receive Msg 2:: type: Data, src: 7, dst: 3, ack_cnt: 0, src_state: Dir_SM_A, dst_state: Proc_IS_D, val: 6
+S ==(store)==> M Create Msg 6:: type: GetM, src: 3, dst: 7, ack_cnt: 0, src_state: Proc_SM_D, dst_state: Dir_SM_A
+  Receive Msg 6:: type: GetM, src: 3, dst: 7, ack_cnt: 0, src_state: Proc_SM_D, dst_state: Dir_SM_A
+  Receive Msg 5:: type: Inv, src: 1, dst: 2, ack_cnt: 1, src_state: Proc_IM_A, dst_state: Proc_IS_D
+
+Status:
+
+	10 rules fired in simulation in 0.10s.
+
+Error:
+
+	Deadlocked state found.
+

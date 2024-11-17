@@ -2614,7 +2614,7 @@ case mu_Data:
 if ( (mu_msg.mu_src) == (mu_HomeDir) )
 {
 if ( !((mu_pcnt) == (0)) ) Error.Error("Assertion failed: error at Proc_IM_D, ack_cnt should be 0 for CMI");
-if ( (mu_pcnt) == (0) )
+if ( (mu_msg.mu_ack_cnt) == (0) )
 {
 mu_pstate = mu_Proc_M;
 mu_LastWrite = mu_pval;
@@ -2990,6 +2990,8 @@ mu_ProcReceive ( mu_InBox[mu_n][mu_vc], (int)mu_n );
 }
 if ( mu_msg_processed )
 {
+cout << "  Clear ";
+mu_msgTrace ( mu_InBox[mu_n][mu_vc].mu_mid, mu_InBox[mu_n][mu_vc].mu_mtype, mu_n, mu_InBox[mu_n][mu_vc].mu_src, mu_vc, mu_InBox[mu_n][mu_vc].mu_val, mu_InBox[mu_n][mu_vc].mu_fwd_to, mu_InBox[mu_n][mu_vc].mu_ack_cnt );
 mu_InBox[mu_n][mu_vc].undefine();
 }
   };

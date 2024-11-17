@@ -279,7 +279,7 @@ class CacheCoherenceVisualizer:
             console.print("   ".join(f"{col:<30}" for col in row))
 
 visualizer = CacheCoherenceVisualizer()
-visualizer.parse_log_file('msi_opt_sim.log')
+visualizer.parse_log_file('msi_opt_sim_cache.log')
 # visualizer.previous()  # Navigate to previous snapshot
 # visualizer.next()      # Navigate to next snapshot
 while(visualizer.next()==0):
