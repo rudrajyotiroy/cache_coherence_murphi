@@ -2086,6 +2086,27 @@ break;
 };
 /*** end procedure declaration ***/
 
+mu_0_boolean mu_IsSharer(const mu_1_Node& mu_n)
+{
+/*** begin multisetcount 0 declaration ***/
+  int mu__intexpr9 = 0;
+  {
+  mu_1__type_1_id mu_i;
+  for (mu_i = 0; ; mu_i=mu_i+1)
+    {
+      if (mu_HomeNode.mu_sharers.valid[(int)mu_i].value())
+        {
+          if ( (mu_HomeNode.mu_sharers[mu_i]) == (mu_n) ) mu__intexpr9++;
+        }
+      if (mu_i == 3-1) break;
+    }
+  }
+/*** end multisetcount 0 declaration ***/
+return (mu__intexpr9) > (0);
+  Error.Error("The end of function IsSharer reached without returning values.");
+};
+/*** end function declaration ***/
+
 void mu_msgTrace(const mu_1_counter_t& mu_mid, const mu_1_MessageType& mu_mtype, const mu_1_Node& mu_dst, const mu_1_Node& mu_src, const mu_1_channel_t& mu_vc, const mu_1_Value& mu_val, const mu_1_Node& mu_fwd_to, const mu_1_AckCount& mu_ack_cnt)
 {
 if ( 1 )
@@ -2104,6 +2125,16 @@ cout << ", src_state: ";
 mu_NodeEnumToStr ( mu_src );
 cout << ", dst_state: ";
 mu_NodeEnumToStr ( mu_dst );
+cout << ", sharers: ";
+{
+for(int mu_p = 1; mu_p <= 3; mu_p++) {
+if ( mu_IsSharer( (int)mu_p ) )
+{
+cout << ( mu_p );
+}
+};
+};
+cout << ";";
 if ( !(mu_fwd_to.isundefined()) )
 {
 cout << ", fwd_to: ";
@@ -2124,21 +2155,21 @@ void mu_Send(const mu_1_MessageType& mu_mtype, const mu_1_Node& mu_dst, const mu
 /*** Variable declaration ***/
 mu_1_Message mu_msg("msg",0);
 
-/*** begin multisetcount 0 declaration ***/
-  int mu__intexpr9 = 0;
+/*** begin multisetcount 1 declaration ***/
+  int mu__intexpr10 = 0;
   {
   mu_1__type_4_id mu_i;
   for (mu_i = 0; ; mu_i=mu_i+1)
     {
       if (mu_Net[mu_dst].valid[(int)mu_i].value())
         {
-          if ( mu_true ) mu__intexpr9++;
+          if ( mu_true ) mu__intexpr10++;
         }
       if (mu_i == 13-1) break;
     }
   }
-/*** end multisetcount 0 declaration ***/
-if ( !((mu__intexpr9) < (mu_NetMax)) ) Error.Error("Assertion failed: Too many messages");
+/*** end multisetcount 1 declaration ***/
+if ( !((mu__intexpr10) < (mu_NetMax)) ) Error.Error("Assertion failed: Too many messages");
 if ( 1 )
 {
 cout << " Create ";
@@ -2221,29 +2252,6 @@ Error.Error("Error: Unhandled state!");
 
 void mu_AddToSharersList(const mu_1_Node& mu_n)
 {
-/*** begin multisetcount 1 declaration ***/
-  int mu__intexpr10 = 0;
-  {
-  mu_1__type_1_id mu_i;
-  for (mu_i = 0; ; mu_i=mu_i+1)
-    {
-      if (mu_HomeNode.mu_sharers.valid[(int)mu_i].value())
-        {
-          if ( (mu_HomeNode.mu_sharers[mu_i]) == (mu_n) ) mu__intexpr10++;
-        }
-      if (mu_i == 3-1) break;
-    }
-  }
-/*** end multisetcount 1 declaration ***/
-if ( (mu__intexpr10) == (0) )
-{
-mu_HomeNode.mu_sharers.multisetadd(mu_n);
-}
-};
-/*** end procedure declaration ***/
-
-mu_0_boolean mu_IsSharer(const mu_1_Node& mu_n)
-{
 /*** begin multisetcount 2 declaration ***/
   int mu__intexpr11 = 0;
   {
@@ -2258,10 +2266,12 @@ mu_0_boolean mu_IsSharer(const mu_1_Node& mu_n)
     }
   }
 /*** end multisetcount 2 declaration ***/
-return (mu__intexpr11) > (0);
-  Error.Error("The end of function IsSharer reached without returning values.");
+if ( (mu__intexpr11) == (0) )
+{
+mu_HomeNode.mu_sharers.multisetadd(mu_n);
+}
 };
-/*** end function declaration ***/
+/*** end procedure declaration ***/
 
 mu_0_boolean mu_IsSharerListEmpty()
 {
@@ -2434,9 +2444,9 @@ case mu_Dir_M:
 switch ((int) mu_msg.mu_mtype) {
 case mu_GetS:
 mu_HomeNode.mu_state = mu_Dir_MX_D;
-mu_Send ( mu_FwdGetS, mu_HomeNode.mu_owner, (int)mu_HomeDir, mu_ForwardChannel, mu_1_Value_undefined_var, mu_msg.mu_src, 0 );
 mu_AddToSharersList ( mu_msg.mu_src );
 mu_AddToSharersList ( mu_HomeNode.mu_owner );
+mu_Send ( mu_FwdGetS, mu_HomeNode.mu_owner, (int)mu_HomeDir, mu_ForwardChannel, mu_1_Value_undefined_var, mu_msg.mu_src, 0 );
 mu_HomeNode.mu_owner.undefine();
 break;
 case mu_GetM:

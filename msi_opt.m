@@ -199,6 +199,11 @@ begin
   end;
 end;
 
+Function IsSharer(n:Node) : Boolean;
+Begin
+	return MultiSetCount(i:HomeNode.sharers, HomeNode.sharers[i] = n) > 0
+End;
+
 Procedure msgTrace(mid:counter_t;
          mtype:MessageType;
 				 dst:			Node;
@@ -223,6 +228,13 @@ Procedure msgTrace(mid:counter_t;
     NodeEnumToStr(src);
     put ", dst_state: ";
     NodeEnumToStr(dst);
+    put ", sharers: ";
+    for p : Proc do
+      if IsSharer(p) then
+        put p;
+      endif;
+    endfor;
+    put ";";
 		if(!isundefined(fwd_to)) then
 			put ", fwd_to: ";
 			put fwd_to;
@@ -304,11 +316,6 @@ Begin
 	then
 		MultiSetAdd(n, HomeNode.sharers);
 	endif;
-End;
-
-Function IsSharer(n:Node) : Boolean;
-Begin
-	return MultiSetCount(i:HomeNode.sharers, HomeNode.sharers[i] = n) > 0
 End;
 
 Function IsSharerListEmpty() : Boolean;
@@ -425,9 +432,9 @@ Begin
     case GetS:
 			-- Send Fwd-GetS to Owner, add Req and Owner to Sharers, clear Owner/MX_D
       HomeNode.state := Dir_MX_D;
-      Send(FwdGetS, HomeNode.owner, HomeDir, ForwardChannel, UNDEFINED, msg.src, 0);
       AddToSharersList(msg.src);
       AddToSharersList(HomeNode.owner);
+      Send(FwdGetS, HomeNode.owner, HomeDir, ForwardChannel, UNDEFINED, msg.src, 0);
       undefine HomeNode.owner;
     case GetM:
 			-- Send Fwd-GetM to Owner, set owner to Req/MM_A

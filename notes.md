@@ -59,5 +59,5 @@ Dir_S had sent Data to Proc_3 with SharerCount 1 (Proc_1)
 Dir_SM_A is waiting for response from Proc_3 (IM_D)
 Wrong pcnt action - solved
 
-GetM is blocking fwd-port. So cannot Nack to GetS.
+GetM is blocking request-port in SM_A. So cannot Nack to GetS.
 Without Nack Proc_2 cannot move from IS_D

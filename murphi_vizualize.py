@@ -37,16 +37,21 @@ class CacheCoherenceVisualizer:
             print(f"Error: {e}")
 
     def parse_log(self, log):
-        pattern = r"(Create|Receive|Clear) Msg (\d+):: type: (\w+), src: (\d+), dst: (\d+), .*?src_state: (\w+), dst_state: (\w+)"
+        print("Parsing log")
+        pattern = r"(Create|Receive|Clear) Msg (\d+):: type: (\w+), src: (\d+), dst: (\d+), .*?src_state: (\w+), dst_state: (\w+), sharers: (.*);"
         matches = re.finditer(pattern, log)
 
         for match in matches:
-            action, msg_id, msg_type, src, dst, src_state, dst_state = match.groups()
+            action, msg_id, msg_type, src, dst, src_state, dst_state, sharer = match.groups()
             src, dst = int(src), int(dst)
             msg_id = int(msg_id)
 
             # Print the log entry
             print(f"Log Entry: {match.group(0)}")
+            if "Dir" in src_state:
+                src_state = src_state + ":" + sharer
+            if "Dir" in dst_state:
+                dst_state = dst_state + ":" + sharer
 
             if action == "Create":
                 self.create_message(msg_id, msg_type, src, dst, src_state, dst_state)
@@ -129,6 +134,13 @@ class CacheCoherenceVisualizer:
             return 0
         else:
             return -1
+        
+    def set_horizon(self, val):
+        if val:
+            val = max(val, len(self.snapshots))
+            self.current_index = len(self.snapshots) - 1 - val
+        else:
+            self.current_index = -1
 
     def display_snapshot(self):
         snapshot = self.snapshots[self.current_index]
@@ -279,8 +291,9 @@ class CacheCoherenceVisualizer:
             console.print("   ".join(f"{col:<30}" for col in row))
 
 visualizer = CacheCoherenceVisualizer()
-visualizer.parse_log_file('msi_opt_sim_cache.log')
+visualizer.parse_log_file('msi_opt_sim.log')
 # visualizer.previous()  # Navigate to previous snapshot
 # visualizer.next()      # Navigate to next snapshot
+visualizer.set_horizon(10)
 while(visualizer.next()==0):
     pass
