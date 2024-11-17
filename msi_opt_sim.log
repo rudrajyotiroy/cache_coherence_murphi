@@ -26,33 +26,31 @@ Algorithm:
 	Simulation.
 Start Simulation :
 
-Proc : 1, nextproc : 2
-Proc : 2, nextproc : 3
-Proc : 3, nextproc : 1
-I ==(load)==> S Create Msg 0:: type: GetS, src: 2, dst: 7, ack_cnt: 0, src_state: Proc_IS_D, dst_state: Dir_I
+I ==(store)==> M Create Msg 0:: type: GetM, src: 2, dst: 7, ack_cnt: 0, src_state: Proc_IM_D, dst_state: Dir_I
 I ==(store)==> M Create Msg 1:: type: GetM, src: 3, dst: 7, ack_cnt: 0, src_state: Proc_IM_D, dst_state: Dir_I
-I ==(store)==> M Create Msg 2:: type: GetM, src: 1, dst: 7, ack_cnt: 0, src_state: Proc_IM_D, dst_state: Dir_I
-  Receive Msg 0:: type: GetS, src: 2, dst: 7, ack_cnt: 0, src_state: Proc_IS_D, dst_state: Dir_I
-Receiving GetS from processor Proc_2 on RequestChannel at home -- HomeNode.state:Dir_I
- Create Msg 3:: type: Data, src: 7, dst: 2, ack_cnt: 0, src_state: Dir_S, dst_state: Proc_IS_D, val: 6
-  Receive Msg 1:: type: GetM, src: 3, dst: 7, ack_cnt: 0, src_state: Proc_IM_D, dst_state: Dir_S
-Receiving GetM from processor Proc_3 on RequestChannel at home -- HomeNode.state:Dir_S
- Create Msg 4:: type: Data, src: 7, dst: 3, ack_cnt: 1, src_state: Dir_SM_A, dst_state: Proc_IM_D, val: 6
-  Receive Msg 4:: type: Data, src: 7, dst: 3, ack_cnt: 1, src_state: Dir_SM_A, dst_state: Proc_IM_D, val: 6
-Receiving Data from HomeDir on ResponseChannel at proc 3
-  Receive Msg 3:: type: Data, src: 7, dst: 2, ack_cnt: 0, src_state: Dir_SM_A, dst_state: Proc_IS_D, val: 6
-Receiving Data from HomeDir on ResponseChannel at proc 2
-S ==(store)==> M Create Msg 5:: type: GetM, src: 2, dst: 7, ack_cnt: 0, src_state: Proc_SM_D, dst_state: Dir_SM_A
-  Receive Msg 2:: type: GetM, src: 1, dst: 7, ack_cnt: 0, src_state: Proc_IM_D, dst_state: Dir_SM_A
-Receiving GetM from processor Proc_1 on RequestChannel at home -- HomeNode.state:Dir_SM_A
-M ==(evict)==> I Create Msg 6:: type: PutM, src: 3, dst: 7, ack_cnt: 0, src_state: Proc_MI_A, dst_state: Dir_SM_A, val: 6
-Receiving GetM from processor Proc_1 on RequestChannel at home -- HomeNode.state:Dir_SM_A
+I ==(load)==> S Create Msg 2:: type: GetS, src: 1, dst: 7, ack_cnt: 0, src_state: Proc_IS_D, dst_state: Dir_I
+  Receive Msg 0:: type: GetM, src: 2, dst: 7, ack_cnt: 0, src_state: Proc_IM_D, dst_state: Dir_I
+ Create Msg 3:: type: Data, src: 7, dst: 2, ack_cnt: 0, src_state: Dir_M, dst_state: Proc_IM_D, val: 6
+  Receive Msg 2:: type: GetS, src: 1, dst: 7, ack_cnt: 0, src_state: Proc_IS_D, dst_state: Dir_M
+ Create Msg 4:: type: FwdGetS, src: 7, dst: 2, ack_cnt: 0, src_state: Dir_MX_D, dst_state: Proc_IM_D, fwd_to: 1
+  Receive Msg 4:: type: FwdGetS, src: 7, dst: 2, ack_cnt: 0, src_state: Dir_MX_D, dst_state: Proc_IM_D, fwd_to: 1
+  Receive Msg 3:: type: Data, src: 7, dst: 2, ack_cnt: 0, src_state: Dir_MX_D, dst_state: Proc_IM_D, val: 6
+  Receive Msg 1:: type: GetM, src: 3, dst: 7, ack_cnt: 0, src_state: Proc_IM_D, dst_state: Dir_MX_D
+ Create Msg 5:: type: FwdAck, src: 2, dst: 7, ack_cnt: 0, src_state: Proc_S, dst_state: Dir_MX_D, val: 5
+ Create Msg 6:: type: Data, src: 2, dst: 1, ack_cnt: 0, src_state: Proc_S, dst_state: Proc_IS_D, val: 5
+S ==(store)==> M Create Msg 7:: type: GetM, src: 2, dst: 7, ack_cnt: 0, src_state: Proc_SM_D, dst_state: Dir_MX_D
+  Receive Msg 5:: type: FwdAck, src: 2, dst: 7, ack_cnt: 0, src_state: Proc_SM_D, dst_state: Dir_MX_D, val: 5
+ Create Msg 8:: type: Data, src: 7, dst: 3, ack_cnt: 2, src_state: Dir_SM_A, dst_state: Proc_IM_D, val: 5
+  Receive Msg 8:: type: Data, src: 7, dst: 3, ack_cnt: 2, src_state: Dir_SM_A, dst_state: Proc_IM_D, val: 5
+M ==(evict)==> I Create Msg 9:: type: PutM, src: 3, dst: 7, ack_cnt: 0, src_state: Proc_MI_A, dst_state: Dir_SM_A, val: 6
+  Receive Msg 9:: type: PutM, src: 3, dst: 7, ack_cnt: 0, src_state: Proc_MI_A, dst_state: Dir_SM_A, val: 6
+  Receive Msg 6:: type: Data, src: 2, dst: 1, ack_cnt: 0, src_state: Proc_SM_D, dst_state: Proc_IS_D, val: 5
 
 Status:
 
-	10 rules fired in simulation in 0.10s.
+	16 rules fired in simulation in 0.10s.
 
 Error:
 
-	Deadlocked state found.
+	Invariant values in valid state match last write failed.
 

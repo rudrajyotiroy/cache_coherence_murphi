@@ -21,6 +21,7 @@
 
 -- Waypoint Specific:
 ---- 3-hop MSI protocol, cruise missile invalidation
+---- NACK for IS_D if not returned
 
 ----------------------------------------------------------------------
 -- Constants
@@ -32,7 +33,7 @@ const
 	QMax: 2;
 	NumVCs: 3;
 	NetMax: ProcCount+10;
-	enableProcTrace: 1;
+	enableProcTrace: 0;
 	enableMsgTrace: 1;
   maxMsgs: enableMsgTrace*100 + 2;
 
@@ -61,6 +62,7 @@ type
 											PutM,
 											-- Response channel
 											Data,
+                      DNAck,
 											InvAck,
 											PutAck,
 											FwdAck,
@@ -151,6 +153,7 @@ begin
     case PutS: put "PutS";
     case PutM: put "PutM";
     case Data: put "Data";
+    case DNAck: put "NACK";
     case InvAck: put "InvAck";
     case PutAck: put "PutAck";
     case FwdAck: put "FwdAck";
@@ -489,7 +492,9 @@ Begin
   case Dir_SM_A:
     switch msg.mtype
     case GetS:
-      msg_processed := false;
+      -- msg_processed := false;
+      -- Send NACK to indicate that CMI in process
+      Send(DNAck, msg.src, HomeDir, ResponseChannel, HomeNode.val, UNDEFINED, 0);
     case GetM:
       msg_processed := false;
     case PutS:
@@ -541,15 +546,17 @@ Begin
   case Proc_IS_D:
     switch msg.mtype
     case Inv:
-      --CHECK Grey area. Maybe you got permission, maybe you didn't, assume you didn't
-      Send(Inv, pnxt, p, ForwardChannel, UNDEFINED, UNDEFINED,  msg.ack_cnt); -- Just forward ahead
-      -- msg_processed := false;
+      -- --CHECK Grey area. Maybe you got permission, maybe you didn't, assume you didn't
+      -- Send(Inv, pnxt, p, ForwardChannel, UNDEFINED, UNDEFINED,  msg.ack_cnt); -- Just forward ahead
+      msg_processed := false;
     case Data:
       -- Update val, Move to S, increment ack_cnt
       assert msg.ack_cnt = 0 "Error at Proc_IS_D, ack_cnt must be 0 since no modify request";
       pstate := Proc_S;
       pval := msg.val;
       -- pcnt := pcnt + msg.ack_cnt; --REMOVE
+    case DNAck:
+      pstate := Proc_I; -- CMI in progress
     else
       ErrorUnhandledMsg(msg, p);
     endswitch;

@@ -357,9 +357,9 @@ class mu_1_MessageType: public mu__byte
     else return ( s << "Undefined" );
   };
 
-  mu_1_MessageType (char *name, int os): mu__byte(11, 21, 4, name, os) {};
-  mu_1_MessageType (void): mu__byte(11, 21, 4) {};
-  mu_1_MessageType (int val): mu__byte(11, 21, 4, "Parameter or function result.", 0)
+  mu_1_MessageType (char *name, int os): mu__byte(11, 22, 4, name, os) {};
+  mu_1_MessageType (void): mu__byte(11, 22, 4) {};
+  mu_1_MessageType (int val): mu__byte(11, 22, 4, "Parameter or function result.", 0)
   {
      operator=(val);
   };
@@ -382,7 +382,7 @@ class mu_1_MessageType: public mu__byte
   };
 };
 
-char *mu_1_MessageType::values[] = {"GetS","GetM","PutS","PutM","Data","InvAck","PutAck","FwdAck","Inv","FwdGetS","FwdGetM",NULL };
+char *mu_1_MessageType::values[] = {"GetS","GetM","PutS","PutM","Data","DNAck","InvAck","PutAck","FwdAck","Inv","FwdGetS","FwdGetM",NULL };
 
 /*** end of enum declaration ***/
 mu_1_MessageType mu_1_MessageType_undefined_var;
@@ -581,17 +581,17 @@ class mu_1__type_0: public mu__byte
   friend ostream& operator<< (ostream& s, mu_1__type_0& val)
   {
     if (val.defined())
-      return ( s << mu_1__type_0::values[ int(val) - 22] );
+      return ( s << mu_1__type_0::values[ int(val) - 23] );
     else return ( s << "Undefined" );
   };
 
-  mu_1__type_0 (char *name, int os): mu__byte(22, 27, 3, name, os) {};
-  mu_1__type_0 (void): mu__byte(22, 27, 3) {};
-  mu_1__type_0 (int val): mu__byte(22, 27, 3, "Parameter or function result.", 0)
+  mu_1__type_0 (char *name, int os): mu__byte(23, 28, 3, name, os) {};
+  mu_1__type_0 (void): mu__byte(23, 28, 3) {};
+  mu_1__type_0 (int val): mu__byte(23, 28, 3, "Parameter or function result.", 0)
   {
      operator=(val);
   };
-  char * Name() { return values[ value() -22]; };
+  char * Name() { return values[ value() -23]; };
   virtual void Permute(PermSet& Perm, int i);
   virtual void SimpleCanonicalize(PermSet& Perm);
   virtual void Canonicalize(PermSet& Perm);
@@ -604,7 +604,7 @@ class mu_1__type_0: public mu__byte
   virtual void print()
   {
     if (defined())
-      cout << name << ":" << values[ value() -22] << '\n';
+      cout << name << ":" << values[ value() -23] << '\n';
     else
       cout << name << ":Undefined\n";
   };
@@ -995,17 +995,17 @@ class mu_1__type_2: public mu__byte
   friend ostream& operator<< (ostream& s, mu_1__type_2& val)
   {
     if (val.defined())
-      return ( s << mu_1__type_2::values[ int(val) - 28] );
+      return ( s << mu_1__type_2::values[ int(val) - 29] );
     else return ( s << "Undefined" );
   };
 
-  mu_1__type_2 (char *name, int os): mu__byte(28, 38, 4, name, os) {};
-  mu_1__type_2 (void): mu__byte(28, 38, 4) {};
-  mu_1__type_2 (int val): mu__byte(28, 38, 4, "Parameter or function result.", 0)
+  mu_1__type_2 (char *name, int os): mu__byte(29, 39, 4, name, os) {};
+  mu_1__type_2 (void): mu__byte(29, 39, 4) {};
+  mu_1__type_2 (int val): mu__byte(29, 39, 4, "Parameter or function result.", 0)
   {
      operator=(val);
   };
-  char * Name() { return values[ value() -28]; };
+  char * Name() { return values[ value() -29]; };
   virtual void Permute(PermSet& Perm, int i);
   virtual void SimpleCanonicalize(PermSet& Perm);
   virtual void Canonicalize(PermSet& Perm);
@@ -1018,7 +1018,7 @@ class mu_1__type_2: public mu__byte
   virtual void print()
   {
     if (defined())
-      cout << name << ":" << values[ value() -28] << '\n';
+      cout << name << ":" << values[ value() -29] << '\n';
     else
       cout << name << ":Undefined\n";
   };
@@ -1905,7 +1905,7 @@ const int mu_numVCs = 3;
 const int mu_QMax = 2;
 const int mu_NumVCs = 3;
 const int mu_NetMax = 13;
-const int mu_enableProcTrace = 1;
+const int mu_enableProcTrace = 0;
 const int mu_enableMsgTrace = 1;
 const int mu_maxMsgs = 102;
 const int mu_Proc_1 = 1;
@@ -1923,29 +1923,30 @@ const int mu_GetM = 12;
 const int mu_PutS = 13;
 const int mu_PutM = 14;
 const int mu_Data = 15;
-const int mu_InvAck = 16;
-const int mu_PutAck = 17;
-const int mu_FwdAck = 18;
-const int mu_Inv = 19;
-const int mu_FwdGetS = 20;
-const int mu_FwdGetM = 21;
-const int mu_Dir_M = 22;
-const int mu_Dir_S = 23;
-const int mu_Dir_I = 24;
-const int mu_Dir_MX_D = 25;
-const int mu_Dir_MM_A = 26;
-const int mu_Dir_SM_A = 27;
-const int mu_Proc_M = 28;
-const int mu_Proc_S = 29;
-const int mu_Proc_I = 30;
-const int mu_Proc_IS_D = 31;
-const int mu_Proc_IM_A = 32;
-const int mu_Proc_IM_D = 33;
-const int mu_Proc_II_A = 34;
-const int mu_Proc_SM_A = 35;
-const int mu_Proc_SM_D = 36;
-const int mu_Proc_SI_A = 37;
-const int mu_Proc_MI_A = 38;
+const int mu_DNAck = 16;
+const int mu_InvAck = 17;
+const int mu_PutAck = 18;
+const int mu_FwdAck = 19;
+const int mu_Inv = 20;
+const int mu_FwdGetS = 21;
+const int mu_FwdGetM = 22;
+const int mu_Dir_M = 23;
+const int mu_Dir_S = 24;
+const int mu_Dir_I = 25;
+const int mu_Dir_MX_D = 26;
+const int mu_Dir_MM_A = 27;
+const int mu_Dir_SM_A = 28;
+const int mu_Proc_M = 29;
+const int mu_Proc_S = 30;
+const int mu_Proc_I = 31;
+const int mu_Proc_IS_D = 32;
+const int mu_Proc_IM_A = 33;
+const int mu_Proc_IM_D = 34;
+const int mu_Proc_II_A = 35;
+const int mu_Proc_SM_A = 36;
+const int mu_Proc_SM_D = 37;
+const int mu_Proc_SI_A = 38;
+const int mu_Proc_MI_A = 39;
 /*** Variable declaration ***/
 mu_1_HomeState mu_HomeNode("HomeNode",0);
 
@@ -1984,6 +1985,9 @@ cout << "PutM";
 break;
 case mu_Data:
 cout << "Data";
+break;
+case mu_DNAck:
+cout << "NACK";
 break;
 case mu_InvAck:
 cout << "InvAck";
@@ -2320,7 +2324,7 @@ void mu_HomeReceive(mu_1_Message& mu_msg)
 /*** Variable declaration ***/
 mu_1__type_8 mu_sharerCount("sharerCount",0);
 
-if ( 1 )
+if ( 0 )
 {
 cout << "Receiving ";
 cout << ( mu_msg.mu_mtype );
@@ -2512,7 +2516,7 @@ break;
 case mu_Dir_SM_A:
 switch ((int) mu_msg.mu_mtype) {
 case mu_GetS:
-mu_msg_processed = mu_false;
+mu_Send ( mu_DNAck, mu_msg.mu_src, (int)mu_HomeDir, mu_ResponseChannel, mu_HomeNode.mu_val, mu_1_Node_undefined_var, 0 );
 break;
 case mu_GetM:
 mu_msg_processed = mu_false;
@@ -2549,7 +2553,7 @@ mu_msg_processed = mu_true;
   mu_1_AckCount& mu_pcnt = mu_Procs[mu_p].mu_ack_cnt;
 {
   mu_1_Proc& mu_pnxt = mu_Procs[mu_p].mu_nextProc;
-if ( 1 )
+if ( 0 )
 {
 cout << "Receiving ";
 cout << ( mu_msg.mu_mtype );
@@ -2580,12 +2584,15 @@ break;
 case mu_Proc_IS_D:
 switch ((int) mu_msg.mu_mtype) {
 case mu_Inv:
-mu_Send ( mu_Inv, (int)mu_pnxt, (int)mu_p, mu_ForwardChannel, mu_1_Value_undefined_var, mu_1_Node_undefined_var, mu_msg.mu_ack_cnt );
+mu_msg_processed = mu_false;
 break;
 case mu_Data:
 if ( !((mu_msg.mu_ack_cnt) == (0)) ) Error.Error("Assertion failed: Error at Proc_IS_D, ack_cnt must be 0 since no modify request");
 mu_pstate = mu_Proc_S;
 mu_pval = mu_msg.mu_val;
+break;
+case mu_DNAck:
+mu_pstate = mu_Proc_I;
 break;
 default:
 mu_ErrorUnhandledMsg ( mu_msg, (int)mu_p );
@@ -3605,7 +3612,7 @@ if ( mu__boolexpr16 )
 {
 mu_Procs[mu_i].mu_nextProc = mu_j;
 mu_Procs[mu_j].mu_prevProc = mu_i;
-if ( 1 )
+if ( 0 )
 {
 cout << "Proc : ";
 cout << ( mu_i );
@@ -3632,7 +3639,7 @@ if ( mu__boolexpr19 )
 {
 mu_Procs[mu_i].mu_nextProc = mu_j;
 mu_Procs[mu_j].mu_prevProc = mu_i;
-if ( 1 )
+if ( 0 )
 {
 cout << "Proc : ";
 cout << ( mu_i );
