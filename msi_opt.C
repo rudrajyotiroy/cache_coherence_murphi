@@ -3104,6 +3104,11 @@ if ( !(mu_msg_processed) )
 {
 mu_box[mu_msg.mu_vc] = mu_msg;
 }
+else
+{
+cout << "  Clear ";
+mu_msgTrace ( mu_msg.mu_mid, mu_msg.mu_mtype, mu_n, mu_msg.mu_src, mu_msg.mu_vc, mu_msg.mu_val, mu_msg.mu_fwd_to, mu_msg.mu_ack_cnt );
+}
 mu_chan.multisetremove(mu_midx);
   };
 

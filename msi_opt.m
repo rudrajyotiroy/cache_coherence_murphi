@@ -853,6 +853,9 @@ ruleset n:Node do
 			then
 				-- The node refused the message, stick it in the InBox to block the VC.
 				box[msg.vc] := msg;
+      else
+        put "  Clear ";
+        msgTrace(msg.mid, msg.mtype, n, msg.src, msg.vc, msg.val, msg.fwd_to, msg.ack_cnt);
 			endif;
 		
 			MultiSetRemove(midx, chan);
