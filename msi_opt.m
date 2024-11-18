@@ -20,8 +20,7 @@
 ---- Guaruntee Freshness for atleast 3 processors. Loads and stores issued by one processor are seen by that processor in program order.
 
 -- Waypoint Specific:
----- 3-hop MSI protocol, cruise missile invalidation
----- NACK for IS_D if not returned
+---- 3-hop MSI protocol, cruise missile invalidation and self-downgrade optimization
 
 ----------------------------------------------------------------------
 -- Constants
@@ -31,7 +30,6 @@ const
 	ValueCount:   3;       -- number of data values.
 	numVCs:	3;
 	QMax: 2;
-	NumVCs: 3;
 	NetMax: ProcCount+10;
 	enableProcTrace: 0;
 	enableMsgTrace: 0;
@@ -380,16 +378,16 @@ Begin
 			HomeNode.owner := msg.src;
 			Send(Data, msg.src, HomeDir, ResponseChannel, HomeNode.val, UNDEFINED, sharerCount);
 		case PutS:
-			-- Send Put-Ack 
+			-- Send Put-Ack to req
 			Send(PutAck, msg.src, HomeDir, ResponseChannel, UNDEFINED, UNDEFINED, 0);
 		case PutM:
-			-- From NonOwner, Send Put-Ack
+			-- From NonOwner, Send Put-Ack AckCount 0
 			assert (msg.src != HomeNode.owner) "error at Dir_I: PutM from owner";
 			Send(PutAck, msg.src, HomeDir, ResponseChannel, UNDEFINED, UNDEFINED, 0);
     case PutMS:
-			-- From NonOwner, Send Put-Ack
+			-- From NonOwner, Send Put-Ack AckCount 1
 			assert (msg.src != HomeNode.owner) "error at Dir_I: PutMS from owner";
-			Send(PutAck, msg.src, HomeDir, ResponseChannel, UNDEFINED, UNDEFINED, 1); -- 1 indicates go to S
+			Send(PutAck, msg.src, HomeDir, ResponseChannel, UNDEFINED, UNDEFINED, 1); 
 		else
 			ErrorUnhandledMsg(msg, HomeDir);
 		endswitch;
@@ -449,7 +447,7 @@ Begin
   case Dir_M:
     switch msg.mtype
     case GetS:
-			-- Send Fwd-GetS to Owner, add Req and Owner to Sharers, clear Owner/MX_D
+			-- Send Fwd-GetS to Owner, add Req and Owner to Sharers, clear Owner/MS_D
       HomeNode.state := Dir_MS_D;
       AddToSharersList(msg.src);
       AddToSharersList(HomeNode.owner);

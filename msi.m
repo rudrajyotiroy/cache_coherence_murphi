@@ -20,7 +20,7 @@
 ---- Guaruntee Freshness for atleast 3 processors. Loads and stores issued by one processor are seen by that processor in program order.
 
 -- Waypoint Specific:
----- 3-hop MSI protocol, coarse-vector representation (Page 180(158) of book)
+---- 3-hop MSI protocol (Page 180(158) of book)
 
 ----------------------------------------------------------------------
 -- Constants
@@ -30,7 +30,6 @@ const
 	ValueCount:   2;       -- number of data values.
 	numVCs:	3;
 	QMax: 2;
-	NumVCs: 3;
 	NetMax: ProcCount+10;
 	enableProcTrace: 0;
 	enableMsgTrace: 0;
