@@ -28,7 +28,7 @@
 const
 	ProcCount: 3;          -- number processors
 	ValueCount:   2;       -- number of data values.
-	numVCs:	3;
+	NumVCs:	3;
 	QMax: 2;
 	NetMax: ProcCount+10;
 	enableProcTrace: 0;
@@ -91,7 +91,7 @@ type
                     Dir_I,
                     -- Transition states
 										-- MX_D = Dir_M get_S forwarded, waiting for data to go to S or I depending on ack>0
-                    Dir_MX_D,
+                    Dir_MS_D,
 										-- MM_D = Dir_M get_M forwarded, waiting for ack to change owner
 										Dir_MM_A,
 										-- SM_A = Dir_S get_M invalidations sent, waiting for acks
@@ -184,7 +184,7 @@ begin
       case Dir_M: put "Dir_M";
       case Dir_S: put "Dir_S";
       case Dir_I: put "Dir_I";
-      case Dir_MX_D: put "Dir_MX_D";
+      case Dir_MS_D: put "Dir_MS_D";
       case Dir_MM_A: put "Dir_MM_A";
       case Dir_SM_A: put "Dir_SM_A";
     else
@@ -424,7 +424,7 @@ Begin
     switch msg.mtype
     case GetS:
 			-- Send Fwd-GetS to Owner, add Req and Owner to Sharers, clear Owner/MX_D
-      HomeNode.state := Dir_MX_D;
+      HomeNode.state := Dir_MS_D;
       Send(FwdGetS, HomeNode.owner, HomeDir, ForwardChannel, UNDEFINED, msg.src, 0);
       AddToSharersList(msg.src);
       AddToSharersList(HomeNode.owner);
@@ -449,7 +449,7 @@ Begin
       ErrorUnhandledMsg(msg, HomeDir);
     endswitch;
 
-  case Dir_MX_D:
+  case Dir_MS_D:
     switch msg.mtype
     case GetS:
       msg_processed := false;
@@ -834,6 +834,11 @@ ruleset n:Node do
 			then
 				-- The node refused the message, stick it in the InBox to block the VC.
 				box[msg.vc] := msg;
+      else
+        if enableMsgTrace=1 then
+          put "  Clear ";
+          msgTrace(msg.mid, msg.mtype, n, msg.src, msg.vc, msg.val, msg.fwd_to, msg.ack_cnt);
+        endif;
 			endif;
 		
 			MultiSetRemove(midx, chan);
@@ -860,8 +865,10 @@ ruleset n:Node do
 			if msg_processed
 			then
 				-- Message has been handled, forget it
-        put "  Clear ";
-        msgTrace(msg.mid, msg.mtype, n, msg.src, msg.vc, msg.val, msg.fwd_to, msg.ack_cnt);
+        if enableMsgTrace=1 then
+          put "  Clear ";
+          msgTrace(InBox[n][vc].mid, InBox[n][vc].mtype, n, InBox[n][vc].src, vc, InBox[n][vc].val, InBox[n][vc].fwd_to, InBox[n][vc].ack_cnt);
+        endif;
 				undefine InBox[n][vc];
 			endif;
 		

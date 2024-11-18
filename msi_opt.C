@@ -1901,9 +1901,8 @@ mu_1__type_8 mu_1__type_8_undefined_var;
 
 const int mu_ProcCount = 3;
 const int mu_ValueCount = 3;
-const int mu_numVCs = 3;
-const int mu_QMax = 2;
 const int mu_NumVCs = 3;
+const int mu_QMax = 2;
 const int mu_NetMax = 13;
 const int mu_enableProcTrace = 0;
 const int mu_enableMsgTrace = 0;

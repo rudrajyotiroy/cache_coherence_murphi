@@ -610,7 +610,7 @@ class mu_1__type_0: public mu__byte
   };
 };
 
-char *mu_1__type_0::values[] = {"Dir_M","Dir_S","Dir_I","Dir_MX_D","Dir_MM_A","Dir_SM_A",NULL };
+char *mu_1__type_0::values[] = {"Dir_M","Dir_S","Dir_I","Dir_MS_D","Dir_MM_A","Dir_SM_A",NULL };
 
 /*** end of enum declaration ***/
 mu_1__type_0 mu_1__type_0_undefined_var;
@@ -1871,9 +1871,8 @@ mu_1__type_8 mu_1__type_8_undefined_var;
 
 const int mu_ProcCount = 3;
 const int mu_ValueCount = 2;
-const int mu_numVCs = 3;
-const int mu_QMax = 2;
 const int mu_NumVCs = 3;
+const int mu_QMax = 2;
 const int mu_NetMax = 13;
 const int mu_enableProcTrace = 0;
 const int mu_enableMsgTrace = 0;
@@ -1901,7 +1900,7 @@ const int mu_FwdGetM = 20;
 const int mu_Dir_M = 21;
 const int mu_Dir_S = 22;
 const int mu_Dir_I = 23;
-const int mu_Dir_MX_D = 24;
+const int mu_Dir_MS_D = 24;
 const int mu_Dir_MM_A = 25;
 const int mu_Dir_SM_A = 26;
 const int mu_Proc_M = 27;
@@ -2034,8 +2033,8 @@ break;
 case mu_Dir_I:
 cout << "Dir_I";
 break;
-case mu_Dir_MX_D:
-cout << "Dir_MX_D";
+case mu_Dir_MS_D:
+cout << "Dir_MS_D";
 break;
 case mu_Dir_MM_A:
 cout << "Dir_MM_A";
@@ -2405,7 +2404,7 @@ break;
 case mu_Dir_M:
 switch ((int) mu_msg.mu_mtype) {
 case mu_GetS:
-mu_HomeNode.mu_state = mu_Dir_MX_D;
+mu_HomeNode.mu_state = mu_Dir_MS_D;
 mu_Send ( mu_FwdGetS, mu_HomeNode.mu_owner, (int)mu_HomeDir, mu_ForwardChannel, mu_1_Value_undefined_var, mu_msg.mu_src, 0 );
 mu_AddToSharersList ( mu_msg.mu_src );
 mu_AddToSharersList ( mu_HomeNode.mu_owner );
@@ -2433,7 +2432,7 @@ mu_ErrorUnhandledMsg ( mu_msg, (int)mu_HomeDir );
 break;
 }
 break;
-case mu_Dir_MX_D:
+case mu_Dir_MS_D:
 switch ((int) mu_msg.mu_mtype) {
 case mu_GetS:
 mu_msg_processed = mu_false;
@@ -2955,6 +2954,11 @@ mu_ProcReceive ( mu_InBox[mu_n][mu_vc], (int)mu_n );
 }
 if ( mu_msg_processed )
 {
+if ( 0 )
+{
+cout << "  Clear ";
+mu_msgTrace ( mu_InBox[mu_n][mu_vc].mu_mid, mu_InBox[mu_n][mu_vc].mu_mtype, mu_n, mu_InBox[mu_n][mu_vc].mu_src, mu_vc, mu_InBox[mu_n][mu_vc].mu_val, mu_InBox[mu_n][mu_vc].mu_fwd_to, mu_InBox[mu_n][mu_vc].mu_ack_cnt );
+}
 mu_InBox[mu_n][mu_vc].undefine();
 }
   };
@@ -3056,6 +3060,14 @@ mu_ProcReceive ( mu_msg, (int)mu_n );
 if ( !(mu_msg_processed) )
 {
 mu_box[mu_msg.mu_vc] = mu_msg;
+}
+else
+{
+if ( 0 )
+{
+cout << "  Clear ";
+mu_msgTrace ( mu_msg.mu_mid, mu_msg.mu_mtype, mu_n, mu_msg.mu_src, mu_msg.mu_vc, mu_msg.mu_val, mu_msg.mu_fwd_to, mu_msg.mu_ack_cnt );
+}
 }
 mu_chan.multisetremove(mu_midx);
   };

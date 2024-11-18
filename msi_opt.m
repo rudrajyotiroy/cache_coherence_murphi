@@ -28,7 +28,7 @@
 const
 	ProcCount: 3;          -- number processors
 	ValueCount:   3;       -- number of data values.
-	numVCs:	3;
+	NumVCs:	3;
 	QMax: 2;
 	NetMax: ProcCount+10;
 	enableProcTrace: 0;
