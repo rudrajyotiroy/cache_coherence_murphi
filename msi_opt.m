@@ -757,6 +757,7 @@ Begin
     case Inv:
       -- Assume share acknowledged by directory
       Send(Inv, pnxt, p, ForwardChannel, UNDEFINED, UNDEFINED, msg.ack_cnt-1);
+      pstate := Proc_MI_A;
     case FwdGetS:
       -- Send data, already in MS_A no need to change
       Send(FwdAck, HomeDir,  p, ResponseChannel, pval, UNDEFINED, 0);
@@ -777,7 +778,7 @@ Begin
   case Proc_MI_A:
     switch msg.mtype
     case Inv:
-      Send(Inv, pnxt, p, ForwardChannel, UNDEFINED, UNDEFINED, msg.ack_cnt);
+      Send(Inv, pnxt, p, ForwardChannel, UNDEFINED, UNDEFINED, msg.ack_cnt-1);
     case FwdGetS:
       -- Send data to req and FwdAck to home, downgrade to SI_A
       pstate := Proc_SI_A;

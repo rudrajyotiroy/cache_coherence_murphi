@@ -72,4 +72,22 @@ Log Entry: Receive Msg 28:: type: Inv, src: 2, dst: 3, channel: 10, ack_cnt: 2, 
 Log Entry: Create Msg 29:: type: Inv, src: 3, dst: 1, channel: 10, ack_cnt: 2, src_state: Proc_IM_D, dst_state: Proc_SM_D, sharers: 123;
 Proc_IM_D does not think he is a sharer but Dir thinks he is (since IS_D)
 
-Ack was sent to go to S from MS_A, but instead it moved to MI_A then went to I.
+Ack was sent to go to S from MS_A, but instead it moved to MI_A then went to I. Added intermediate checks via ack_cnt
+
+Cleanup:
+Weird issue, a processor in Proc_M sent an InvAck to Home
+I ==(store)==> M, v:Value_3, n:Proc_1, IM_D
+HomeNode.state:Dir_M, HomeNode.owner:Proc_1, Send Data to Proc_1
+Proc_1 receive data move to Proc_M
+I ==(store)==> M, v:Value_1, n:Proc_3, IM_D
+M ==(self-downgrade)==> S, n:Proc_1 fired
+Reaches first HomeNode.state:Dir_S, HomeNode.sharers{0}:Proc_1, Proc_1: Proc_MS_A
+Proc_3 store now reaches, HomeNode.state:Dir_SM_A, HomeNode.owner:Proc_3
+Proc_3 receives and Moves to IM_A, starts CMI chain
+Proc_1 Invalidate, Proc_2 Invalidates, Proc_3 sends InvAck to Dir 
+But now apparently Proc_1 did not invalidate itself, it is in Proc_S state. 
+
+Reason:
+It moved from Proc_MS_A to Proc_S while ack-ing invalidate 
+Solved by placing it in Proc_MI_A during invalidation
+

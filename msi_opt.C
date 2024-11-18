@@ -2812,6 +2812,7 @@ case mu_Proc_MS_A:
 switch ((int) mu_msg.mu_mtype) {
 case mu_Inv:
 mu_Send ( mu_Inv, (int)mu_pnxt, (int)mu_p, mu_ForwardChannel, mu_1_Value_undefined_var, mu_1_Node_undefined_var, (mu_msg.mu_ack_cnt) - (1) );
+mu_pstate = mu_Proc_MI_A;
 break;
 case mu_FwdGetS:
 mu_Send ( mu_FwdAck, (int)mu_HomeDir, (int)mu_p, mu_ResponseChannel, mu_pval, mu_1_Node_undefined_var, 0 );
@@ -2834,7 +2835,7 @@ break;
 case mu_Proc_MI_A:
 switch ((int) mu_msg.mu_mtype) {
 case mu_Inv:
-mu_Send ( mu_Inv, (int)mu_pnxt, (int)mu_p, mu_ForwardChannel, mu_1_Value_undefined_var, mu_1_Node_undefined_var, mu_msg.mu_ack_cnt );
+mu_Send ( mu_Inv, (int)mu_pnxt, (int)mu_p, mu_ForwardChannel, mu_1_Value_undefined_var, mu_1_Node_undefined_var, (mu_msg.mu_ack_cnt) - (1) );
 break;
 case mu_FwdGetS:
 mu_pstate = mu_Proc_SI_A;
