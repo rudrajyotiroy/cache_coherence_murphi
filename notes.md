@@ -67,3 +67,9 @@ AckCount is still wrong
 SI_A is decrementing ackcount irrespective of whether it was already invalidated
 PutAck has not reached
 Solution : Modify assertion to allow negative values of ack_cnt
+
+Log Entry: Receive Msg 28:: type: Inv, src: 2, dst: 3, channel: 10, ack_cnt: 2, src_state: Proc_SM_A, dst_state: Proc_IM_D, sharers: 123;
+Log Entry: Create Msg 29:: type: Inv, src: 3, dst: 1, channel: 10, ack_cnt: 2, src_state: Proc_IM_D, dst_state: Proc_SM_D, sharers: 123;
+Proc_IM_D does not think he is a sharer but Dir thinks he is (since IS_D)
+
+Ack was sent to go to S from MS_A, but instead it moved to MI_A then went to I.

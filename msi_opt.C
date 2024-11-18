@@ -254,9 +254,9 @@ class mu_1_counter_t: public mu__byte
  public:
   inline int operator=(int val) { return mu__byte::operator=(val); };
   inline int operator=(const mu_1_counter_t& val) { return mu__byte::operator=((int) val); };
-  mu_1_counter_t (char *name, int os): mu__byte(0, 101, 7, name, os) {};
-  mu_1_counter_t (void): mu__byte(0, 101, 7) {};
-  mu_1_counter_t (int val): mu__byte(0, 101, 7, "Parameter or function result.", 0)
+  mu_1_counter_t (char *name, int os): mu__byte(0, 1, 2, name, os) {};
+  mu_1_counter_t (void): mu__byte(0, 1, 2) {};
+  mu_1_counter_t (int val): mu__byte(0, 1, 2, "Parameter or function result.", 0)
   {
     operator=(val);
   };
@@ -357,9 +357,9 @@ class mu_1_MessageType: public mu__byte
     else return ( s << "Undefined" );
   };
 
-  mu_1_MessageType (char *name, int os): mu__byte(11, 22, 4, name, os) {};
-  mu_1_MessageType (void): mu__byte(11, 22, 4) {};
-  mu_1_MessageType (int val): mu__byte(11, 22, 4, "Parameter or function result.", 0)
+  mu_1_MessageType (char *name, int os): mu__byte(11, 23, 4, name, os) {};
+  mu_1_MessageType (void): mu__byte(11, 23, 4) {};
+  mu_1_MessageType (int val): mu__byte(11, 23, 4, "Parameter or function result.", 0)
   {
      operator=(val);
   };
@@ -382,7 +382,7 @@ class mu_1_MessageType: public mu__byte
   };
 };
 
-char *mu_1_MessageType::values[] = {"GetM","PutS","PutM","Data","DNAck","InvAck","PutAck","FwdAck","GetS","Inv","FwdGetS","FwdGetM",NULL };
+char *mu_1_MessageType::values[] = {"GetM","PutS","PutM","PutMS","Data","DNAck","InvAck","PutAck","FwdAck","GetS","Inv","FwdGetS","FwdGetM",NULL };
 
 /*** end of enum declaration ***/
 mu_1_MessageType mu_1_MessageType_undefined_var;
@@ -581,17 +581,17 @@ class mu_1__type_0: public mu__byte
   friend ostream& operator<< (ostream& s, mu_1__type_0& val)
   {
     if (val.defined())
-      return ( s << mu_1__type_0::values[ int(val) - 23] );
+      return ( s << mu_1__type_0::values[ int(val) - 24] );
     else return ( s << "Undefined" );
   };
 
-  mu_1__type_0 (char *name, int os): mu__byte(23, 28, 3, name, os) {};
-  mu_1__type_0 (void): mu__byte(23, 28, 3) {};
-  mu_1__type_0 (int val): mu__byte(23, 28, 3, "Parameter or function result.", 0)
+  mu_1__type_0 (char *name, int os): mu__byte(24, 29, 3, name, os) {};
+  mu_1__type_0 (void): mu__byte(24, 29, 3) {};
+  mu_1__type_0 (int val): mu__byte(24, 29, 3, "Parameter or function result.", 0)
   {
      operator=(val);
   };
-  char * Name() { return values[ value() -23]; };
+  char * Name() { return values[ value() -24]; };
   virtual void Permute(PermSet& Perm, int i);
   virtual void SimpleCanonicalize(PermSet& Perm);
   virtual void Canonicalize(PermSet& Perm);
@@ -604,13 +604,13 @@ class mu_1__type_0: public mu__byte
   virtual void print()
   {
     if (defined())
-      cout << name << ":" << values[ value() -23] << '\n';
+      cout << name << ":" << values[ value() -24] << '\n';
     else
       cout << name << ":Undefined\n";
   };
 };
 
-char *mu_1__type_0::values[] = {"Dir_M","Dir_S","Dir_I","Dir_MX_D","Dir_MM_A","Dir_SM_A",NULL };
+char *mu_1__type_0::values[] = {"Dir_M","Dir_S","Dir_I","Dir_MS_D","Dir_MM_A","Dir_SM_A",NULL };
 
 /*** end of enum declaration ***/
 mu_1__type_0 mu_1__type_0_undefined_var;
@@ -995,17 +995,17 @@ class mu_1__type_2: public mu__byte
   friend ostream& operator<< (ostream& s, mu_1__type_2& val)
   {
     if (val.defined())
-      return ( s << mu_1__type_2::values[ int(val) - 29] );
+      return ( s << mu_1__type_2::values[ int(val) - 30] );
     else return ( s << "Undefined" );
   };
 
-  mu_1__type_2 (char *name, int os): mu__byte(29, 39, 4, name, os) {};
-  mu_1__type_2 (void): mu__byte(29, 39, 4) {};
-  mu_1__type_2 (int val): mu__byte(29, 39, 4, "Parameter or function result.", 0)
+  mu_1__type_2 (char *name, int os): mu__byte(30, 41, 4, name, os) {};
+  mu_1__type_2 (void): mu__byte(30, 41, 4) {};
+  mu_1__type_2 (int val): mu__byte(30, 41, 4, "Parameter or function result.", 0)
   {
      operator=(val);
   };
-  char * Name() { return values[ value() -29]; };
+  char * Name() { return values[ value() -30]; };
   virtual void Permute(PermSet& Perm, int i);
   virtual void SimpleCanonicalize(PermSet& Perm);
   virtual void Canonicalize(PermSet& Perm);
@@ -1018,13 +1018,13 @@ class mu_1__type_2: public mu__byte
   virtual void print()
   {
     if (defined())
-      cout << name << ":" << values[ value() -29] << '\n';
+      cout << name << ":" << values[ value() -30] << '\n';
     else
       cout << name << ":Undefined\n";
   };
 };
 
-char *mu_1__type_2::values[] = {"Proc_M","Proc_S","Proc_I","Proc_IS_D","Proc_IM_A","Proc_IM_D","Proc_II_A","Proc_SM_A","Proc_SM_D","Proc_SI_A","Proc_MI_A",NULL };
+char *mu_1__type_2::values[] = {"Proc_M","Proc_S","Proc_I","Proc_IS_D","Proc_IM_A","Proc_IM_D","Proc_II_A","Proc_SM_A","Proc_MS_A","Proc_SM_D","Proc_SI_A","Proc_MI_A",NULL };
 
 /*** end of enum declaration ***/
 mu_1__type_2 mu_1__type_2_undefined_var;
@@ -1906,8 +1906,8 @@ const int mu_QMax = 2;
 const int mu_NumVCs = 3;
 const int mu_NetMax = 13;
 const int mu_enableProcTrace = 0;
-const int mu_enableMsgTrace = 1;
-const int mu_maxMsgs = 102;
+const int mu_enableMsgTrace = 0;
+const int mu_maxMsgs = 2;
 const int mu_Proc_1 = 1;
 const int mu_Proc_2 = 2;
 const int mu_Proc_3 = 3;
@@ -1921,32 +1921,34 @@ const int mu_ForwardChannel = 10;
 const int mu_GetM = 11;
 const int mu_PutS = 12;
 const int mu_PutM = 13;
-const int mu_Data = 14;
-const int mu_DNAck = 15;
-const int mu_InvAck = 16;
-const int mu_PutAck = 17;
-const int mu_FwdAck = 18;
-const int mu_GetS = 19;
-const int mu_Inv = 20;
-const int mu_FwdGetS = 21;
-const int mu_FwdGetM = 22;
-const int mu_Dir_M = 23;
-const int mu_Dir_S = 24;
-const int mu_Dir_I = 25;
-const int mu_Dir_MX_D = 26;
-const int mu_Dir_MM_A = 27;
-const int mu_Dir_SM_A = 28;
-const int mu_Proc_M = 29;
-const int mu_Proc_S = 30;
-const int mu_Proc_I = 31;
-const int mu_Proc_IS_D = 32;
-const int mu_Proc_IM_A = 33;
-const int mu_Proc_IM_D = 34;
-const int mu_Proc_II_A = 35;
-const int mu_Proc_SM_A = 36;
-const int mu_Proc_SM_D = 37;
-const int mu_Proc_SI_A = 38;
-const int mu_Proc_MI_A = 39;
+const int mu_PutMS = 14;
+const int mu_Data = 15;
+const int mu_DNAck = 16;
+const int mu_InvAck = 17;
+const int mu_PutAck = 18;
+const int mu_FwdAck = 19;
+const int mu_GetS = 20;
+const int mu_Inv = 21;
+const int mu_FwdGetS = 22;
+const int mu_FwdGetM = 23;
+const int mu_Dir_M = 24;
+const int mu_Dir_S = 25;
+const int mu_Dir_I = 26;
+const int mu_Dir_MS_D = 27;
+const int mu_Dir_MM_A = 28;
+const int mu_Dir_SM_A = 29;
+const int mu_Proc_M = 30;
+const int mu_Proc_S = 31;
+const int mu_Proc_I = 32;
+const int mu_Proc_IS_D = 33;
+const int mu_Proc_IM_A = 34;
+const int mu_Proc_IM_D = 35;
+const int mu_Proc_II_A = 36;
+const int mu_Proc_SM_A = 37;
+const int mu_Proc_MS_A = 38;
+const int mu_Proc_SM_D = 39;
+const int mu_Proc_SI_A = 40;
+const int mu_Proc_MI_A = 41;
 /*** Variable declaration ***/
 mu_1_HomeState mu_HomeNode("HomeNode",0);
 
@@ -1982,6 +1984,9 @@ cout << "PutS";
 break;
 case mu_PutM:
 cout << "PutM";
+break;
+case mu_PutMS:
+cout << "PutMS";
 break;
 case mu_Data:
 cout << "Data";
@@ -2043,6 +2048,9 @@ break;
 case mu_Proc_SM_A:
 cout << "Proc_SM_A";
 break;
+case mu_Proc_MS_A:
+cout << "Proc_MS_A";
+break;
 case mu_Proc_SM_D:
 cout << "Proc_SM_D";
 break;
@@ -2069,8 +2077,8 @@ break;
 case mu_Dir_I:
 cout << "Dir_I";
 break;
-case mu_Dir_MX_D:
-cout << "Dir_MX_D";
+case mu_Dir_MS_D:
+cout << "Dir_MS_D";
 break;
 case mu_Dir_MM_A:
 cout << "Dir_MM_A";
@@ -2109,7 +2117,7 @@ return (mu__intexpr9) > (0);
 
 void mu_msgTrace(const mu_1_counter_t& mu_mid, const mu_1_MessageType& mu_mtype, const mu_1_Node& mu_dst, const mu_1_Node& mu_src, const mu_1_channel_t& mu_vc, const mu_1_Value& mu_val, const mu_1_Node& mu_fwd_to, const mu_1_AckCount& mu_ack_cnt)
 {
-if ( 1 )
+if ( 0 )
 {
 cout << "Msg ";
 cout << ( mu_mid );
@@ -2172,7 +2180,7 @@ mu_1_Message mu_msg("msg",0);
   }
 /*** end multisetcount 1 declaration ***/
 if ( !((mu__intexpr10) < (mu_NetMax)) ) Error.Error("Assertion failed: Too many messages");
-if ( 1 )
+if ( 0 )
 {
 cout << " Create ";
 }
@@ -2180,7 +2188,7 @@ if (mu_running_msgid.isundefined())
   mu_msg.mu_mid.undefine();
 else
   mu_msg.mu_mid = mu_running_msgid;
-if ( (mu_running_msgid) == (101) )
+if ( (mu_running_msgid) == (1) )
 {
 mu_running_msgid = 0;
 }
@@ -2388,6 +2396,10 @@ case mu_PutM:
 if ( !((mu_msg.mu_src) != (mu_HomeNode.mu_owner)) ) Error.Error("Assertion failed: error at Dir_I: PutM from owner");
 mu_Send ( mu_PutAck, mu_msg.mu_src, (int)mu_HomeDir, mu_ResponseChannel, mu_1_Value_undefined_var, mu_1_Node_undefined_var, 0 );
 break;
+case mu_PutMS:
+if ( !((mu_msg.mu_src) != (mu_HomeNode.mu_owner)) ) Error.Error("Assertion failed: error at Dir_I: PutMS from owner");
+mu_Send ( mu_PutAck, mu_msg.mu_src, (int)mu_HomeDir, mu_ResponseChannel, mu_1_Value_undefined_var, mu_1_Node_undefined_var, 1 );
+break;
 default:
 mu_ErrorUnhandledMsg ( mu_msg, (int)mu_HomeDir );
 break;
@@ -2437,6 +2449,13 @@ if ( mu_IsSharerListEmpty(  ) )
 mu_HomeNode.mu_state = mu_Dir_I;
 }
 break;
+case mu_PutMS:
+mu_Send ( mu_PutAck, mu_msg.mu_src, (int)mu_HomeDir, mu_ResponseChannel, mu_1_Value_undefined_var, mu_1_Node_undefined_var, 1 );
+if ( !(mu_IsSharer( mu_msg.mu_src )) )
+{
+mu_AddToSharersList ( mu_msg.mu_src );
+}
+break;
 default:
 mu_ErrorUnhandledMsg ( mu_msg, (int)mu_HomeDir );
 break;
@@ -2445,7 +2464,7 @@ break;
 case mu_Dir_M:
 switch ((int) mu_msg.mu_mtype) {
 case mu_GetS:
-mu_HomeNode.mu_state = mu_Dir_MX_D;
+mu_HomeNode.mu_state = mu_Dir_MS_D;
 mu_AddToSharersList ( mu_msg.mu_src );
 mu_AddToSharersList ( mu_HomeNode.mu_owner );
 mu_Send ( mu_FwdGetS, mu_HomeNode.mu_owner, (int)mu_HomeDir, mu_ForwardChannel, mu_1_Value_undefined_var, mu_msg.mu_src, 0 );
@@ -2468,12 +2487,25 @@ mu_HomeNode.mu_state = mu_Dir_I;
 }
 mu_Send ( mu_PutAck, mu_msg.mu_src, (int)mu_HomeDir, mu_ResponseChannel, mu_1_Value_undefined_var, mu_1_Node_undefined_var, 0 );
 break;
+case mu_PutMS:
+if ( (mu_HomeNode.mu_owner) == (mu_msg.mu_src) )
+{
+mu_HomeNode.mu_val = mu_msg.mu_val;
+mu_HomeNode.mu_owner.undefine();
+mu_HomeNode.mu_state = mu_Dir_S;
+if ( !(mu_IsSharer( mu_msg.mu_src )) )
+{
+mu_AddToSharersList ( mu_msg.mu_src );
+}
+}
+mu_Send ( mu_PutAck, mu_msg.mu_src, (int)mu_HomeDir, mu_ResponseChannel, mu_1_Value_undefined_var, mu_1_Node_undefined_var, 1 );
+break;
 default:
 mu_ErrorUnhandledMsg ( mu_msg, (int)mu_HomeDir );
 break;
 }
 break;
-case mu_Dir_MX_D:
+case mu_Dir_MS_D:
 switch ((int) mu_msg.mu_mtype) {
 case mu_GetS:
 mu_msg_processed = mu_false;
@@ -2485,6 +2517,9 @@ case mu_PutS:
 mu_msg_processed = mu_false;
 break;
 case mu_PutM:
+mu_msg_processed = mu_false;
+break;
+case mu_PutMS:
 mu_msg_processed = mu_false;
 break;
 case mu_FwdAck:
@@ -2513,6 +2548,9 @@ break;
 case mu_PutM:
 mu_msg_processed = mu_false;
 break;
+case mu_PutMS:
+mu_msg_processed = mu_false;
+break;
 case mu_Data:
 mu_msg_processed = mu_false;
 break;
@@ -2537,6 +2575,9 @@ case mu_PutS:
 mu_msg_processed = mu_false;
 break;
 case mu_PutM:
+mu_msg_processed = mu_false;
+break;
+case mu_PutMS:
 mu_msg_processed = mu_false;
 break;
 case mu_Data:
@@ -2642,7 +2683,7 @@ mu_LastWrite = mu_pval;
 else
 {
 mu_pstate = mu_Proc_IM_A;
-if ( 1 )
+if ( 0 )
 {
 cout << "Starting cruise missile chain from ";
 cout << ( mu_p );
@@ -2705,7 +2746,6 @@ mu_pstate = mu_Proc_IM_D;
 mu_Send ( mu_Inv, (int)mu_pnxt, (int)mu_p, mu_ForwardChannel, mu_1_Value_undefined_var, mu_1_Node_undefined_var, (mu_msg.mu_ack_cnt) - (1) );
 break;
 case mu_Data:
-if ( !((mu_msg.mu_src) == (mu_HomeDir)) ) Error.Error("Assertion failed: error at Proc_SM_D, Data not from dir.");
 if ( (mu_msg.mu_ack_cnt) == (0) )
 {
 mu_pstate = mu_Proc_M;
@@ -2714,7 +2754,7 @@ mu_LastWrite = mu_pval;
 else
 {
 if ( !((mu_pcnt) == (0)) ) Error.Error("Assertion failed: error at Proc_SM_D, ack_cnt should be 0 for CMI.");
-if ( 1 )
+if ( 0 )
 {
 cout << "Starting cruise missile chain from ";
 cout << ( mu_p );
@@ -2759,9 +2799,32 @@ mu_Send ( mu_Data, mu_msg.mu_fwd_to, (int)mu_p, mu_ResponseChannel, mu_pval, mu_
 break;
 case mu_FwdGetM:
 mu_pstate = mu_Proc_I;
+mu_Send ( mu_FwdAck, (int)mu_HomeDir, (int)mu_p, mu_ResponseChannel, mu_pval, mu_1_Node_undefined_var, 0 );
 mu_Send ( mu_Data, mu_msg.mu_fwd_to, (int)mu_p, mu_ResponseChannel, mu_pval, mu_1_Node_undefined_var, 0 );
-mu_Send ( mu_FwdAck, (int)mu_HomeDir, (int)mu_p, mu_ResponseChannel, mu_1_Value_undefined_var, mu_1_Node_undefined_var, 0 );
 mu_pval.undefine();
+break;
+default:
+mu_ErrorUnhandledMsg ( mu_msg, (int)mu_p );
+break;
+}
+break;
+case mu_Proc_MS_A:
+switch ((int) mu_msg.mu_mtype) {
+case mu_Inv:
+mu_Send ( mu_Inv, (int)mu_pnxt, (int)mu_p, mu_ForwardChannel, mu_1_Value_undefined_var, mu_1_Node_undefined_var, (mu_msg.mu_ack_cnt) - (1) );
+break;
+case mu_FwdGetS:
+mu_Send ( mu_FwdAck, (int)mu_HomeDir, (int)mu_p, mu_ResponseChannel, mu_pval, mu_1_Node_undefined_var, 0 );
+mu_Send ( mu_Data, mu_msg.mu_fwd_to, (int)mu_p, mu_ResponseChannel, mu_pval, mu_1_Node_undefined_var, 0 );
+break;
+case mu_FwdGetM:
+mu_pstate = mu_Proc_MI_A;
+mu_Send ( mu_FwdAck, (int)mu_HomeDir, (int)mu_p, mu_ResponseChannel, mu_pval, mu_1_Node_undefined_var, 0 );
+mu_Send ( mu_Data, mu_msg.mu_fwd_to, (int)mu_p, mu_ResponseChannel, mu_pval, mu_1_Node_undefined_var, 0 );
+break;
+case mu_PutAck:
+if ( !((mu_msg.mu_ack_cnt) == (1)) ) Error.Error("Assertion failed: error at Proc_MS_A, PutAck ack_cnt is not 1");
+mu_pstate = mu_Proc_S;
 break;
 default:
 mu_ErrorUnhandledMsg ( mu_msg, (int)mu_p );
@@ -2784,8 +2847,15 @@ mu_Send ( mu_Data, mu_msg.mu_fwd_to, (int)mu_p, mu_ResponseChannel, mu_pval, mu_
 mu_Send ( mu_FwdAck, (int)mu_HomeDir, (int)mu_p, mu_ResponseChannel, mu_1_Value_undefined_var, mu_1_Node_undefined_var, 0 );
 break;
 case mu_PutAck:
+if ( (mu_msg.mu_ack_cnt) == (0) )
+{
 mu_pstate = mu_Proc_I;
 mu_pval.undefine();
+}
+else
+{
+mu_pstate = mu_Proc_SI_A;
+}
 break;
 default:
 mu_ErrorUnhandledMsg ( mu_msg, (int)mu_p );
@@ -2799,6 +2869,7 @@ mu_pstate = mu_Proc_II_A;
 mu_Send ( mu_Inv, (int)mu_pnxt, (int)mu_p, mu_ForwardChannel, mu_1_Value_undefined_var, mu_1_Node_undefined_var, (mu_msg.mu_ack_cnt) - (1) );
 break;
 case mu_PutAck:
+if ( !((mu_msg.mu_ack_cnt) == (0)) ) Error.Error("Assertion failed: error at Proc_SI_A, PutAck ack_cnt is not 0");
 mu_pstate = mu_Proc_I;
 mu_pval.undefine();
 break;
@@ -3010,7 +3081,7 @@ mu_ProcReceive ( mu_InBox[mu_n][mu_vc], (int)mu_n );
 }
 if ( mu_msg_processed )
 {
-if ( 1 )
+if ( 0 )
 {
 cout << "  Clear ";
 mu_msgTrace ( mu_InBox[mu_n][mu_vc].mu_mid, mu_InBox[mu_n][mu_vc].mu_mtype, mu_n, mu_InBox[mu_n][mu_vc].mu_src, mu_vc, mu_InBox[mu_n][mu_vc].mu_val, mu_InBox[mu_n][mu_vc].mu_fwd_to, mu_InBox[mu_n][mu_vc].mu_ack_cnt );
@@ -3100,7 +3171,7 @@ public:
   mu_1__type_4& mu_chan = mu_Net[mu_n];
   mu_1_Message& mu_msg = mu_chan[mu_midx];
   mu_1__type_6& mu_box = mu_InBox[mu_n];
-if ( 1 )
+if ( 0 )
 {
 cout << "  Receive ";
 }
@@ -3119,7 +3190,7 @@ mu_box[mu_msg.mu_vc] = mu_msg;
 }
 else
 {
-if ( 1 )
+if ( 0 )
 {
 cout << "  Clear ";
 mu_msgTrace ( mu_msg.mu_mid, mu_msg.mu_mtype, mu_n, mu_msg.mu_src, mu_msg.mu_vc, mu_msg.mu_val, mu_msg.mu_fwd_to, mu_msg.mu_ack_cnt );
@@ -3189,7 +3260,7 @@ public:
     r = r / 3;
   mu_1_ProcState& mu_p = mu_Procs[mu_n];
 mu_p.mu_state = mu_Proc_IS_D;
-if ( 1 )
+if ( 0 )
 {
 cout << "I ==(load)==> S";
 }
@@ -3271,7 +3342,7 @@ public:
     r = r / 3;
   mu_1_ProcState& mu_p = mu_Procs[mu_n];
 mu_p.mu_state = mu_Proc_IM_D;
-if ( 1 )
+if ( 0 )
 {
 cout << "I ==(store)==> M";
 }
@@ -3354,7 +3425,7 @@ public:
     r = r / 3;
   mu_1_ProcState& mu_p = mu_Procs[mu_n];
 mu_p.mu_state = mu_Proc_SM_D;
-if ( 1 )
+if ( 0 )
 {
 cout << "S ==(store)==> M";
 }
@@ -3423,7 +3494,7 @@ public:
     r = r / 3;
   mu_1_ProcState& mu_p = mu_Procs[mu_n];
 mu_p.mu_state = mu_Proc_SI_A;
-if ( 1 )
+if ( 0 )
 {
 cout << "S ==(evict)==> I";
 }
@@ -3446,7 +3517,7 @@ public:
     static mu_1_Proc mu_n;
     mu_n.value((r % 3) + 1);
     r = r / 3;
-    return tsprintf("M ==(evict)==> I, n:%s", mu_n.Name());
+    return tsprintf("M ==(self-downgrade)==> S, n:%s", mu_n.Name());
   }
   bool Condition(unsigned r)
   {
@@ -3490,8 +3561,76 @@ public:
     mu_n.value((r % 3) + 1);
     r = r / 3;
   mu_1_ProcState& mu_p = mu_Procs[mu_n];
+mu_p.mu_state = mu_Proc_MS_A;
+if ( 0 )
+{
+cout << "M ==(self-downgrade)==> S";
+}
+mu_Send ( mu_PutMS, (int)mu_HomeDir, (int)mu_n, mu_RequestChannel, mu_p.mu_val, mu_1_Node_undefined_var, 0 );
+  };
+
+  bool UnFair()
+  { return FALSE; }
+};
+/******************** RuleBase7 ********************/
+class RuleBase7
+{
+public:
+  int Priority()
+  {
+    return 0;
+  }
+  char * Name(unsigned r)
+  {
+    static mu_1_Proc mu_n;
+    mu_n.value((r % 3) + 1);
+    r = r / 3;
+    return tsprintf("M ==(evict)==> I, n:%s", mu_n.Name());
+  }
+  bool Condition(unsigned r)
+  {
+    static mu_1_Proc mu_n;
+    mu_n.value((r % 3) + 1);
+    r = r / 3;
+  mu_1_ProcState& mu_p = mu_Procs[mu_n];
+  return (mu_p.mu_state) == (mu_Proc_M);
+  }
+
+  void NextRule(unsigned & what_rule)
+  {
+    unsigned r = what_rule - 91;
+    static mu_1_Proc mu_n;
+    mu_n.value((r % 3) + 1);
+    r = r / 3;
+    while (what_rule < 94 )
+      {
+        if ( ( TRUE  ) ) {
+  mu_1_ProcState& mu_p = mu_Procs[mu_n];
+              if ((mu_p.mu_state) == (mu_Proc_M)) {
+                if ( ( TRUE  ) )
+                  return;
+                else
+                  what_rule++;
+              }
+              else
+                what_rule += 1;
+        }
+        else
+          what_rule += 1;
+    r = what_rule - 91;
+    mu_n.value((r % 3) + 1);
+    r = r / 3;
+    }
+  }
+
+  void Code(unsigned r)
+  {
+    static mu_1_Proc mu_n;
+    mu_n.value((r % 3) + 1);
+    r = r / 3;
+  mu_1_ProcState& mu_p = mu_Procs[mu_n];
 mu_p.mu_state = mu_Proc_MI_A;
-if ( 1 )
+if ( 0 )
 {
 cout << "M ==(evict)==> I";
 }
@@ -3510,6 +3649,7 @@ class NextStateGenerator
   RuleBase4 R4;
   RuleBase5 R5;
   RuleBase6 R6;
+  RuleBase7 R7;
 public:
 void SetNextEnabledRule(unsigned & what_rule)
 {
@@ -3535,6 +3675,9 @@ void SetNextEnabledRule(unsigned & what_rule)
   if (what_rule>=88 && what_rule<91)
     { R6.NextRule(what_rule);
       if (what_rule<91) return; }
+  if (what_rule>=91 && what_rule<94)
+    { R7.NextRule(what_rule);
+      if (what_rule<94) return; }
 }
 bool Condition(unsigned r)
 {
@@ -3546,6 +3689,7 @@ bool Condition(unsigned r)
   if (r>=76 && r<=84) return R4.Condition(r-76);
   if (r>=85 && r<=87) return R5.Condition(r-85);
   if (r>=88 && r<=90) return R6.Condition(r-88);
+  if (r>=91 && r<=93) return R7.Condition(r-91);
 Error.Notrace("Internal: NextStateGenerator -- checking condition for nonexisting rule.");
 }
 void Code(unsigned r)
@@ -3557,6 +3701,7 @@ void Code(unsigned r)
   if (r>=76 && r<=84) { R4.Code(r-76); return; } 
   if (r>=85 && r<=87) { R5.Code(r-85); return; } 
   if (r>=88 && r<=90) { R6.Code(r-88); return; } 
+  if (r>=91 && r<=93) { R7.Code(r-91); return; } 
 }
 int Priority(unsigned short r)
 {
@@ -3567,6 +3712,7 @@ int Priority(unsigned short r)
   if (r>=76 && r<=84) { return R4.Priority(); } 
   if (r>=85 && r<=87) { return R5.Priority(); } 
   if (r>=88 && r<=90) { return R6.Priority(); } 
+  if (r>=91 && r<=93) { return R7.Priority(); } 
 }
 char * Name(unsigned r)
 {
@@ -3577,15 +3723,16 @@ char * Name(unsigned r)
   if (r>=76 && r<=84) return R4.Name(r-76);
   if (r>=85 && r<=87) return R5.Name(r-85);
   if (r>=88 && r<=90) return R6.Name(r-88);
+  if (r>=91 && r<=93) return R7.Name(r-91);
   return NULL;
 }
 };
-const unsigned numrules = 91;
+const unsigned numrules = 94;
 
 /********************
   parameter
  ********************/
-#define RULES_IN_WORLD 91
+#define RULES_IN_WORLD 94
 
 
 /********************

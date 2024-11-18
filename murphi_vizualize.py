@@ -302,7 +302,7 @@ visualizer = CacheCoherenceVisualizer()
 visualizer.parse_log_file('msi_opt_sim.log')
 # visualizer.previous()  # Navigate to previous snapshot
 # visualizer.next()      # Navigate to next snapshot
-visualizer.set_horizon(5)
+visualizer.set_horizon(30)
 while(visualizer.next()==0):
     pass
 
