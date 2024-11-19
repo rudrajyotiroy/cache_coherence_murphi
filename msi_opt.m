@@ -1054,11 +1054,35 @@ invariant "val in memory matches val of last write, when invalid"
 		->
 			HomeNode.val = LastWrite;
 
+invariant "If a processor is in M state, no other processor can be in M or S state"
+	Forall n : Proc Do	
+    Forall m : Proc Do
+		 Procs[n].state = Proc_M & n != m
+		->
+     Procs[m].state != Proc_M & Procs[m].state != Proc_S
+    end
+	end;
+
+invariant "HomeNode assumed Owner should be either in M or some M-transient state"
+	Forall n : Proc Do	
+      HomeNode.owner = n
+		->
+			Procs[n].state != Proc_I & Procs[n].state != Proc_S 
+	end;
+
+-- Won't work since Ack can reach Directory earlier and data not reach yet
+-- invariant "HomeNode assumed Owner should have the latest value"
+-- 	Forall n : Proc Do	
+--       HomeNode.state = Dir_M & HomeNode.owner = n
+-- 		->
+-- 			Procs[n].val = LastWrite
+-- 	end;
+
 invariant "values in valid state match last write"
 	Forall n : Proc Do	
 		 Procs[n].state = Proc_M | Procs[n].state = Proc_S
 		->
-		 Procs[n].val = LastWrite --LastWrite is updated whenever a new val is created 
+			Procs[n].val = LastWrite --LastWrite is updated whenever a new val is created 
 	end;
 	
 invariant "val is undefined while invalid"
@@ -1068,22 +1092,20 @@ invariant "val is undefined while invalid"
 			IsUndefined(Procs[n].val)
 	end;
 
--- Here are some invariants that are helpful for validating shared state.
-
-invariant "shared implies non-empty sharers list"
+invariant "shared implies non-empty sharers list and undefined owner"
 	HomeNode.state = Dir_S
 		->
-			MultiSetCount(i:HomeNode.sharers, true) > 0;
+			(MultiSetCount(i:HomeNode.sharers, true) > 0) & IsUndefined(HomeNode.owner);
 
-invariant "modified implies empty sharers list"
+invariant "modified implies empty sharers list and defined owner"
 	HomeNode.state = Dir_M
 		->
-			MultiSetCount(i:HomeNode.sharers, true) = 0;
+			(MultiSetCount(i:HomeNode.sharers, true) = 0) & !IsUndefined(HomeNode.owner);
 
-invariant "Invalid implies empty sharer list"
+invariant "Invalid implies empty sharer list and defined owner"
 	HomeNode.state = Dir_I
 		->
-			MultiSetCount(i:HomeNode.sharers, true) = 0;
+			(MultiSetCount(i:HomeNode.sharers, true) = 0) & IsUndefined(HomeNode.owner);
 
 invariant "values in memory matches val of last write, when shared or invalid"
 	Forall n : Proc Do	
@@ -1098,7 +1120,7 @@ invariant "values in shared state match memory"
 		->
 			HomeNode.val = Procs[n].val
 	end;
-	
+
 -- invariant "Proc ackcounts are negative"
 -- 	Forall n : Proc Do	
 -- 		 !(Procs[n].state = Proc_I)
